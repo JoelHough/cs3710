@@ -28,7 +28,6 @@ module alu_test;
 reg [15:0] a;
 reg [15:0] b;
 reg [7:0] opcode;
-//reg carry;
 
 // Outputs
 wire [15:0] z;
@@ -44,7 +43,6 @@ alu uut (
   .a(a), 
   .b(b), 
   .opcode(opcode), 
-  //.carry(carry), 
   .result(z), 
   .flags(flags)
 );
@@ -94,7 +92,6 @@ initial begin
   a = 0;
   b = 0;
   opcode = 0;
-  //carry = 0;
 
   // Wait 100 ns for global reset to finish
   #100;
@@ -103,12 +100,12 @@ initial begin
     flags[uut.Z], flags[uut.CARRY], flags[uut.FLAG], flags[uut.LOW], flags[uut.NEGATIVE],
     $time);
 
-  /* Corner Cases */
+  /* corner cases */
   $display("BEGINNING CORNER CASE TESTS");
   /* ADD */
   $display("ADD");
   opcode = uut.ADD;
-  a = 0; b = 0;// carry = 0;
+  a = 0; b = 0;
   #10;
   ASSERT(0, 0);
   
@@ -273,7 +270,7 @@ initial begin
   ASSERT(16'h0FF0, 0);
   $display("END OF CORNER CASE TESTS");
 
-  /* Random Tests */
+  /* random tests */
   $display("BEGINNING RANDOM TESTS");
   for (i=0;i<10;i=i+1)
   begin
@@ -282,7 +279,7 @@ initial begin
   end
   $display("END OF RANDOM TESTS");
   
-  /* Equivalence Tests */
+  /* equivalence tests */
   $display("BEGINNING EQUIVALENCE TESTS");
   $display("there is no test here yet");
   $display("END OF EQUIVALENCE TESTS");

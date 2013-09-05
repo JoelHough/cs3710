@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Joel Hough
 // 
 // Create Date:    14:31:22 09/04/2013 
 // Design Name: 
@@ -22,7 +22,6 @@ module alu(
     input [WORD_WIDTH-1:0] a,
     input [WORD_WIDTH-1:0] b,
     input [OPCODE_WIDTH-1:0] opcode,
-    //input carry_in,
     output reg [WORD_WIDTH-1:0] result,
     output reg [NUM_FLAGS-1:0] flags
     );
