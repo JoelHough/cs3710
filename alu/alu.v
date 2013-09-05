@@ -37,13 +37,12 @@ localparam SIGN_BIT = WORD_WIDTH - 1;
 
 /* opcodes */
 parameter ADD   = 'b101;
-parameter SUB   = 'b1001;
-parameter CMP   = 'b1011;
 parameter AND   = 'b1;
-parameter OR    = 'b10;
-parameter XOR   = 'b11;
-parameter MOV   = 'b1101;
+parameter CMP   = 'b1011;
 parameter LSH   = 'b1000_0100;
+parameter OR    = 'b10;
+parameter SUB   = 'b1001;
+parameter XOR   = 'b11;
 
 /* flag bit positions */
 parameter CARRY    = 0;
@@ -58,6 +57,7 @@ localparam LOW_BIT      = 1 << LOW;
 localparam FLAG_BIT     = 1 << FLAG;
 localparam Z_BIT        = 1 << Z;
 localparam NEGATIVE_BIT = 1 << NEGATIVE;
+
 /* functions */
 function bits_equal;
   input a, b, c;
@@ -72,7 +72,6 @@ begin
   case (opcode)
     ADD: begin
       {flags[CARRY],result} = a + b;
-      flags[Z] = ~|result;
       flags[FLAG] = bits_equal(a[SIGN_BIT], b[SIGN_BIT], ~result[SIGN_BIT]);
     end
     AND: result = a & b;
@@ -81,11 +80,10 @@ begin
       flags[NEGATIVE] = $signed(a) > $signed(b);
       flags[LOW] = a > b;
     end
-    LSH: result = a << $signed(b[3:0]); // probably won't work. need to de-sign and reverse the shift
+    LSH: result = b[4] ? a >> (~b[3:0] + 4'd1) : a << b[3:0];
     OR: result = a | b;
     SUB: begin
       {flags[CARRY],result} = a - b;
-      flags[Z] = ~|result;
       flags[FLAG] = bits_equal(~a[SIGN_BIT], b[SIGN_BIT], result[SIGN_BIT]);
     end
     XOR: result = a ^ b;
