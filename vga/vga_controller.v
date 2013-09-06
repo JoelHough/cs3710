@@ -23,12 +23,12 @@ module vga_controller(
     output hsync,
     output vsync,
     output blank,
-    output [$clog2(HORIZ_PIXELS-1):0] x,
-    output [$clog2(VERT_PIXELS-1):0] y
+    output [$clog2(HORIZ_PIXELS)-1:0] x,
+    output [$clog2(VERT_PIXELS)-1:0] y
     );
 
   wire hblank, vblank, new_line;
-  wire [$clog2(HORIZ_PIXELS-1):0] x_unblanked;
+  wire [$clog2(HORIZ_PIXELS)-1:0] x_unblanked;
   
   //parameter pixel_clk_frequency = 25_175_000;
   

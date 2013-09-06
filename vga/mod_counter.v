@@ -25,7 +25,7 @@ module mod_counter(
     output reg rollover = 1'b0
     );
 
-  parameter COUNTER_WIDTH = $clog2(MAX-1);
+  parameter COUNTER_WIDTH = $clog2(MAX)-1;
   parameter MAX = 8'hFF;
   parameter MIN = 1'b0;
 
