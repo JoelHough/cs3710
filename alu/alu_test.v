@@ -32,6 +32,8 @@ reg [7:0] opcode;
 // Outputs
 wire [15:0] z;
 wire [4:0] flags;
+wire [15:0] z_synthesis;
+wire [4:0] flags_synthesis;
 
 // Locals
 integer i;
@@ -46,6 +48,13 @@ alu uut (
   .result(z), 
   .flags(flags)
 );
+
+alu_synthesis uut_synthesis (
+  .a(a),
+  .b(b),
+  .opcode(opcode),
+  .result(z_synthesis),
+  .flags(flags_sythesis));
 
 function ASSERT_FLAG_EQUAL;
   input expected, actual;
@@ -85,6 +94,33 @@ function ASSERT;
       if (STOP_ON_ERROR) $stop;
     end
   end
+endfunction
+
+function [uut.OPCODE_WIDTH-1:0] select_opcode;
+  input [31:0] opcode_num;
+  case (opcode_num)
+        0 : begin
+          select_opcode = uut.ADD;
+        end
+        1 : begin
+          select_opcode = uut.AND;
+        end
+        2 : begin
+          select_opcode = uut.CMP;
+        end
+        3 : begin
+          select_opcode = uut.LSH;
+        end
+        4 : begin
+          select_opcode = uut.OR;
+        end
+        5 : begin
+          select_opcode = uut.SUB;
+        end
+        default : begin
+          select_opcode = uut.XOR;
+        end
+  endcase
 endfunction
 
 initial begin
@@ -274,14 +310,21 @@ initial begin
   $display("BEGINNING RANDOM TESTS");
   for (i=0;i<10;i=i+1)
   begin
-    a = $random % 16; b = $random % 16;// carry = $random % 1;
+    a = $random % 16; b = $random % 16; opcode = select_opcode($random % 6);
+    $display("opcode:%b", opcode);
     #10;
   end
   $display("END OF RANDOM TESTS");
   
   /* equivalence tests */
   $display("BEGINNING EQUIVALENCE TESTS");
-  $display("there is no test here yet");
+  for (i=0;i<10;i=i+1)
+  begin
+    a = $random % 16; b = $random % 16; opcode = select_opcode($random % 6);
+    $display("opcode:%b", opcode);
+    #10;
+    ASSERT(z_synthesis, flags_synthesis);
+  end
   $display("END OF EQUIVALENCE TESTS");
   
   $display("Test finished with %d error(s)", errors);
