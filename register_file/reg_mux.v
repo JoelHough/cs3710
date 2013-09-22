@@ -18,14 +18,14 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module reg_mux(
+module reg_mux #(
+    parameter WIDTH = 16,
+    parameter NUM_REGS = 16
+  ) (
     input [(WIDTH*NUM_REGS)-1:0] data_in,
     input [$clog2(NUM_REGS)-1:0] select,
     output [WIDTH-1:0] data_out
     );
-
-parameter WIDTH = 16;
-parameter NUM_REGS = 16;
 
   wire [WIDTH-1:0] data_in_array [NUM_REGS-1:0];
 

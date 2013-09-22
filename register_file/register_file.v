@@ -18,21 +18,18 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module register_file(
+module register_file #(
+    parameter WIDTH = 16,
+    parameter NUM_REGS = 16
+  ) (
     input [$clog2(NUM_REGS)-1:0] enable,
     input reset,
     input clk,
     input [WIDTH-1:0] data_in,
     output [(NUM_REGS*WIDTH)-1:0] data_out
     );
-parameter WIDTH = 16;
-parameter NUM_REGS = 16;
-
-  genvar i;
-  generate
-  for (i=0;i<NUM_REGS;i=i+1) begin: data_out_reg
-    register r(.enable(enable == i), .reset(reset), .clk(clk), .data_in(data_in), .data_out(data_out[i*WIDTH+:WIDTH]));
-  end
-  endgenerate
+  wire [NUM_REGS-1:0] enable_bits;
+  assign enable_bits = 2'b10 ** enable;
+  register #(.WIDTH(WIDTH)) r[NUM_REGS-1:0](.enable(enable_bits), .reset(reset), .clk(clk), .data_in(data_in), .data_out(data_out));
 
 endmodule

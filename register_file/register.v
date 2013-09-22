@@ -18,16 +18,16 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module register(
+module register #(
+    parameter WIDTH = 16,
+    parameter DEFAULT = {WIDTH{1'b0}}
+    ) (
     input enable,
     input reset,
     input clk,
     input [WIDTH-1:0] data_in,
     output reg [WIDTH-1:0] data_out = DEFAULT
     );
-
-parameter WIDTH = 16;
-parameter DEFAULT = {WIDTH{1'b0}};
 
   always @(posedge clk or posedge reset)
     if (reset)
