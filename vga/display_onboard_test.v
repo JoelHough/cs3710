@@ -37,8 +37,8 @@ module display_onboard_test(
     wire [6:0] col;
     wire next_col;
     reg [7:0] char = 8'h0;
-    mod_counter #(.MAX(29)) row_counter (.clk(~char_clk), .reset(1'b0), .count(row), .rollover(next_col));
-    mod_counter #(.MAX(79)) col_counter (.clk(next_col), .reset(1'b0), .count(col), .rollover());
+    mod_counter #(.MAX(29)) row_counter (.clk(~char_clk), .en(1'b1), .reset(1'b0), .count(row), .rollover(next_col));
+    mod_counter #(.MAX(79)) col_counter (.clk(next_col), .en(1'b1), .reset(1'b0), .count(col), .rollover());
     always @(negedge char_clk)
       char <= char + 1'b1;
       

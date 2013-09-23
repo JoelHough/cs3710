@@ -20,13 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 module dina_font_rom(
     input clk,
+    input en,
     input [7:0] char, // ascii character to display
     
     /* pixel in that character */
     input [2:0] x,
     input [3:0] y,
     
-    output pixel // the value at that pixel
+    output reg pixel // the value at that pixel
     );
 
   /* character data comes out an 8-bit line at a time
@@ -39,7 +40,9 @@ module dina_font_rom(
     $readmemh("Dina_r400-10.bdf.hex", characters, 0, 4095);
   
   always @(posedge clk)
-    line <= characters[read_address];
-
-  assign pixel = line[~(3'd6 + x)]; // dirty timing and mirroring hack
+    if (en) begin
+      line <= characters[read_address];
+      pixel = line[~(3'd6 + x)]; // dirty timing and mirroring hack
+    end
+    
 endmodule

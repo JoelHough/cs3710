@@ -22,15 +22,12 @@ module vga_controller(
     input pixel_clk,
     output hsync,
     output vsync,
-    output blank,
-    output [$clog2(HORIZ_PIXELS)-1:0] x,
-    output [$clog2(VERT_PIXELS)-1:0] y
+    output blank
     );
 
   /* generates syncs, blank, and current visible pixel x and y from a pixel clock.
      defaults to 640x480 timings */
   wire hblank, vblank, new_line;
-  wire [$clog2(HORIZ_PIXELS)-1:0] x_unblanked;
   
   //parameter pixel_clk_frequency = 25_175_000;
   
@@ -45,7 +42,7 @@ module vga_controller(
     .FRONT_PORCH(HORIZ_FRONT_PORCH),
     .SYNC_PULSE(HORIZ_SYNC_PULSE),
     .BACK_PORCH(HORIZ_BACK_PORCH)
-    ) h_sync (.clk(pixel_clk), .pixel(x_unblanked), .sync(hsync), .blank(hblank), .next(new_line));
+    ) h_sync (.clk(pixel_clk), .sync(hsync), .blank(hblank), .next(new_line));
 
   /* vsync
      note that this is clocked by the hsync new line signal, so all counts are in lines */
@@ -59,8 +56,7 @@ module vga_controller(
     .FRONT_PORCH(VERT_FRONT_PORCH),
     .SYNC_PULSE(VERT_SYNC_PULSE),
     .BACK_PORCH(VERT_BACK_PORCH)
-    ) v_sync (.clk(new_line), .pixel(y), .sync(vsync), .blank(vblank), .next());  
+    ) v_sync (.clk(new_line), .sync(vsync), .blank(vblank), .next());  
 
-  assign x = vblank ? 1'b0 : x_unblanked;
   assign blank = hblank | vblank;
 endmodule

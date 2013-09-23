@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module mod_counter(
     input clk,
+    input en,
     input reset,
     output reg [COUNTER_WIDTH:0] count = MIN,
     output reg rollover = 1'b0
@@ -27,10 +28,16 @@ module mod_counter(
 
   parameter COUNTER_WIDTH = $clog2(MAX)-1;
   parameter MAX = 8'hFF;
-  parameter MIN = 1'b0;
+  parameter MIN = 'b0;
 
   always @(posedge clk, posedge reset) begin
-    count <= (reset | count == MAX) ? MIN : count + 1'b1;
-    rollover <= reset ? 0 : count == MAX;
+    if (reset) begin
+      count <= MIN;
+      rollover <= 1'b0;
+    end
+    else if (en) begin
+      count <= (count == MAX) ? MIN : count + 1'b1;
+      rollover <= count == MAX;
+    end
   end
 endmodule

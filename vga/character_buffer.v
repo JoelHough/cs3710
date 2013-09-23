@@ -20,10 +20,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 module character_buffer(
   input write_clk,
+  input write_en,
   input [4:0] write_row,
   input [6:0] write_col,
   input [7:0] write_char,
   input read_clk,
+  input read_en,
   input [4:0] read_row,
   input [6:0] read_col,
   output reg [7:0] read_char
@@ -37,8 +39,10 @@ module character_buffer(
   wire [11:0] read_address = {read_row, read_col};
   
   always @(posedge write_clk)
-    buffer[write_address] <= write_char;
+    if (write_en)
+      buffer[write_address] <= write_char;
   
   always @(posedge read_clk)
-    read_char <= buffer[read_address];
+    if (read_en)
+      read_char <= buffer[read_address];
 endmodule
