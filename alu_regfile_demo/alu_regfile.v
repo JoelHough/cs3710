@@ -34,10 +34,13 @@ module alu_regfile(
     output [(16*8)-1:0] reg_bus
     );
 
-  //wire [(16*8)-1:0] reg_bus;
+  //wire [(16*8)-1:0] reg_bus; // for now we run this external for display
   wire [15:0] reg_b_out;
+
+  /* reg or imm mux for b */
   assign alu_b_in = immediate_p ? immediate : reg_b_out;
   
+  /* wire up alu, regfile, and mux's for a and b */
   alu al (.a(alu_a_in), .b(alu_b_in), .opcode(alu_op), .result(alu_bus), .flags(flags));
   register_file #(.NUM_REGS(8)) rf (.enable(dest_reg), .reset(reset), .clk(clk), .data_in(alu_bus), .data_out(reg_bus));
   reg_mux #(.NUM_REGS(8)) a_mux (.data_in(reg_bus), .select(a_reg), .data_out(alu_a_in));

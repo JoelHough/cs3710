@@ -27,11 +27,14 @@ module vga_controller(
     output [$clog2(VERT_PIXELS)-1:0] y
     );
 
+  /* generates syncs, blank, and current visible pixel x and y from a pixel clock.
+     defaults to 640x480 timings */
   wire hblank, vblank, new_line;
   wire [$clog2(HORIZ_PIXELS)-1:0] x_unblanked;
   
   //parameter pixel_clk_frequency = 25_175_000;
   
+  /* hsync */
   parameter HORIZ_FRONT_PORCH = 16;
   parameter HORIZ_SYNC_PULSE  = 96;
   parameter HORIZ_BACK_PORCH  = 48;
@@ -44,6 +47,8 @@ module vga_controller(
     .BACK_PORCH(HORIZ_BACK_PORCH)
     ) h_sync (.clk(pixel_clk), .pixel(x_unblanked), .sync(hsync), .blank(hblank), .next(new_line));
 
+  /* vsync
+     note that this is clocked by the hsync new line signal, so all counts are in lines */
   parameter VERT_FRONT_PORCH = 11;
   parameter VERT_SYNC_PULSE  = 2;
   parameter VERT_BACK_PORCH  = 31;

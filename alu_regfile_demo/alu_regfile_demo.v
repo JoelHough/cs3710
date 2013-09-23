@@ -85,6 +85,8 @@ module alu_regfile_demo(
     debounce db_right (.clk(db_clk), .bouncy(btnRight), .debounced(right));
     debounce db_center (.clk(db_clk), .bouncy(btnCenter), .debounced(center));
     
+    /* wire up an alu+regfile to a test fsm
+       center button clocks, down resets */
     wire [2:0] a_reg, b_reg, dest_reg;
     wire [15:0] immediate;
     wire immediate_p;
@@ -130,6 +132,7 @@ module alu_regfile_demo(
     assign display_char =  op_char_p ? opchar : 1'b0;
     assign display_char_p = op_char_p;
     
+    /* display the immediate */
     char_string #(.ROW(8), .COL(35), .LENGTH(4), .STRING("B <-"))
           b_imm_label (.row(screen_y), .col(screen_x), .enable(immediate_p),
           .char_p(display_char_p), .char(display_char));

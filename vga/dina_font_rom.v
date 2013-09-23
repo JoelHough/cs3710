@@ -20,12 +20,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 module dina_font_rom(
     input clk,
-    input [7:0] char,
+    input [7:0] char, // ascii character to display
+    
+    /* pixel in that character */
     input [2:0] x,
     input [3:0] y,
-    output pixel
+    
+    output pixel // the value at that pixel
     );
 
+  /* character data comes out an 8-bit line at a time
+     we select a bit from that later */
   reg [7:0] characters[4095:0];
   reg [7:0] line;
   wire [11:0] read_address = {char, y};

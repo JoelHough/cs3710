@@ -65,6 +65,9 @@ function bits_equal;
 endfunction
 
 /* the good stuff */
+/* all opcodes are exactly as described in the cr16 manual, except the added B
+   op. B sets the result to the b input and sets no flags. useful for mov and
+   load and such. */
 always @*
 begin
   flags = 0;
