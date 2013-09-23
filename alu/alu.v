@@ -27,7 +27,7 @@ module alu(
     );
 
 /* widths */
-parameter OPCODE_WIDTH = 8;
+parameter OPCODE_WIDTH = 4;
 parameter WORD_WIDTH   = 16;
 parameter NUM_FLAGS    = 5;
 
@@ -35,13 +35,13 @@ parameter NUM_FLAGS    = 5;
 localparam SIGN_BIT = WORD_WIDTH - 1;
 
 /* opcodes */
-parameter ADD   = 'b101;
-parameter AND   = 'b1;
-parameter CMP   = 'b1011;
-parameter LSH   = 'b1000_0100;
-parameter OR    = 'b10;
-parameter SUB   = 'b1001;
-parameter XOR   = 'b11;
+parameter ADD   = 'b1;
+parameter AND   = 'b10;
+parameter CMP   = 'b11;
+parameter LSH   = 'b100;
+parameter OR    = 'b101;
+parameter SUB   = 'b110;
+parameter XOR   = 'b111;
 
 /* flag bit positions */
 parameter CARRY    = 0;
