@@ -39,15 +39,15 @@ module fib_machine(
       state <= INIT;
     else
       case (state)
-        INIT: state <= RUN;
+        INIT: state <= dest_reg == 3'b1 ? RUN : INIT;
         RUN: state <= RUN;
       endcase
 
 
   always @(posedge clk or posedge reset)
     if (reset) begin
-      a_reg <= 3'b0;
-      b_reg <= 3'b1;
+      a_reg <= 3'b111;
+      b_reg <= 3'b0;
       dest_reg <= 3'b0;
       immediate <= 16'b1;
       immediate_p <= 1'b1;
@@ -55,7 +55,7 @@ module fib_machine(
     end
     else
       case (state)
-        INIT: dest_reg <= dest_reg + 1'b1;
+        INIT: dest_reg <= 3'b1;
         RUN: begin
           a_reg <= a_reg + 1'b1;
           b_reg <= b_reg + 1'b1;

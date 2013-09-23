@@ -30,10 +30,11 @@ module alu_regfile(
     output [15:0] alu_bus,
     output [15:0] alu_a_in,
     output [15:0] alu_b_in,
-    output [4:0] flags
+    output [4:0] flags,
+    output [(16*8)-1:0] reg_bus
     );
 
-  wire [(16*8)-1:0] reg_bus;
+  //wire [(16*8)-1:0] reg_bus;
   wire [15:0] reg_b_out;
   assign alu_b_in = immediate_p ? immediate : reg_b_out;
   
