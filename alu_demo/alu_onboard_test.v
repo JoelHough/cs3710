@@ -41,7 +41,10 @@ module alu_onboard_test(
     always @(posedge clk)
       clock_counter <= clock_counter + 1'b1;
     
-    reg [7:0] display_char;
+    wor [7:0] display_char;
+    wor display_char_p;
+    assign display_char = display_char_p ? 8'b0 : " ";
+    
     wire [2:0] display_char_x;
     wire [3:0] display_char_y;
     wire pixel;
@@ -131,47 +134,52 @@ module alu_onboard_test(
     
     parameter [11:0] FLAGS = 37 | 9 * ROW;
     
-    function [7:0] bin2hex;
+    char_string #(.ROW(9), .COL(37), .LENGTH(5), .STRING("CLFZN"))
+      flag_labels (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char));
+    binary_string #(.ROW(10), .COL(37), .WIDTH(5))
+      flag_vals (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data({flags[uut.CARRY], flags[uut.LOW], flags[uut.FLAG], flags[uut.Z], flags[uut.NEGATIVE]}));
+    
+    hex_string #(.ROW(12), .COL(17))
+      a_hex (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data(a));
+    hex_string #(.ROW(13), .COL(17))
+      b_hex (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data(b));
+    hex_string #(.ROW(14), .COL(17))
+      result_hex (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data(result));
+    
+    wire op_char_p;
+    assign op_char_p = screen_y == 13 && (screen_x == 15 || screen_x == 48);
+    assign display_char =  op_char_p ? opchar : 1'b0;
+    assign display_char_p = op_char_p;
+    
+    binary_word_string #(.ROW(12), .COL(50))
+      a_binary_word (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data(a));
+    binary_word_string #(.ROW(13), .COL(50))
+      b_binary_word (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data(b));
+    binary_word_string #(.ROW(14), .COL(50))
+      result_binary_word (.row(screen_y), .col(screen_x), .enable(1'b1),
+        .char_p(display_char_p), .char(display_char),
+        .data(result));
+    
+    /*function [7:0] bin2hex;
       input [7:0] bin;
       bin2hex = bin <= 8'd9 ? "0" + bin : "A" - 8'd10 + bin;
-    endfunction
+    endfunction*/
     
-    always @(screen_y, screen_x, a, b, opchar, flags, result) begin
+    /*always @(screen_y, screen_x, a, b, opchar, flags, result) begin
       case ({screen_y, screen_x})
-        FLAGS : display_char = "C";
-        FLAGS+1 : display_char = "L";
-        FLAGS+2 : display_char = "F";
-        FLAGS+3 : display_char = "Z";
-        FLAGS+4 : display_char = "N";
-        FLAGS+ROW : display_char = "0" + flags[0];
-        FLAGS+ROW+1 : display_char = "0" + flags[1];
-        FLAGS+ROW+2 : display_char = "0" + flags[2];
-        FLAGS+ROW+3 : display_char = "0" + flags[3];
-        FLAGS+ROW+4 : display_char = "0" + flags[4];
-        
-        A_HEX : display_char = "0";
-        A_HEX+1 : display_char = "x";
-        A_HEX+2 : display_char = bin2hex(a[15:12]);
-        A_HEX+3 : display_char = bin2hex(a[11:8]);
-        A_HEX+4 : display_char = bin2hex(a[7:4]);
-        A_HEX+5 : display_char = bin2hex(a[3:0]);
-        
-        B_HEX : display_char = "0";
-        B_HEX+1 : display_char = "x";
-        B_HEX+2 : display_char = bin2hex(b[15:12]);
-        B_HEX+3 : display_char = bin2hex(b[11:8]);
-        B_HEX+4 : display_char = bin2hex(b[7:4]);
-        B_HEX+5 : display_char = bin2hex(b[3:0]);
-        
-        RESULT_HEX : display_char = "0";
-        RESULT_HEX+1 : display_char = "x";
-        RESULT_HEX+2 : display_char = bin2hex(result[15:12]);
-        RESULT_HEX+3 : display_char = bin2hex(result[11:8]);
-        RESULT_HEX+4 : display_char = bin2hex(result[7:4]);
-        RESULT_HEX+5 : display_char = bin2hex(result[3:0]);
-        
-        OP_HEX : display_char = opchar;
-        
         A_BIN : display_char = "b";
         A_BIN+1 : display_char = a[15] + "0";
         A_BIN+2 : display_char = a[14] + "0";
@@ -230,9 +238,9 @@ module alu_onboard_test(
         RESULT_BIN+17 : display_char = result[0] + "0";
         
         OP_BIN : display_char = opchar;
-        default : display_char = " ";
+        default : display_char = 8'b0;
       endcase
-    end
+    end*/
     
     assign vgaColor = blank ? 8'b0 : (pixel ? 8'b11_111_111 : 8'b10_010_010);
 
