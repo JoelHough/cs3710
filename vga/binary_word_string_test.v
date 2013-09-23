@@ -5,14 +5,14 @@
 // Engineer: Joel Hough
 //
 // Create Date:   23:14:42 09/22/2013
-// Design Name:   hex_string
-// Module Name:   /home/joel/cs3710/vga/binary_string_test.v
+// Design Name:   binary_word_string
+// Module Name:   /home/joel/cs3710/vga/binary_word_string_test.v
 // Project Name:  vga
 // Target Device:  
 // Tool versions:  
 // Description: 
 //
-// Verilog Test Fixture created by ISE for module: binary_string
+// Verilog Test Fixture created by ISE for module: binary_word_string
 //
 // Dependencies:
 // 
@@ -22,7 +22,7 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module binary_string_test;
+module binary_word_string_test;
 
 	// Inputs
 	reg [4:0] row;
@@ -37,7 +37,7 @@ module binary_string_test;
   assign char = char_p ? 8'b0 : ".";
   
 	// Instantiate the Unit Under Test (UUT)
-	binary_string #(.ROW(3), .COL(5)) uut (
+	binary_word_string #(.ROW(3), .COL(5)) uut (
 		.row(row), 
 		.col(col), 
 		.enable(enable), 
