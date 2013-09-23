@@ -5,7 +5,7 @@
 // 
 // Create Date:    15:58:06 09/22/2013 
 // Design Name: 
-// Module Name:    fib_machine 
+// Module Name:    logic_machine 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module fib_machine(
+module logic_machine(
     input clk,
     input reset,
     output reg [2:0] a_reg,
@@ -26,7 +26,7 @@ module fib_machine(
     output reg [2:0] dest_reg,
     output reg [15:0] immediate,
     output reg immediate_p,
-    output reg [alu.OPCODE_WIDTH-1:0] alu_op
+    output reg [7:0] alu_op
     );
 
   localparam INIT = 2'b1;
@@ -39,7 +39,7 @@ module fib_machine(
       state <= INIT;
     else
       case (state)
-        INIT: state <= RUN;
+        INIT: state <= dest_reg == 3'd1 ? RUN : INIT;
         RUN: state <= RUN;
       endcase
 
@@ -51,7 +51,7 @@ module fib_machine(
       dest_reg <= 3'b0;
       immediate <= 16'b1;
       immediate_p <= 1'b1;
-      alu_op <= alu.B;
+      alu_op <= alu.OR;
     end
     else
       case (state)
@@ -61,7 +61,6 @@ module fib_machine(
           b_reg <= b_reg + 1'b1;
           dest_reg <= dest_reg + 1'b1;
           alu_op <= alu.ADD;
-          immediate <= 16'b0;
           immediate_p <= 1'b0;
         end
       endcase

@@ -37,6 +37,7 @@ localparam SIGN_BIT = WORD_WIDTH - 1;
 /* opcodes */
 parameter ADD   = 'b1;
 parameter AND   = 'b10;
+parameter B     = 'b1000;
 parameter CMP   = 'b11;
 parameter LSH   = 'b100;
 parameter OR    = 'b101;
@@ -74,6 +75,7 @@ begin
       flags[FLAG] = bits_equal(a[SIGN_BIT], b[SIGN_BIT], ~result[SIGN_BIT]);
     end
     AND: result = a & b;
+    B: result = b;
     CMP: begin
       flags[Z] = a == b;
       flags[NEGATIVE] = $signed(a) > $signed(b);

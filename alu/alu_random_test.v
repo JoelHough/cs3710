@@ -107,6 +107,9 @@ function [uut.OPCODE_WIDTH-1:0] select_opcode;
         5 : begin
           select_opcode = uut.SUB;
         end
+        6 : begin
+          select_opcode = uut.B;
+        end
         default : begin
           select_opcode = uut.XOR;
         end
@@ -130,7 +133,7 @@ initial begin
   $display("BEGINNING RANDOM TESTS");
   for (i=0;i<100;i=i+1)
   begin
-    a = $random % 16; b = $random % 16; opcode = select_opcode($random % 6);
+    a = $random % 16; b = $random % 16; opcode = select_opcode($random % 7);
     $display("opcode:%b", opcode);
     #10;
   end

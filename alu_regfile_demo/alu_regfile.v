@@ -26,7 +26,7 @@ module alu_regfile(
     input [2:0] dest_reg,
     input [15:0] immediate,
     input immediate_p,
-    input [7:0] alu_op,
+    input [alu.OPCODE_WIDTH-1:0] alu_op,
     output [15:0] alu_bus,
     output [15:0] alu_a_in,
     output [15:0] alu_b_in,

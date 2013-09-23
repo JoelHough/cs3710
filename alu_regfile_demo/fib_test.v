@@ -51,7 +51,7 @@ module fib_test;
   integer i;
   
 	initial begin
-    $monitor("a_in:%d, b_in:%d, result:%d, flags:%b", alu_a_in, alu_b_in, alu_bus, flags);
+    $monitor("a_in:%d, b_in:%d, result:%d, flags:%b, regs:%x", alu_a_in, alu_b_in, alu_bus, flags, uut.reg_bus);
 		// Initialize Inputs
 		clk = 0;
 		reset = 1;

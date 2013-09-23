@@ -143,6 +143,17 @@ initial begin
   #10;
   ASSERT(16'hA005, 0);
   
+  /* B */
+  $display("B");
+  opcode = uut.B;
+  a = 0; b = 0;
+  #10;
+  ASSERT(0, 0);
+  
+  a = 16'hFFFF; b = 16'hAA55;
+  #10;
+  ASSERT(16'hAA55, 0);
+  
   /* CMP */
   $display("CMP");
   opcode = uut.CMP;

@@ -39,7 +39,7 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="22"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="2"/>
     </file>
-    <file xil_pn:name="alu.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../alu/alu.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="70"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="10"/>
     </file>

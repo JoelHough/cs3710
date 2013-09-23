@@ -66,6 +66,9 @@ function [alu.OPCODE_WIDTH-1:0] select_opcode;
         5 : begin
           select_opcode = alu.SUB;
         end
+        6 : begin
+          select_opcode = alu.B;
+        end
         default : begin
           select_opcode = alu.XOR;
         end
@@ -85,7 +88,7 @@ initial begin
   $display("BEGINNING EQUIVALENCE TESTS");
   for (i=0;i<100;i=i+1)
   begin
-    a = $random % 16; b = $random % 16; opcode = select_opcode($random % 6);
+    a = $random % 16; b = $random % 16; opcode = select_opcode($random % 7);
     $display("a:%d, b:%d, opcode:%b", a, b, opcode);
     #10;
     if (~equiv) begin

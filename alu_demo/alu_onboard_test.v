@@ -79,10 +79,10 @@ module alu_onboard_test(
     always @(posedge right) b[7:0] <= sw;
     
     wire [2:0] op_count;
-    mod_counter #(.MAX(6)) op_counter (.clk(center), .count(op_count), .reset(1'b0), .rollover());
+    mod_counter #(.MAX(7)) op_counter (.clk(center), .count(op_count), .reset(1'b0), .rollover());
     reg [15:0] a = 16'hCAFE;
     reg [15:0] b = 16'h1234;
-    reg [7:0] opcode = 0;
+    reg [alu.OPCODE_WIDTH-1:0] opcode = 0;
     wire [15:0] result;
     wire [4:0] flags;
     reg [7:0] opchar = " ";
@@ -113,6 +113,10 @@ module alu_onboard_test(
         5 : begin
           opcode = uut.SUB;
           opchar = "-";
+        end
+        6 : begin
+          opcode = uut.B;
+          opchar = "B";
         end
         default : begin
           opcode = uut.XOR;

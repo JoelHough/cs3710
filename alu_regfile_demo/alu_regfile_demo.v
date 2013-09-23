@@ -25,7 +25,7 @@ module alu_regfile_demo(
   wire [2:0] a_reg, b_reg, dest_reg;
   wire [15:0] immediate;
   wire immediate_p;
-  wire [7:0] alu_op;
+  wire [4:0] alu_op;
   wire [15:0] alu_bus, alu_a_in, alu_b_in;
   wire [4:0] flags;
   wire reset;
