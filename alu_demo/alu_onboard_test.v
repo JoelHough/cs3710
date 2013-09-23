@@ -119,21 +119,7 @@ module alu_onboard_test(
           opchar = "^";
         end
       endcase
- 
-    parameter [11:0] ROW = 1 << 7;
-    
-    parameter [11:0] A_HEX = 17 | 12 * ROW;
-    parameter [11:0] B_HEX = 17 | 13 * ROW;
-    parameter [11:0] OP_HEX = 15 | 13 * ROW;
-    parameter [11:0] RESULT_HEX = 17 | 14 * ROW;
-    
-    parameter [11:0] A_BIN = 50 | 12 * ROW;
-    parameter [11:0] B_BIN = 50 | 13 * ROW;
-    parameter [11:0] OP_BIN = 48 | 13 * ROW;
-    parameter [11:0] RESULT_BIN = 50 | 14 * ROW;
-    
-    parameter [11:0] FLAGS = 37 | 9 * ROW;
-    
+
     char_string #(.ROW(9), .COL(37), .LENGTH(5), .STRING("CLFZN"))
       flag_labels (.row(screen_y), .col(screen_x), .enable(1'b1),
         .char_p(display_char_p), .char(display_char));
@@ -172,75 +158,6 @@ module alu_onboard_test(
       result_binary_word (.row(screen_y), .col(screen_x), .enable(1'b1),
         .char_p(display_char_p), .char(display_char),
         .data(result));
-    
-    /*function [7:0] bin2hex;
-      input [7:0] bin;
-      bin2hex = bin <= 8'd9 ? "0" + bin : "A" - 8'd10 + bin;
-    endfunction*/
-    
-    /*always @(screen_y, screen_x, a, b, opchar, flags, result) begin
-      case ({screen_y, screen_x})
-        A_BIN : display_char = "b";
-        A_BIN+1 : display_char = a[15] + "0";
-        A_BIN+2 : display_char = a[14] + "0";
-        A_BIN+3 : display_char = a[13] + "0";
-        A_BIN+4 : display_char = a[12] + "0";
-        A_BIN+5 : display_char = a[11] + "0";
-        A_BIN+6 : display_char = a[10] + "0";
-        A_BIN+7 : display_char = a[9] + "0";
-        A_BIN+8 : display_char = a[8] + "0";
-        A_BIN+9 : display_char = "_";
-        A_BIN+10 : display_char = a[7] + "0";
-        A_BIN+11 : display_char = a[6] + "0";
-        A_BIN+12 : display_char = a[5] + "0";
-        A_BIN+13 : display_char = a[4] + "0";
-        A_BIN+14 : display_char = a[3] + "0";
-        A_BIN+15 : display_char = a[2] + "0";
-        A_BIN+16 : display_char = a[1] + "0";
-        A_BIN+17 : display_char = a[0] + "0";
-        
-        B_BIN : display_char = "b";
-        B_BIN+1 : display_char = b[15] + "0";
-        B_BIN+2 : display_char = b[14] + "0";
-        B_BIN+3 : display_char = b[13] + "0";
-        B_BIN+4 : display_char = b[12] + "0";
-        B_BIN+5 : display_char = b[11] + "0";
-        B_BIN+6 : display_char = b[10] + "0";
-        B_BIN+7 : display_char = b[9] + "0";
-        B_BIN+8 : display_char = b[8] + "0";
-        B_BIN+9 : display_char = "_";
-        B_BIN+10 : display_char = b[7] + "0";
-        B_BIN+11 : display_char = b[6] + "0";
-        B_BIN+12 : display_char = b[5] + "0";
-        B_BIN+13 : display_char = b[4] + "0";
-        B_BIN+14 : display_char = b[3] + "0";
-        B_BIN+15 : display_char = b[2] + "0";
-        B_BIN+16 : display_char = b[1] + "0";
-        B_BIN+17 : display_char = b[0] + "0";
-        
-        RESULT_BIN : display_char = "b";
-        RESULT_BIN+1 : display_char = result[15] + "0";
-        RESULT_BIN+2 : display_char = result[14] + "0";
-        RESULT_BIN+3 : display_char = result[13] + "0";
-        RESULT_BIN+4 : display_char = result[12] + "0";
-        RESULT_BIN+5 : display_char = result[11] + "0";
-        RESULT_BIN+6 : display_char = result[10] + "0";
-        RESULT_BIN+7 : display_char = result[9] + "0";
-        RESULT_BIN+8 : display_char = result[8] + "0";
-        RESULT_BIN+9 : display_char = "_";
-        RESULT_BIN+10 : display_char = result[7] + "0";
-        RESULT_BIN+11 : display_char = result[6] + "0";
-        RESULT_BIN+12 : display_char = result[5] + "0";
-        RESULT_BIN+13 : display_char = result[4] + "0";
-        RESULT_BIN+14 : display_char = result[3] + "0";
-        RESULT_BIN+15 : display_char = result[2] + "0";
-        RESULT_BIN+16 : display_char = result[1] + "0";
-        RESULT_BIN+17 : display_char = result[0] + "0";
-        
-        OP_BIN : display_char = opchar;
-        default : display_char = 8'b0;
-      endcase
-    end*/
     
     assign vgaColor = blank ? 8'b0 : (pixel ? 8'b11_111_111 : 8'b10_010_010);
 
