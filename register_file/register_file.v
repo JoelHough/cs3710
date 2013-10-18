@@ -22,7 +22,8 @@ module register_file #(
     parameter WIDTH = 16,
     parameter NUM_REGS = 16
   ) (
-    input [$clog2(NUM_REGS)-1:0] enable,
+    input wr_en,
+    input [$clog2(NUM_REGS)-1:0] wr_reg,
     input reset,
     input clk,
     input [WIDTH-1:0] data_in,
@@ -30,7 +31,7 @@ module register_file #(
     );
   /* note that data in is always written to the enabled register on a clk */
   wire [NUM_REGS-1:0] enable_bits;
-  assign enable_bits = 2'b10 ** enable;
+  assign enable_bits = {NUM_REGS-1{wr_en}} & 2'b10 ** wr_reg;
   register #(.WIDTH(WIDTH)) r[NUM_REGS-1:0](.enable(enable_bits), .reset(reset), .clk(clk), .data_in(data_in), .data_out(data_out));
 
 endmodule
