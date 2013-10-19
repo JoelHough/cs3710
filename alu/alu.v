@@ -35,14 +35,15 @@ parameter NUM_FLAGS    = 5;
 localparam SIGN_BIT = WORD_WIDTH - 1;
 
 /* opcodes */
-parameter ADD   = 'b1;
-parameter AND   = 'b10;
-parameter B     = 'b1000;
-parameter CMP   = 'b11;
-parameter LSH   = 'b100;
-parameter OR    = 'b101;
-parameter SUB   = 'b110;
-parameter XOR   = 'b111;
+parameter ADD   = 'b0101;
+parameter AND   = 'b0001;
+parameter CMP   = 'b1011;
+parameter LSH   = 'b1000;
+parameter LUI   = 'b1111;
+parameter MOV   = 'b1101;
+parameter OR    = 'b0010;
+parameter SUB   = 'b1001;
+parameter XOR   = 'b0011;
 
 /* flag bit positions */
 parameter CARRY    = 0;
@@ -65,9 +66,7 @@ function bits_equal;
 endfunction
 
 /* the good stuff */
-/* all opcodes are exactly as described in the cr16 manual, except the added B
-   op. B sets the result to the b input and sets no flags. useful for mov and
-   load and such. */
+/* all opcodes are exactly as described in the cr16 manual */
 always @*
 begin
   flags = 0;
@@ -78,13 +77,14 @@ begin
       flags[FLAG] = bits_equal(a[SIGN_BIT], b[SIGN_BIT], ~result[SIGN_BIT]);
     end
     AND: result = a & b;
-    B: result = b;
     CMP: begin
       flags[Z] = a == b;
       flags[NEGATIVE] = $signed(a) > $signed(b);
       flags[LOW] = a > b;
     end
     LSH: result = b[4] ? a >> (~b[3:0] + 4'd1) : a << b[3:0];
+    LUI: result = {b[(WORD_WIDTH/2)-1:0], a[(WORD_WIDTH/2)-1:0]};
+    MOV: result = b;
     OR: result = a | b;
     SUB: begin
       {flags[CARRY],result} = a - b;
