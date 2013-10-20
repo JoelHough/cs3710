@@ -27,32 +27,33 @@ module control_state(
     output store
     );
 
-  localparam RESET = 2'b00; // is this a useful thing to have?
-  localparam FETCH = 2'b01;
+  localparam RESET   = 2'b00; // is this a useful thing to have?
+  localparam FETCH   = 2'b01;
   localparam EXECUTE = 2'b10; // separate decode and execute?
-  localparam STORE = 2'b11;
+  localparam STORE   = 2'b11;
 
   reg [1:0] state = RESET;
-
+  reg [1:0] next_state;
+  
   always @(posedge clk or posedge reset)
     if (reset) state <= RESET;
-    else if (en)
-      case (state)
-        RESET: state <= FETCH;
-        FETCH: state <= EXECUTE;
-        EXECUTE: state <= STORE;
-        STORE: state <= FETCH;
-      endcase
+    else if (en) state <= next_state;
+
+  always @(state)
+    case (state)
+      RESET  : next_state = FETCH;
+      FETCH  : next_state = EXECUTE;
+      EXECUTE: next_state = STORE;
+      STORE  : next_state = FETCH;
+    endcase
 
   reg [2:0] sef = 3'b000;
   assign {store,execute,fetch} = sef;
-  always @(posedge clk or posedge reset)
-    if (reset) sef <= 3'b000;
-    else if (en)
-      case (state)
-        RESET: sef <= 3'b000;
-        FETCH: sef <= 3'b001;
-        EXECUTE: sef <= 3'b010;
-        STORE: sef <= 3'b100;
-      endcase
+  always @(state)
+    case (state)
+      RESET  : sef = 3'b000;
+      FETCH  : sef = 3'b001;
+      EXECUTE: sef = 3'b010;
+      STORE  : sef = 3'b100;
+    endcase
 endmodule
