@@ -3,6 +3,8 @@
 @current_labels = []
 @pc = 0
 
+@op_padding = 10
+
 0.upto(15) do |i|
   define_singleton_method("r#{i}") {i}
 end
@@ -23,7 +25,11 @@ def assemble(filename, &block)
   yield block
   File.open(filename, 'w') do |f|
     @instructions.each do |i|
-      f.puts i.call(@labels)
+      if i.arity == 0
+        f.puts i.call()
+      else
+        f.puts i.call(@labels)
+      end
     end
   end
 end
@@ -41,11 +47,74 @@ class Fixnum
 end
 
 def op_s(nibbles, labels, op_text)
-  hex = nibbles.map(&:to_hex).join.ljust(8)
+  hex = nibbles.map(&:to_hex).join.ljust(@op_padding)
   comment = "// "
   comment += labels.join(', ') + ": " unless labels.empty?
   comment += op_text
   hex + comment
+end
+
+def labeled_comment(labels, comment)
+  res = ''
+  res += labels.join(', ') + ": " unless labels.empty?
+  if comment.is_a? String
+    res += comment unless comment.empty?
+  elsif comment[0].is_a? String
+    res += comment.shift
+  end
+  res = res.lines.map{|l| "// " + l}.join + "\n" unless res.empty?
+  res
+end
+
+def dw(*words)
+  pc = @pc
+  current_labels = @current_labels
+  @instructions << lambda do
+    hex = ''
+    comment = labeled_comment(current_labels, words)
+    ws = [' ', '  ', ' ', "\n"]
+    words.each do |w|
+      throw "word #{w} is out of range" if w >= 2**16 || w < -2**15      
+      hex += w.to_hex(4) + ws.rotate!.last
+    end
+    comment + hex.strip
+  end
+  @pc += words.size
+  @pc -= 1 if words[0].is_a? String
+  @current_labels = []
+end
+
+def db(*bytes)
+  pc = @pc
+  current_labels = @current_labels
+  @instructions << lambda do
+    hex = ''
+    comment = labeled_comment(current_labels, bytes)
+    ws = [' ', '  ', ' ', "\n"]
+    while not bytes.empty?
+      hex += bytes.shift.to_hex(2)
+      hex += bytes.empty? ? '00' : bytes.shift.to_hex(2)
+      hex += ws.rotate!.last
+    end
+    comment + hex.strip
+  end
+  len = bytes.size
+  len -= 1 if bytes[0].is_a? String
+  len += 1 if len.odd?
+  @pc += len / 2
+  @current_labels = []
+end
+
+def ds(*args)
+  if args.size > 1
+    comment = args.shift
+    string = args.join
+  else
+    string = args.shift
+    comment = '"' + string + '"'
+  end
+  throw "string #{string} is too long" if string.size > 255
+  db(comment, string.size, *string.bytes)
 end
 
 def label_op(&proc)
@@ -113,6 +182,6 @@ def stor(a, b)
 end
 
 def assemble_at_address(addr)
-  @instructions << lambda {|labels| "@#{(addr).to_hex.ljust(6)}// start assembling at address #{addr.to_hex(8)}"}
+  @instructions << lambda {"@#{(addr).to_hex(8).ljust(@op_padding-1)}// start assembling at address #{addr.to_hex(8)}"}
   @pc = addr
 end
