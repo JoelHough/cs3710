@@ -8,4 +8,9 @@ assemble 'demo.hex' do
   label :load
   load r1, r0
   buc :start
+  label :string
+  ds "abc"
+  label :data
+  dw 1000,123,6,11,9000,9001
+  add r1, 2
 end

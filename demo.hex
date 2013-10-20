@@ -1,0 +1,11 @@
+a001      // 00000000, start: addi 0, 1
+ce0e      // 00000001: buc :load
+@0000000f // start assembling at address 0000000f
+4100      // 0000000f, load: load 1, 0
+cef0      // 00000010: buc :start
+// string: "abc"
+0361 6263
+// data: 
+03e8 007b  0006 000b
+2328 2329
+01a2      // 00000019: add 1, 2
