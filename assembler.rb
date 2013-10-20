@@ -113,6 +113,6 @@ def stor(a, b)
 end
 
 def assemble_at_address(addr)
-  @instructions << lambda {|labels| "@ #{(addr * 4).to_hex.ljust(6)}// start assembling at address #{addr.to_hex(8)}"}
+  @instructions << lambda {|labels| "@#{(addr).to_hex.ljust(6)}// start assembling at address #{addr.to_hex(8)}"}
   @pc = addr
 end

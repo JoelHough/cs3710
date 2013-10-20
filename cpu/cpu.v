@@ -64,7 +64,8 @@ module cpu(
     .a(alu_b_in),
     .pc(pc));
 
-  reg [15:0] inst = 16'b0101_0000_0000_0001; // ADDI 1, R0
+  reg [15:0] inst_reg = 16'b0101_0000_0000_0001; // ADDI 1, R0
+  wire [15:0] inst;
   wire [7:0] imm;
   wire imm_en;
   wire mem_rd_cntrl_en, mem_wr_cntrl_en;
@@ -88,16 +89,21 @@ module cpu(
   wire fetch, execute, store;
   control_state control_state_module (.clk(clk), .en(en), .reset(reset), .fetch(fetch), .execute(execute), .store(store));
 
-  assign pc_en = execute;
+  assign pc_en = store;
   assign alu_a_in = a_reg;
-  assign alu_b_in = imm_en ? $signed(imm) : a_reg;
+  assign alu_b_in = imm_en ? {{8{imm[7]}},imm} : a_reg;
   assign wr_reg = a_reg_sel;
   assign reg_data_in = alu_result_en ? alu_result : 16'b0;
   assign reg_data_in = mem_rd_cntrl_en ? mem_data_in : 16'b0;
   assign reg_data_in = pc_result_en ? pc : 16'b0;
   assign mem_addr = fetch ? pc : a_reg;
   assign mem_data_out = b_reg;
-  assign mem_rd_en = mem_rd_cntrl_en & execute;
+  assign mem_rd_en = fetch | (mem_rd_cntrl_en & execute);
   assign mem_wr_en = mem_wr_cntrl_en & store;
   assign reg_wr_en = store;
+  assign inst = execute ? mem_data_in : inst_reg;
+
+  always @(posedge clk)
+    if (execute)
+      inst_reg <= mem_data_in;
 endmodule

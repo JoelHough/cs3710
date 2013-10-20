@@ -32,7 +32,7 @@ module base_rom(
    reg [ROM_WIDTH-1:0] rom [(2**ROM_ADDR_BITS)-1:0];
 
    initial
-      $readmemh("base_rom.h", rom, 0, 10'h3FF);
+      $readmemh("../demo.hex", rom, 0, 'h3FF);
 
    always @(posedge clk)
       if (en)

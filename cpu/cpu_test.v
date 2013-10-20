@@ -25,10 +25,10 @@
 module cpu_test;
 
 	// Inputs
-	reg clk;
+	reg clk = 0;
 	reg en;
 	reg reset;
-	reg [15:0] mem_data_in;
+	wire [15:0] mem_data_in;
 
 	// Outputs
 	wire [15:0] mem_addr;
@@ -48,16 +48,20 @@ module cpu_test;
 		.mem_data_out(mem_data_out)
 	);
 
+  base_rom rom (
+    .clk(clk),
+    .en(mem_rd_en),
+    .addr(mem_addr[9:0]),
+    .data(mem_data_in));
+
   always begin
     #10; clk = ~clk;
   end
 	
   initial begin
 		// Initialize Inputs
-		clk = 0;
 		en = 1;
 		reset = 0;
-		mem_data_in = 0;
 
 		// Wait 100 ns for global reset to finish
 		#100;
