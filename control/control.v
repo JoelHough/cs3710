@@ -112,7 +112,7 @@ module control(
     
     case (op)
       BCOND: begin
-        conditionally; branch;
+        conditionally; branch; immediate;
       end
       CMPI: begin
         immediate;

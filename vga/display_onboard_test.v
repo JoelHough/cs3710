@@ -27,9 +27,9 @@ module display_onboard_test(
  
     wire pixel_clk;
     wire char_clk;
-    reg [22:0] clock_counter = 23'h000000;
+    reg [21:0] clock_counter = 22'h000000;
     assign pixel_clk = clock_counter[1];
-    assign char_clk = clock_counter[22];
+    assign char_clk = clock_counter[21];
     always @(posedge clk)
       clock_counter <= clock_counter + 1'b1;
     
@@ -39,6 +39,7 @@ module display_onboard_test(
     reg [7:0] char = 8'h0;
     mod_counter #(.MAX(29)) row_counter (.clk(~char_clk), .en(1'b1), .reset(1'b0), .count(row), .rollover(next_col));
     mod_counter #(.MAX(79)) col_counter (.clk(next_col), .en(1'b1), .reset(1'b0), .count(col), .rollover());
+    
     always @(negedge char_clk)
       char <= char + 1'b1;
       

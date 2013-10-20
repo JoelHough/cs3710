@@ -56,7 +56,7 @@ module vga_character_display(
   wire wr_rq;
   wire resync;
   wire [7:0] wr_pixel;
-  assign wr_pixel = pixel ? 8'b11_111_111 : 8'b10_010_010;//y[8] ? x[7:0] : y[7:0];//
+  assign wr_pixel = pixel ? 8'b11_111_111 : 8'b10_010_010;//pixel ? 8'b11_111_111 : 8'b10_010_010;//y[8] ? x[7:0] : y[7:0];
   pixel_buffer_vga_controller controller (.pixel(wr_pixel), .wr_clk(pixel_clk), .wr_en(wr_en), .pixel_clk(pixel_clk),
     .wr_rq(wr_rq), .resync(resync), .color(color), .hsync(hsync), .vsync(vsync));
 

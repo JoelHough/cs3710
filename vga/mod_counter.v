@@ -28,7 +28,7 @@ module mod_counter(
 
   parameter COUNTER_WIDTH = $clog2(MAX)-1;
   parameter MAX = 8'hFF;
-  parameter MIN = 'b0;
+  parameter MIN = 1'b0;
 
   always @(posedge clk, posedge reset) begin
     if (reset) begin

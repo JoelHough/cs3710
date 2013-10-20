@@ -33,8 +33,8 @@ module cpu(
   wire [15:0] alu_b_in;
   wire [3:0] alu_op;
   wire [15:0] alu_result;
-  wire [4:0] alu_flags;
-  alu alu_module (.a(alu_a_in), .b(alu_b_in), .opcode(alu_op), .result(alu_result), .flags(alu_flags));
+  wire [4:0] alu_flag_out;
+  alu alu_module (.a(alu_a_in), .b(alu_b_in), .opcode(alu_op), .result(alu_result), .flags(alu_flag_out));
   
   wand reg_wr_en;
   wire [3:0] wr_reg;
@@ -51,6 +51,7 @@ module cpu(
   
   wire pc_cond;
   wire cond_p;
+  reg [4:0] alu_flags;
   flag_cond cond_module (.cond(a_reg_sel), .flags(alu_flags), .p(cond_p));
 
   wire pc_en;
@@ -104,6 +105,8 @@ module cpu(
   assign inst = execute ? mem_data_in : inst_reg;
 
   always @(posedge clk)
-    if (execute)
+    if (execute) begin
+      if (alu_flag_en) alu_flags <= alu_flag_out;
       inst_reg <= mem_data_in;
+    end
 endmodule
