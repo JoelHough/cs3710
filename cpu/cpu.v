@@ -92,7 +92,7 @@ module cpu(
 
   assign pc_en = store;
   assign alu_a_in = a_reg;
-  assign alu_b_in = imm_en ? {{8{imm[7]}},imm} : a_reg;
+  assign alu_b_in = imm_en ? {{8{imm[7]}},imm} : b_reg;
   assign wr_reg = a_reg_sel;
   assign reg_data_in = alu_result_en ? alu_result : 16'b0;
   assign reg_data_in = mem_rd_cntrl_en ? mem_data_in : 16'b0;
