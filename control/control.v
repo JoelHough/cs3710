@@ -22,7 +22,7 @@ module control(
     input [15:0] inst,
     
     /*** decode/execute ***/
-    output [4:0] alu_op,
+    output [3:0] alu_op,
     output [3:0] a_reg, // also dest_reg, cond, link_reg, src_reg for stor
     output reg [1:0] pc_op, // +0, +1, +imm, =reg
     output reg pc_cond, // pc <- pc_cond & ~cond ? +1 : pc_op
