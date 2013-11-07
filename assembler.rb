@@ -37,6 +37,8 @@ end
 def label(sym)
   throw "duplicate label #{sym.to_s}" if @labels[sym]
   @labels[sym] = @pc
+  @labels[(sym.to_s + '_lo').to_sym] = @pc & 0xFF
+  @labels[(sym.to_s + '_hi').to_sym] = @pc >> 8 & 0xFF
   @current_labels << sym
 end
 
@@ -145,8 +147,15 @@ def arith_op(name, opcode)
   end
   define_singleton_method("#{name}i") do |a, b|
     throw "'a' out of range" if a < 0 || a > 15
-    throw "'b' out of range" if b < -128 || b > 255
-    op opcode, a, b>>4 & 15, b & 15, "#{name}i #{a}, #{b}"
+    text = "#{name}i #{a}, #{b.inspect}"
+    if b.is_a?(Symbol)
+      label_op do |pc, labels|
+        [[opcode, a, labels[b]>>4 & 0xF, labels[b] & 0xF], text]
+      end
+    else
+      throw "'b' out of range" if b < -128 || b > 255
+      op opcode, a, b>>4 & 0xF, b & 0xF, text
+    end
   end
 end
 
@@ -168,7 +177,7 @@ for cond, code in conds
       else
         d = disp
       end
-      [[0b1100,code,d>>4 & 15,d & 15], "b#{cond} #{disp.inspect}"]
+      [[0b1100,code,d>>4 & 0xF,d & 0xF], "b#{cond} #{disp.inspect}"]
     end
   end
 end
@@ -184,4 +193,17 @@ end
 def assemble_at_address(addr)
   @instructions << lambda {"@#{(addr).to_hex(8).ljust(@op_padding-1)}// start assembling at address #{addr.to_hex(8)}"}
   @pc = addr
+end
+
+def lo(label)
+  (label.to_s + '_lo').to_sym
+end
+
+def hi(label)
+  (label.to_s + '_hi').to_sym
+end
+
+def lea(reg, label)
+  movi reg, lo(label)
+  lui reg, hi(label)
 end
