@@ -72,6 +72,6 @@ module cpu_demo(
   always @(posedge clk) begin
     vga_wr_clk <= mem_addr == 16'h401 & mem_wr_en;
   end
-  vga_character_display display (.write_clk(mem_addr == 16'h401 & mem_wr_en & clk), .row(char_row_col[12:8]), .col(char_row_col[6:0]), .char(mem_in[7:0]),
+  vga_character_display display (.write_clk(vga_wr_clk), .row(char_row_col[12:8]), .col(char_row_col[6:0]), .char(mem_in[7:0]),
     .pixel_clk(pixel_clk), .color(vgaColor), .hsync(Hsync), .vsync(Vsync));
 endmodule
