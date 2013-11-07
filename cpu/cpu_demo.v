@@ -32,7 +32,7 @@ module cpu_demo(
 
   cpu uut (
 		.clk(clk), 
-		.en(1'b1), 
+		.en(1'b1),
 		.reset(1'b0), 
 		.mem_data_in(mem_out), 
 		.mem_addr(mem_addr), 

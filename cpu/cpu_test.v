@@ -48,12 +48,14 @@ module cpu_test;
 		.mem_data_out(mem_data_out)
 	);
 
-  base_rom rom (
+  block_ram ram (
     .clk(clk),
-    .en(mem_rd_en),
-    .addr(mem_addr[9:0]),
-    .data(mem_data_in));
-
+    .en(mem_rd_en | mem_wr_en),
+    .wr_en(mem_wr_en),
+    .addr(mem_addr[10:0]),
+    .data_in(mem_data_out),
+    .data_out(mem_data_in));
+    
   always begin
     #10; clk = ~clk;
   end
