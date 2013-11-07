@@ -97,8 +97,8 @@ module cpu(
   assign reg_data_in = alu_result_en ? alu_result : 16'b0;
   assign reg_data_in = mem_rd_cntrl_en ? mem_data_in : 16'b0;
   assign reg_data_in = pc_result_en ? pc : 16'b0;
-  assign mem_addr = fetch ? pc : a_reg;
-  assign mem_data_out = b_reg;
+  assign mem_addr = fetch ? pc : b_reg;
+  assign mem_data_out = a_reg;
   assign mem_rd_en = fetch | (mem_rd_cntrl_en & execute);
   assign mem_wr_en = mem_wr_cntrl_en & store;
   assign reg_wr_en = store;

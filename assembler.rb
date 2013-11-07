@@ -14,7 +14,7 @@ def regs
 end
 
 arith_ops = {
-  add: 0b1010,
+  add: 0b0101,
   sub: 0b1001,
   cmp: 0b1011,
   _and: 0b0001,
@@ -193,12 +193,12 @@ for name, code in arith_ops
   arith_op(name.to_s, code)
 end
 
-for cond, code in conds
-  define_singleton_method("j#{cond}") do |dest_reg|
+def define_branch(cond, code)
+  define_method("j#{cond}", lambda do |dest_reg|
     throw "'dest_reg' out of range" if dest_reg < 0 || dest_reg > 15
     op 0b0100,code,0b1100,dest_reg, "j#{cond} #{dest_reg}"
-  end
-  define_singleton_method("b#{cond}") do |disp|
+  end)
+  define_method("b#{cond}", lambda do |disp|
     throw "'disp' out of range" if !disp.is_a?(Symbol) && (disp < -128 || disp > 127)
     pc_op do |pc|
       if disp.is_a?(Symbol)
@@ -209,7 +209,11 @@ for cond, code in conds
       end
       [[0b1100,code,d>>4 & 0xF,d & 0xF], "b#{cond} #{disp.inspect}"]
     end
-  end
+  end)  
+end
+
+for cond, code in conds
+  define_branch(cond, code)
 end
 
 def load(a, b)

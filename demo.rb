@@ -10,14 +10,14 @@ def unrolled_print_str(s, coords={})
   else
     movi pos, coords[:row]
     lui pos, coords[:col]
-    stor pos_addr, pos
+    stor pos, pos_addr
   end
 
   s.bytes.each do |b|
     movi char, b
-    stor char_addr, char
+    stor char, char_addr
     addi pos, 1
-    stor pos_addr, pos
+    stor pos, pos_addr
   end
   rem "end print"
 end
@@ -32,20 +32,22 @@ assemble 'demo.hex' do
   label :start
   addi r0, 1
   add r1, r0
-  cmpi r1, 50
-  blt :unrolled_print_str
-  pos_addr, char_addr, pos, char, tmp = regs
+  cmpi r1, 3
+  bgt :unrolled_print_str
+  pos_addr, char_addr, pos, char, tmp = regs[r2..r15]
+  lea char_addr, :char_wr
   lea pos_addr, :char_pos
+  movi char, 32
   label :random_char
-  stor char_addr, char
+  stor char, char_addr
   addi char, 1
-  # increment col
+  rem 'increment col'
   addi pos, 1
   mov tmp, pos
-  _andi tmp, 0xFF
+  _andi tmp, 0x7F
   cmpi tmp, 70
   bne :stor_char
-  # increment row, reset col
+  rem 'increment row, reset col'
   mov tmp, pos
   lshi tmp, -8
   addi tmp, 1
@@ -53,10 +55,10 @@ assemble 'demo.hex' do
   lu pos, tmp
   cmpi tmp, 25
   bne :stor_char
-  # reset to beginning
+  rem 'reset to beginning'
   movi pos, 0
   label :stor_char
-  stor pos_addr, pos
+  stor pos, pos_addr
   buc :random_char
 
   assemble_at_address 0x100
