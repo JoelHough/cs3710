@@ -9,6 +9,10 @@
   define_singleton_method("r#{i}") {i}
 end
 
+def regs
+  0.upto(15).to_a
+end
+
 arith_ops = {
   add: 0b1010,
   sub: 0b1001,
@@ -34,17 +38,42 @@ def assemble(filename, &block)
   end
 end
 
-def label(sym)
+def labels_for(addr)
+  ret = []
+  @labels.each {|k,v| ret << k if v == addr}
+  ret
+end
+
+def addr_for(label)
+  s = label.to_s
+  if s.end_with? '_lo'
+    addr = @labels[s[0..-4].to_sym]
+    throw "#{label.inspect} is undefined" unless addr
+    return addr & 0xFF
+  elsif s.end_with? '_hi'
+    addr = @labels[s[0..-4].to_sym]
+    throw "#{label.inspect} is undefined" unless addr
+    return addr>>8 & 0xFF
+  else
+    addr = @labels[label]
+    throw "#{label.inspect} is undefined" unless addr
+    return addr
+  end
+end
+
+def label(sym, addr=@pc)
   throw "duplicate label #{sym.to_s}" if @labels[sym]
-  @labels[sym] = @pc
-  @labels[(sym.to_s + '_lo').to_sym] = @pc & 0xFF
-  @labels[(sym.to_s + '_hi').to_sym] = @pc >> 8 & 0xFF
-  @current_labels << sym
+  @labels[sym] = addr
 end
 
 class Fixnum
   def to_hex(nibbles=0)
-    self.to_s(16).rjust(nibbles, '0')
+    n = self
+    if n < 0
+      nibbles = 1 if nibbles == 0
+      n = 2**(4 * nibbles) + n 
+    end
+    n.to_s(16).rjust(nibbles, '0')
   end
 end
 
@@ -54,6 +83,13 @@ def op_s(nibbles, labels, op_text)
   comment += labels.join(', ') + ": " unless labels.empty?
   comment += op_text
   hex + comment
+end
+
+def rem(comment)
+  return if comment.empty?
+  @instructions << lambda do
+    comment.lines.map{|l| "// " + l}.join + "\n"
+  end
 end
 
 def labeled_comment(labels, comment)
@@ -70,10 +106,9 @@ end
 
 def dw(*words)
   pc = @pc
-  current_labels = @current_labels
   @instructions << lambda do
     hex = ''
-    comment = labeled_comment(current_labels, words)
+    comment = labeled_comment(labels_for(pc), words)
     ws = [' ', '  ', ' ', "\n"]
     words.each do |w|
       throw "word #{w} is out of range" if w >= 2**16 || w < -2**15      
@@ -83,15 +118,13 @@ def dw(*words)
   end
   @pc += words.size
   @pc -= 1 if words[0].is_a? String
-  @current_labels = []
 end
 
 def db(*bytes)
   pc = @pc
-  current_labels = @current_labels
   @instructions << lambda do
     hex = ''
-    comment = labeled_comment(current_labels, bytes)
+    comment = labeled_comment(labels_for(pc), bytes)
     ws = [' ', '  ', ' ', "\n"]
     while not bytes.empty?
       hex += bytes.shift.to_hex(2)
@@ -104,7 +137,6 @@ def db(*bytes)
   len -= 1 if bytes[0].is_a? String
   len += 1 if len.odd?
   @pc += len / 2
-  @current_labels = []
 end
 
 def ds(*args)
@@ -119,19 +151,17 @@ def ds(*args)
   db(comment, string.size, *string.bytes)
 end
 
-def label_op(&proc)
+def pc_op(&proc)
   pc = @pc
-  current_labels = @current_labels
-  @instructions << lambda do |labels|
-    nibbles, op_text = proc.call(pc, labels)
-    op_s(nibbles, [pc.to_hex(8)] + current_labels, op_text)
+  @instructions << lambda do
+    nibbles, op_text = proc.call(pc)
+    op_s(nibbles, [pc.to_hex(8)] + labels_for(pc), op_text)
   end
-  @current_labels = []
   @pc += 1
 end
 
 def op(opcode, a, ext, b, text)
-  label_op {[[opcode, a, ext, b], text]}
+  pc_op {[[opcode, a, ext, b], text]}
 end
 
 def reg_op(name, opcode, a, ext, b)
@@ -149,8 +179,8 @@ def arith_op(name, opcode)
     throw "'a' out of range" if a < 0 || a > 15
     text = "#{name}i #{a}, #{b.inspect}"
     if b.is_a?(Symbol)
-      label_op do |pc, labels|
-        [[opcode, a, labels[b]>>4 & 0xF, labels[b] & 0xF], text]
+      pc_op do |pc|
+        [[opcode, a, addr_for(b)>>4 & 0xF, addr_for(b) & 0xF], text]
       end
     else
       throw "'b' out of range" if b < -128 || b > 255
@@ -170,9 +200,9 @@ for cond, code in conds
   end
   define_singleton_method("b#{cond}") do |disp|
     throw "'disp' out of range" if !disp.is_a?(Symbol) && (disp < -128 || disp > 127)
-    label_op do |pc, labels|
+    pc_op do |pc|
       if disp.is_a?(Symbol)
-        d = labels[disp] - pc
+        d = addr_for(disp) - pc
         throw "'disp' out of range" if d < -128 || d > 127
       else
         d = disp
@@ -188,6 +218,16 @@ end
 
 def stor(a, b)
   reg_op "stor", 0b0100,a,0b0100,b
+end
+
+def lsh(a, b)
+  reg_op "lsh", 0b1000,a,0b0100,b
+end
+
+def lshi(a, b)
+  throw "'a' out of range" if a < 0 || a > 15
+  throw "'b' out of range" if b < -16 || b > 16
+  op 0b1000,a,(b < 0 ? 1 : 0),b, "lshi #{a}, #{b}"
 end
 
 def assemble_at_address(addr)
