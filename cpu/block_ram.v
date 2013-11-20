@@ -30,11 +30,11 @@ module block_ram(
    parameter RAM_WIDTH = 16;
    parameter RAM_ADDR_BITS = 11;
    
-   (* RAM_STYLE="{AUTO | BLOCK |  BLOCK_POWER1 | BLOCK_POWER2}" *)
+   (* RAM_STYLE="AUTO" *)
    reg [RAM_WIDTH-1:0] ram [(2**RAM_ADDR_BITS)-1:0];
    
    initial
-      $readmemh("../demo.hex", ram, 0, 'h3FF);
+      $readmemh("../cpu_test.hex", ram, 0, 'h3FF);
 
    always @(posedge clk)
       if (en) begin

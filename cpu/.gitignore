@@ -7,6 +7,7 @@ templates
 xlnx_auto*
 _xmsgs
 xst
+planAhead*
 
 *.bgn
 *.bit

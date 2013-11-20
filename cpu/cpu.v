@@ -39,16 +39,43 @@ module cpu(
   wand reg_wr_en;
   wire [3:0] wr_reg;
   wor [15:0] reg_data_in;
-  wire [16*16-1:0] regs_out;
-  register_file register_file_module (.wr_en(reg_wr_en), .wr_reg(wr_reg), .reset(reset), .clk(clk), .data_in(reg_data_in), .data_out(regs_out));
+  localparam REG_BITS = 16*16;
+  wire [REG_BITS-1:0] regs_out;
+  localparam NUM_GENERAL_REGS = 14;
+  wire [NUM_GENERAL_REGS*16-1:0] reg_file_out;
+  register_file #(.NUM_REGS(NUM_GENERAL_REGS)) register_file_module (.wr_en(reg_wr_en), .wr_reg(wr_reg), .reset(reset), .clk(clk), .data_in(reg_data_in), .data_out(reg_file_out));
   
   wire [3:0] a_reg_sel;
   wire [3:0] b_reg_sel;
+  function reading_reg;
+    input [3:0] reg_num;
+    begin
+      reading_reg = ((alu_op != alu.MOV & ~pc_cond & a_reg_sel == reg_num) | (~imm_en & b_reg_sel == reg_num)) & store;
+    end
+  endfunction
+
+  function writing_reg;
+    input [3:0] reg_num;
+    begin
+      writing_reg = wr_reg == reg_num & reg_wr_en & store;
+    end
+  endfunction
+  
+  localparam PARAM_STACK_REG = 4'hF;
+  wire [15:0] param_stack_out;
+  stack param_stack_module (.clk(clk), .push(writing_reg(PARAM_STACK_REG)), .pop(reading_reg(PARAM_STACK_REG)), .data_in(reg_data_in), .data_out(param_stack_out));
+  
+  localparam RETURN_STACK_REG = 4'hE;
+  wire [15:0] return_stack_out;
+  stack return_stack_module (.clk(clk), .push(writing_reg(RETURN_STACK_REG)), .pop(reading_reg(RETURN_STACK_REG)), .data_in(reg_data_in), .data_out(return_stack_out));
+  
   wire [15:0] a_reg;
   wire [15:0] b_reg;
-  reg_mux a_mux_module (.data_in(regs_out), .select(a_reg_sel), .data_out(a_reg));
-  reg_mux b_mux_module (.data_in(regs_out), .select(b_reg_sel), .data_out(b_reg));
+  reg_mux a_mux_module (.data_in({regs_out}), .select(a_reg_sel), .data_out(a_reg));
+  reg_mux b_mux_module (.data_in({regs_out}), .select(b_reg_sel), .data_out(b_reg));
   
+  assign regs_out = {param_stack_out, return_stack_out, reg_file_out};
+
   wire pc_cond;
   wire cond_p;
   reg [4:0] alu_flags;
