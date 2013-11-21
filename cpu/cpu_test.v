@@ -28,24 +28,23 @@ module cpu_test;
 	reg clk = 0;
 	reg en;
 	reg reset;
-	wire [15:0] mem_data_in;
+	wire [15:0] mem_rd_data;
 
 	// Outputs
 	wire [15:0] mem_addr;
 	wire mem_wr_en;
 	wire mem_rd_en;
-	wire [15:0] mem_data_out;
+	wire [15:0] mem_wr_data;
 
 	// Instantiate the Unit Under Test (UUT)
 	cpu uut (
 		.clk(clk), 
 		.en(en), 
-		.reset(reset), 
-		.mem_data_in(mem_data_in), 
+		.mem_rd_data(mem_rd_data), 
 		.mem_addr(mem_addr), 
 		.mem_wr_en(mem_wr_en), 
 		.mem_rd_en(mem_rd_en), 
-		.mem_data_out(mem_data_out)
+		.mem_wr_data(mem_wr_data)
 	);
 
   block_ram ram (
@@ -53,8 +52,8 @@ module cpu_test;
     .en(mem_rd_en | mem_wr_en),
     .wr_en(mem_wr_en),
     .addr(mem_addr[10:0]),
-    .data_in(mem_data_out),
-    .data_out(mem_data_in));
+    .data_in(mem_wr_data),
+    .data_out(mem_rd_data));
     
   always begin
     #10; clk = ~clk;

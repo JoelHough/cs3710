@@ -33,12 +33,11 @@ module cpu_demo(
   cpu uut (
 		.clk(clk), 
 		.en(1'b1),
-		.reset(1'b0), 
-		.mem_data_in(mem_out), 
+		.mem_rd_data(mem_out), 
 		.mem_addr(mem_addr), 
 		.mem_wr_en(mem_wr_en), 
 		.mem_rd_en(mem_rd_en), 
-		.mem_data_out(mem_in)
+		.mem_wr_data(mem_in)
 	);
 
   wire base_en; wire [15:0] base_out; wire [9:0] base_addr;

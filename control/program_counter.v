@@ -20,20 +20,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 module program_counter(
     input clk,
-    input en,
-    input rst,
-    input [1:0] op,
-    input [15:0] a,
+    input [1:0] pc_op,
+    input [15:0] pc_a,
     output reg [15:0] pc = 16'b0
     );
 
-  always @(posedge clk or posedge rst)
-    if (rst) pc <= 16'b0;
-    else if (en)
-      case (op)
-        2'b00: pc <= pc;
-        2'b01: pc <= pc + 1'b1;
-        2'b10: pc <= pc + a;
-        2'b11: pc <= a;
-      endcase
+  always @(posedge clk)
+    case (pc_op)
+      2'b00: pc <= pc;
+      2'b01: pc <= pc + 1'b1;
+      2'b10: pc <= pc + pc_a - 1'b1; // -1 because we increment before branching
+      2'b11: pc <= pc_a;
+    endcase
 endmodule

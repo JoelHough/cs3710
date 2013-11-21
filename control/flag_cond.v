@@ -20,8 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 module flag_cond(
     input [3:0] cond,
-    input [4:0] flags,
-    output reg p
+    input [4:0] alu_flags_reg,
+    output reg cond_p
     );
 
   localparam EQ = 4'b0000;
@@ -41,25 +41,25 @@ module flag_cond(
   localparam UC = 4'b1110;
   
   wire z, n, c, l, f;
-  assign {z,n,c,l,f} = flags;
+  assign {z,n,c,l,f} = alu_flags_reg;
 
   always @(cond, z,n,c,l,f)
     case (cond)
-      EQ: p = z;
-      NE: p = ~z;
-      GE: p = n | z;
-      CS: p = c;
-      CC: p = ~c;
-      HI: p = l;
-      LS: p = ~l;
-      LO: p = ~(l | z);
-      HS: p = l | z;
-      GT: p = n;
-      LE: p = ~n;
-      FS: p = f;
-      FC: p = ~f;
-      LT: p = ~(n | z);
-      UC: p = 1'b1;
-      default: p = 1'b0;
+      EQ: cond_p = z;
+      NE: cond_p = ~z;
+      GE: cond_p = n | z;
+      CS: cond_p = c;
+      CC: cond_p = ~c;
+      HI: cond_p = l;
+      LS: cond_p = ~l;
+      LO: cond_p = ~(l | z);
+      HS: cond_p = l | z;
+      GT: cond_p = n;
+      LE: cond_p = ~n;
+      FS: cond_p = f;
+      FC: cond_p = ~f;
+      LT: cond_p = ~(n | z);
+      UC: cond_p = 1'b1;
+      default: cond_p = 1'b0;
     endcase
 endmodule

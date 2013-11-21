@@ -19,11 +19,11 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module alu(
-    input [WORD_WIDTH-1:0] a,
-    input [WORD_WIDTH-1:0] b,
-    input [OPCODE_WIDTH-1:0] opcode,
-    output reg [WORD_WIDTH-1:0] result,
-    output reg [NUM_FLAGS-1:0] flags
+    input [WORD_WIDTH-1:0] alu_a,
+    input [WORD_WIDTH-1:0] alu_b,
+    input [OPCODE_WIDTH-1:0] alu_op,
+    output reg [WORD_WIDTH-1:0] alu_result,
+    output reg [NUM_FLAGS-1:0] alu_flags
     );
 
 /* widths */
@@ -69,28 +69,28 @@ endfunction
 /* all opcodes are exactly as described in the cr16 manual */
 always @*
 begin
-  flags = 0;
-  result = 0;
-  case (opcode)
+  alu_flags = 0;
+  alu_result = 0;
+  case (alu_op)
     ADD: begin
-      {flags[CARRY],result} = a + b;
-      flags[FLAG] = bits_equal(a[SIGN_BIT], b[SIGN_BIT], ~result[SIGN_BIT]);
+      {alu_flags[CARRY],alu_result} = alu_a + alu_b;
+      alu_flags[FLAG] = bits_equal(alu_a[SIGN_BIT], alu_b[SIGN_BIT], ~alu_result[SIGN_BIT]);
     end
-    AND: result = a & b;
+    AND: alu_result = alu_a & alu_b;
     CMP: begin
-      flags[Z] = a == b;
-      flags[NEGATIVE] = $signed(a) > $signed(b);
-      flags[LOW] = a > b;
+      alu_flags[Z] = alu_a == alu_b;
+      alu_flags[NEGATIVE] = $signed(alu_a) > $signed(alu_b);
+      alu_flags[LOW] = alu_a > alu_b;
     end
-    LSH: result = b[4] ? a >> (~b[3:0] + 4'd1) : a << b[3:0];
-    LUI: result = {b[(WORD_WIDTH/2)-1:0], a[(WORD_WIDTH/2)-1:0]};
-    MOV: result = b;
-    OR: result = a | b;
+    LSH: alu_result = alu_b[4] ? alu_a >> (~alu_b[3:0] + 4'd1) : alu_a << alu_b[3:0];
+    LUI: alu_result = {alu_b[(WORD_WIDTH/2)-1:0], alu_a[(WORD_WIDTH/2)-1:0]};
+    MOV: alu_result = alu_b;
+    OR: alu_result = alu_a | alu_b;
     SUB: begin
-      {flags[CARRY],result} = a - b;
-      flags[FLAG] = bits_equal(~a[SIGN_BIT], b[SIGN_BIT], result[SIGN_BIT]);
+      {alu_flags[CARRY],alu_result} = alu_a - alu_b;
+      alu_flags[FLAG] = bits_equal(~alu_a[SIGN_BIT], alu_b[SIGN_BIT], alu_result[SIGN_BIT]);
     end
-    XOR: result = a ^ b;
+    XOR: alu_result = alu_a ^ alu_b;
   endcase
 end
 endmodule
