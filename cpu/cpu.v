@@ -52,10 +52,12 @@ module cpu(
    wire                  reg_file_b_rd_en;       // From Control of control.v
    wire                  reg_file_wr_en;         // From Control of control.v
    wire [WIDTH-1:0]      return_stack_pop_data;  // From ReturnStack of stack.v
+   wire                  set_alu_result;         // From Control of control.v
    wire                  set_flags;              // From Control of control.v
    // End of automatics
 
    reg [4:0]             alu_flags_reg = 1'b0;
+   reg [15:0]            alu_result_reg = 1'b0;
    reg [15:0]            inst_reg = 16'b0101_0000_0000_0001; // ADDI 1, R0
    wire [15:0]           inst;
    wire [3:0]            op;
@@ -84,11 +86,12 @@ module cpu(
      case ({mem_to_reg_file,pc_to_reg_file})
        2'b10 : reg_wr_data = mem_rd_data;
        2'b01 : reg_wr_data = pc;
-       2'b00 : reg_wr_data = alu_result;
+       2'b00 : reg_wr_data = alu_result_reg;
      endcase // case {mem_to_reg_file,pc_to_reg_file}
    
    always @(posedge clk) begin
       if (set_flags) alu_flags_reg <= alu_flags;
+      if (set_alu_result) alu_result_reg <= alu_result;
       if (mem_to_inst_reg) inst_reg <= mem_rd_data;
    end
 
@@ -185,6 +188,7 @@ module cpu(
                     .reg_file_a_rd_en   (reg_file_a_rd_en),
                     .reg_file_b_rd_en   (reg_file_b_rd_en),
                     .set_flags          (set_flags),
+                    .set_alu_result     (set_alu_result),
                     .imm_to_b           (imm_to_b),
                     .pc_op              (pc_op[1:0]),
                     .pc_to_reg_file     (pc_to_reg_file),

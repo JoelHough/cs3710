@@ -19,31 +19,32 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module control(
-	       input 		clk,
-	       input 		en,
+	       input            clk,
+	       input            en,
 
-	       input [3:0] 	op,
-	       input [3:0] 	ext,
-	       input 		cond_p,
+	       input [3:0]      op,
+	       input [3:0]      ext,
+	       input            cond_p,
 
-	       output reg 	mem_rd_en,
-	       output reg 	mem_wr_en,
+	       output reg       mem_rd_en,
+	       output reg       mem_wr_en,
 
-	       output reg 	reg_file_wr_en,
-	       output reg 	reg_file_a_rd_en,
-	       output reg 	reg_file_b_rd_en,
+	       output reg       reg_file_wr_en,
+	       output reg       reg_file_a_rd_en,
+	       output reg       reg_file_b_rd_en,
 
-	       output reg 	set_flags,
-	       output reg 	imm_to_b, 
+	       output reg       set_flags,
+               output reg       set_alu_result, 
+	       output reg       imm_to_b, 
 
 	       output reg [1:0] pc_op, 
-	       output reg 	pc_to_reg_file,
+	       output reg       pc_to_reg_file,
 
-	       output reg 	mem_to_reg_file,
-	       output reg 	mem_to_inst_reg,
-	       output reg 	mem_to_decode,
+	       output reg       mem_to_reg_file,
+	       output reg       mem_to_inst_reg,
+	       output reg       mem_to_decode,
 
-	       output reg 	b_to_mem_addr
+	       output reg       b_to_mem_addr
 	       /*AUTOARG*/);
 
    /* ops
@@ -100,6 +101,7 @@ module control(
    localparam JUMP_AND_LINK	= 4'd13;
 
    // memory load
+   localparam ALU_RESULT_TO_REG_FILE = 4'd15;
    localparam MEM_TO_REG_FILE	= 4'd14;
    
    reg [3:0] 		   state = FETCH;
@@ -156,8 +158,8 @@ module control(
 		endcase // case (op)
 
        // execute and store
-       IMM_ALU_OP	: next_state = FETCH;
-       ALU_OP		: next_state = FETCH;
+       IMM_ALU_OP	: next_state = ALU_RESULT_TO_REG_FILE;
+       ALU_OP		: next_state = ALU_RESULT_TO_REG_FILE;
        ALU_FLAG_OP	: next_state = FETCH;
        IMM_ALU_FLAG_OP	: next_state = FETCH;
        BRANCH		: next_state = FETCH;
@@ -167,6 +169,7 @@ module control(
        JUMP_AND_LINK	: next_state = FETCH;
 
        // memory load
+       ALU_RESULT_TO_REG_FILE : next_state = FETCH;
        MEM_TO_REG_FILE  : next_state = FETCH;
        default : next_state = FETCH; // bad state
      endcase // case (state)
@@ -181,6 +184,7 @@ module control(
       reg_file_b_rd_en = 1'b0;
 
       set_flags = 1'b0;
+      set_alu_result = 1'b0;
       imm_to_b = 1'b0;
 
       pc_op = 2'b0;
@@ -218,13 +222,11 @@ module control(
 	IMM_ALU_OP : begin
 	   imm_to_b = 1'b1;
 	   set_flags = 1'b1;
-	   // this is the default: alu_result_to_reg_file = 1'b1;
-	   reg_file_wr_en = 1'b1;
+           set_alu_result = 1'b1;
 	end
 	ALU_OP : begin
 	   set_flags = 1'b1;
-	   // this is the default: alu_result_to_reg_file = 1'b1;
-	   reg_file_wr_en = 1'b1;
+           set_alu_result = 1'b1;
 	end
 	ALU_FLAG_OP : begin
 	   set_flags = 1'b1;
@@ -255,7 +257,11 @@ module control(
 	   reg_file_wr_en = 1'b1;
 	end
 
-	// memory load
+        // longer op to reg file
+        ALU_RESULT_TO_REG_FILE : begin
+	   // this is the default: alu_result_to_reg_file = 1'b1;
+           reg_file_wr_en = 1'b1;
+        end
 	MEM_TO_REG_FILE : begin
 	   mem_to_reg_file = 1'b1;
 	   reg_file_wr_en = 1'b1;

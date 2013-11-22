@@ -31,17 +31,17 @@ module stack(
 
   reg [INDEX_BITS-1:0] index = 1'b0;
   (* RAM_STYLE="AUTO" *)
-  reg [WIDTH-1:0] data [(2**INDEX_BITS)-1:0];
+  reg [WIDTH-1:0] stack_memory [(2**INDEX_BITS)-1:0];
 
   always @(posedge clk)
     if (push & pop)
-      data[index] <= push_data;
+      stack_memory[index] <= push_data;
     else if (pop)
       index <= index - 1'b1;
     else if (push) begin
-      data[index+1'b1] <= push_data;
+      stack_memory[index+1'b1] <= push_data;
       index <= index + 1'b1;
     end
 
-  assign pop_data = data[index];
+  assign pop_data = stack_memory[index];
 endmodule
