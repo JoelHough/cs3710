@@ -22,8 +22,8 @@ module stack(
     input clk,
     input push,
     input pop,
-    input [WIDTH-1:0] data_in,
-    output [WIDTH-1:0] data_out
+    input [WIDTH-1:0] push_data,
+    output [WIDTH-1:0] pop_data
     );
 
   parameter WIDTH = 16;
@@ -35,13 +35,13 @@ module stack(
 
   always @(posedge clk)
     if (push & pop)
-      data[index] <= data_in;
+      data[index] <= push_data;
     else if (pop)
       index <= index - 1'b1;
     else if (push) begin
-      data[index+1'b1] <= data_in;
+      data[index+1'b1] <= push_data;
       index <= index + 1'b1;
     end
 
-  assign data_out = data[index];
+  assign pop_data = data[index];
 endmodule
