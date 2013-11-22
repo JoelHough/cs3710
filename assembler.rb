@@ -234,6 +234,10 @@ def lshi(a, b)
   op 0b1000,a,(b < 0 ? 1 : 0),b, "lshi #{a}, #{b}"
 end
 
+def assemble_at(addr)
+  assemble_at_address(addr)
+end
+
 def assemble_at_address(addr)
   @instructions << lambda {"@#{(addr).to_hex(8).ljust(@op_padding-1)}// start assembling at address #{addr.to_hex(8)}"}
   @pc = addr
