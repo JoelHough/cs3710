@@ -59,22 +59,25 @@ module cpu(
    reg [15:0]            inst_reg = 16'b0101_0000_0000_0001; // ADDI 1, R0
    wire [15:0]           inst;
    wire [3:0]            op;
+   wire [3:0]            decode_op;           
    wire [3:0]            dest;
    wire [3:0]            cond;   
    wire [3:0]            a_reg_sel; // also dest_reg, cond, link_reg, src_reg for stor
    wire [3:0]            ext;
+   wire [3:0]            decode_ext;
    wire [3:0]            src;
    wire [3:0]            b_reg_sel; // also src_reg, addr_reg, target_reg
    reg [15:0]            reg_wr_data;
    
-   assign {op,dest,ext,src} = inst;
+   assign {op,dest,ext,src} = inst_reg;
    assign a_reg_sel = dest;
    assign cond = dest;
    assign b_reg_sel = src;
 
    assign mem_addr = b_to_mem_addr ? b_reg : pc;
    assign mem_wr_data = a_reg;
-   assign inst = mem_to_decode ? mem_rd_data : inst_reg;
+   assign decode_op = mem_to_decode ? mem_rd_data[15:12] : op;
+   assign decode_ext = mem_to_decode ? mem_rd_data[7:4] : ext;
 
    always @*
      (* PARALLEL_CASE, FULL_CASE *)
@@ -172,7 +175,9 @@ module cpu(
                        .pc_a            (pc_a[15:0]));
    
    
-   control Control (/*AUTOINST*/
+   control Control (.op                 (decode_op[3:0]),
+                    .ext                (decode_ext[3:0]),
+                    /*AUTOINST*/
                     // Outputs
                     .mem_rd_en          (mem_rd_en),
                     .mem_wr_en          (mem_wr_en),
@@ -190,8 +195,6 @@ module cpu(
                     // Inputs
                     .clk                (clk),
                     .en                 (en),
-                    .op                 (op[3:0]),
-                    .ext                (ext[3:0]),
                     .cond_p             (cond_p));
 
 endmodule
