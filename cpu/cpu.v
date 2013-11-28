@@ -59,7 +59,6 @@ module cpu(
    reg [4:0]             alu_flags_reg = 1'b0;
    reg [15:0]            alu_result_reg = 1'b0;
    reg [15:0]            inst_reg = 16'b0101_0000_0000_0001; // ADDI 1, R0
-   wire [15:0]           inst;
    wire [3:0]            op;
    wire [3:0]            decode_op;           
    wire [3:0]            dest;
@@ -73,11 +72,11 @@ module cpu(
    
    assign {op,dest,ext,src} = inst_reg;
    assign a_reg_sel = dest;
-   assign cond = dest;
    assign b_reg_sel = src;
 
    assign mem_addr = b_to_mem_addr ? b_reg : pc;
    assign mem_wr_data = a_reg;
+   assign cond = mem_to_decode ? mem_rd_data[11:8] : dest;
    assign decode_op = mem_to_decode ? mem_rd_data[15:12] : op;
    assign decode_ext = mem_to_decode ? mem_rd_data[7:4] : ext;
 
