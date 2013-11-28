@@ -131,31 +131,34 @@ module cpu(
         endcase // case (b_reg_sel)
    end
 
-   function reading_reg;
-      input reg_sel;
-      reading_reg = (reg_file_a_rd_en & a_reg_sel == reg_sel) | (reg_file_b_rd_en & b_reg_sel == reg_sel);
-   endfunction
-   function writing_reg;
-      input reg_sel;
-      writing_reg = reg_file_wr_en && dest == reg_sel;
-   endfunction;
-
    localparam PARAM_STACK_REG = 4'hF;
+   localparam RETURN_STACK_REG = 4'hE;
+   wire     push_param_stack;
+   wire     pop_param_stack;
+   wire     push_return_stack;
+   wire     pop_return_stack;
+
+   assign push_param_stack = reg_file_wr_en && dest == PARAM_STACK_REG;
+   assign pop_param_stack = (reg_file_a_rd_en && a_reg_sel == PARAM_STACK_REG) ||
+                            (reg_file_b_rd_en && b_reg_sel == PARAM_STACK_REG);
+   assign push_return_stack = reg_file_wr_en && dest == RETURN_STACK_REG;
+   assign pop_return_stack = (reg_file_a_rd_en && a_reg_sel == RETURN_STACK_REG) ||
+                             (reg_file_b_rd_en && b_reg_sel == RETURN_STACK_REG);
+   
    stack ParamStack (// Outputs
                      .pop_data          (param_stack_pop_data[WIDTH-1:0]),
                      // Inputs
-                     .push              (writing_reg(PARAM_STACK_REG)),
-                     .pop               (reading_reg(PARAM_STACK_REG)),
+                     .push              (push_param_stack),
+                     .pop               (pop_param_stack),
                      .push_data         (reg_wr_data),/*AUTOINST*/
                      // Inputs
                      .clk               (clk));
 
-   localparam RETURN_STACK_REG = 4'hE;
    stack ReturnStack (// Outputs
                       .pop_data          (return_stack_pop_data[WIDTH-1:0]),
                       // Inputs
-                      .push              (writing_reg(RETURN_STACK_REG)),
-                      .pop               (reading_reg(RETURN_STACK_REG)),
+                      .push              (push_return_stack),
+                      .pop               (pop_return_stack),
                       .push_data         (reg_wr_data),/*AUTOINST*/
                       // Inputs
                       .clk              (clk));
