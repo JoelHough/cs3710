@@ -79,8 +79,8 @@ begin
     AND: alu_result = alu_a & alu_b;
     CMP: begin
       alu_flags[Z] = alu_a == alu_b;
-      alu_flags[NEGATIVE] = $signed(alu_a) > $signed(alu_b);
-      alu_flags[LOW] = alu_a > alu_b;
+      alu_flags[NEGATIVE] = $signed(alu_a) < $signed(alu_b);
+      alu_flags[LOW] = alu_a < alu_b;
     end
     LSH: alu_result = alu_b[4] ? alu_a >> (~alu_b[3:0] + 4'd1) : alu_a << alu_b[3:0];
     LUI: alu_result = {alu_b[(WORD_WIDTH/2)-1:0], alu_a[(WORD_WIDTH/2)-1:0]};

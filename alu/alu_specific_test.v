@@ -169,19 +169,19 @@ initial begin
   #10;
   ASSERT(0, uut.Z_BIT);
   
-  a = 16'hFFFF; b = 16'hFFFE;
+  a = 16'hFFFE; b = 16'hFFFF;
   #10;
   ASSERT(0, uut.LOW_BIT | uut.NEGATIVE_BIT);
   
-  a = 16'h7FFF; b = 16'h7FFE;
+  a = 16'h7FFE; b = 16'h7FFF;
   #10;
   ASSERT(0, uut.LOW_BIT | uut.NEGATIVE_BIT);
   
-  a = 16'h8000; b = 16'h7FFF;
+  a = 16'h7FFF; b = 16'h8000;
   #10;
   ASSERT(0, uut.LOW_BIT);
   
-  a = 16'h7FFF; b = 16'h8000;
+  a = 16'h8000; b = 16'h7FFF;
   #10;
   ASSERT(0, uut.NEGATIVE_BIT);
   
