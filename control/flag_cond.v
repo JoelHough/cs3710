@@ -40,8 +40,8 @@ module flag_cond(
   localparam GE = 4'b1101;
   localparam UC = 4'b1110;
   
-  wire z, n, c, l, f;
-  assign {z,n,c,l,f} = alu_flags_reg;
+  wire n, z, f, l, c;
+  assign {n,z,f,l,c} = alu_flags_reg;
 
   always @(cond, z,n,c,l,f)
     case (cond)
