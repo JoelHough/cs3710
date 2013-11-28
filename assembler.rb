@@ -216,6 +216,10 @@ for cond, code in conds
   define_branch(cond, code)
 end
 
+def jal(a, b)
+  reg_op "jal", 0b0100,a,0b1000,b
+end
+
 def load(a, b)
   reg_op "load", 0b0100,a,0b0000,b
 end
