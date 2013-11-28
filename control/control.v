@@ -63,6 +63,7 @@ module control(
    /* ops */
    localparam BCOND	= 4'b1100;
    localparam CMPI	= 4'b1011;
+   localparam LUI       = 4'b1111;
    localparam MOVI	= 4'b1101;
    localparam REGISTER	= 4'b0000;
    localparam SHIFT	= 4'b1000;
@@ -74,38 +75,41 @@ module control(
    localparam JAL	= 4'b1000;
    localparam LSH	= 4'b0100;
    localparam LOAD	= 4'b0000;
+   localparam LU        = 4'b1111;
    localparam MOV	= 4'b1101;
    localparam STORE	= 4'b0100;
    
    /* states */
    // fetch
-   localparam FETCH		= 4'd0;
+   localparam FETCH                  = 5'd0;
 
    // decode
-   localparam DECODE		= 4'd1;
+   localparam DECODE                 = 5'd1;
    
    // load
-   localparam LOAD_A_B		= 4'd2;
-   localparam LOAD_A		= 4'd3;
-   localparam LOAD_B		= 4'd4;
+   localparam LOAD_A_B               = 5'd2;
+   localparam LOAD_A                 = 5'd3;
+   localparam LOAD_B                 = 5'd4;
 
    // execute and store
-   localparam IMM_ALU_OP	= 4'd5;
-   localparam ALU_OP		= 4'd6;
-   localparam ALU_FLAG_OP	= 4'd7;
-   localparam IMM_ALU_FLAG_OP	= 4'd8;
-   localparam BRANCH		= 4'd9;
-   localparam LOAD_FROM_MEM	= 4'd10;
-   localparam STORE_TO_MEM	= 4'd11;
-   localparam JUMP		= 4'd12;
-   localparam JUMP_AND_LINK	= 4'd13;
+   localparam IMM_ALU_OP             = 5'd5;
+   localparam ALU_OP                 = 5'd6;
+   localparam ALU_FLAG_OP            = 5'd7;
+   localparam IMM_ALU_FLAG_OP        = 5'd8;
+   localparam ALU_FLAGLESS_OP        = 5'd9;
+   localparam IMM_ALU_FLAGLESS_OP    = 5'd10;
+   localparam BRANCH                 = 5'd11;
+   localparam LOAD_FROM_MEM          = 5'd12;
+   localparam STORE_TO_MEM           = 5'd13;
+   localparam JUMP                   = 5'd14;
+   localparam JUMP_AND_LINK          = 5'd15;
 
    // memory load
-   localparam ALU_RESULT_TO_REG_FILE = 4'd15;
-   localparam MEM_TO_REG_FILE	= 4'd14;
+   localparam ALU_RESULT_TO_REG_FILE = 5'd16;
+   localparam MEM_TO_REG_FILE        = 5'd17;
    
-   reg [3:0] 		   state = FETCH;
-   reg [3:0] 		   next_state;
+   reg [4:0] 		   state = FETCH;
+   reg [4:0] 		   next_state;
 
    always @(posedge clk)
      if (en) state <= next_state;
@@ -119,7 +123,7 @@ module control(
        // decode
        DECODE : case (op)
 		  BCOND : next_state = cond_p ? BRANCH : FETCH;
-		  MOVI	: next_state = IMM_ALU_OP;
+		  MOVI	: next_state = IMM_ALU_FLAGLESS_OP;
 		  REGISTER : case (ext)
 			       MOV	: next_state = LOAD_B;
 			       default	: next_state = LOAD_A_B;
@@ -143,12 +147,17 @@ module control(
 		    SPECIAL : next_state = STORE_TO_MEM;
 		    default : case (ext)
 				CMP	: next_state = ALU_FLAG_OP;
+                                LU      : next_state = ALU_FLAGLESS_OP;
 				default : next_state = ALU_OP;
 			      endcase // case (ext)
 		  endcase // case (op)
-       LOAD_A : next_state = ext == CMPI ? IMM_ALU_FLAG_OP : IMM_ALU_OP;
+       LOAD_A : case(op)
+                  CMPI : next_state = IMM_ALU_FLAG_OP;
+                  LUI  : next_state = IMM_ALU_FLAGLESS_OP;
+                  default : next_state = IMM_ALU_OP;
+                endcase // case (op)
        LOAD_B : case (op)
-		  REGISTER : next_state = ALU_OP;
+		  REGISTER : next_state = ALU_FLAGLESS_OP; // MOV
 		  default : case (ext)
 			      JAL	: next_state = JUMP_AND_LINK;
 			      JCOND	: next_state = JUMP;
@@ -156,18 +165,20 @@ module control(
 			      default   : next_state = FETCH; // bad state 
 			    endcase // case (ext)
 		endcase // case (op)
-
+       
        // execute and store
-       IMM_ALU_OP	: next_state = ALU_RESULT_TO_REG_FILE;
-       ALU_OP		: next_state = ALU_RESULT_TO_REG_FILE;
-       ALU_FLAG_OP	: next_state = FETCH;
-       IMM_ALU_FLAG_OP	: next_state = FETCH;
-       BRANCH		: next_state = FETCH;
-       LOAD_FROM_MEM	: next_state = MEM_TO_REG_FILE;
-       STORE_TO_MEM	: next_state = FETCH;
-       JUMP		: next_state = FETCH;
-       JUMP_AND_LINK	: next_state = FETCH;
-
+       IMM_ALU_OP          : next_state = ALU_RESULT_TO_REG_FILE;
+       ALU_OP              : next_state = ALU_RESULT_TO_REG_FILE;
+       ALU_FLAG_OP         : next_state = FETCH;
+       ALU_FLAGLESS_OP     : next_state = ALU_RESULT_TO_REG_FILE;
+       IMM_ALU_FLAGLESS_OP : next_state = ALU_RESULT_TO_REG_FILE;
+       IMM_ALU_FLAG_OP     : next_state = FETCH;
+       BRANCH              : next_state = FETCH;
+       LOAD_FROM_MEM       : next_state = MEM_TO_REG_FILE;
+       STORE_TO_MEM        : next_state = FETCH;
+       JUMP                : next_state = FETCH;
+       JUMP_AND_LINK       : next_state = FETCH;
+ 
        // memory load
        ALU_RESULT_TO_REG_FILE : next_state = FETCH;
        MEM_TO_REG_FILE  : next_state = FETCH;
@@ -235,6 +246,13 @@ module control(
 	   imm_to_b = 1'b1;
 	   set_flags = 1'b1;
 	end
+        ALU_FLAGLESS_OP : begin
+           set_alu_result = 1'b1;
+        end
+        IMM_ALU_FLAGLESS_OP : begin
+           imm_to_b = 1'b1;
+           set_alu_result = 1'b1;
+        end
 	BRANCH : begin
 	   imm_to_b	= 1'b1;
 	   pc_op	= 2'b10;
