@@ -289,7 +289,7 @@ b001      // 0000011f: cmpi 0, 1
 c002      // 00000120: beq 2
 4ec6      // 00000121: juc 6
 d001      // 00000122, load, stor: movi 0, 1
-d19c      // 00000123: movi 1, :data_mem_lo
+d1b6      // 00000123: movi 1, :data_mem_lo
 f101      // 00000124: lui 1, :data_mem_hi
 4041      // 00000125: stor 0, 1
 5001      // 00000126: addi 0, 1
@@ -307,7 +307,7 @@ f101      // 00000124: lui 1, :data_mem_hi
 5001      // 00000132: addi 0, 1
 5102      // 00000133: addi 1, 2
 d001      // 00000134: movi 0, 1
-d19c      // 00000135: movi 1, :data_mem_lo
+d1b6      // 00000135: movi 1, :data_mem_lo
 f101      // 00000136: lui 1, :data_mem_hi
 4001      // 00000137: load 0, 1
 8001      // 00000138: lshi 0, 1
@@ -335,7 +335,7 @@ f101      // 00000136: lui 1, :data_mem_hi
 4041      // 0000014e: stor 0, 1
 5101      // 0000014f: addi 1, 1
 d000      // 00000150: movi 0, 0
-d19c      // 00000151: movi 1, :data_mem_lo
+d1b6      // 00000151: movi 1, :data_mem_lo
 f101      // 00000152: lui 1, :data_mem_hi
 4001      // 00000153: load 0, 1
 b001      // 00000154: cmpi 0, 1
@@ -409,7 +409,33 @@ f001      // 00000195: lui 0, :stack_hi
 d203      // 00000198, subroutine: movi 2, 3
 4ec1      // 00000199: juc 1
 4ec6      // 0000019a: juc 6
-ce00      // 0000019b, stack, pass: buc 0
+df01      // 0000019b, stack: movi 15, 1
+df02      // 0000019c: movi 15, 2
+df03      // 0000019d: movi 15, 3
+0f5f      // 0000019e: add 15, 15
+d000      // 0000019f: movi 0, 0
+005f      // 000001a0: add 0, 15
+005f      // 000001a1: add 0, 15
+b008      // 000001a2: cmpi 0, 8
+c002      // 000001a3: beq 2
+4ec6      // 000001a4: juc 6
+bf01      // 000001a5: cmpi 15, 1
+c002      // 000001a6: beq 2
+4ec6      // 000001a7: juc 6
+de01      // 000001a8: movi 14, 1
+de02      // 000001a9: movi 14, 2
+de03      // 000001aa: movi 14, 3
+0e5e      // 000001ab: add 14, 14
+d000      // 000001ac: movi 0, 0
+005e      // 000001ad: add 0, 14
+005e      // 000001ae: add 0, 14
+b008      // 000001af: cmpi 0, 8
+c002      // 000001b0: beq 2
+4ec6      // 000001b1: juc 6
+be01      // 000001b2: cmpi 14, 1
+c002      // 000001b3: beq 2
+4ec6      // 000001b4: juc 6
+ce00      // 000001b5, pass: buc 0
 // data_mem: 
 0000 0000  0000 0000
 0000

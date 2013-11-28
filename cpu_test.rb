@@ -245,6 +245,23 @@ assemble 'cpu_test.hex' do
   error
 
   label :stack
+  def test_stack(stack_reg)
+    movi stack_reg, 1
+    movi stack_reg, 2
+    movi stack_reg, 3
+    add stack_reg, stack_reg
+    movi r0, 0
+    add r0, stack_reg
+    add r0, stack_reg
+    cmpi r0, 8
+    assert :eq
+    cmpi stack_reg, 1
+    assert :eq
+  end
+
+  test_stack r15
+  test_stack r14
+
   label :pass
   buc 0
 
