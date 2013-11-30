@@ -19,29 +19,36 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module stack(
-    input clk,
-    input push,
-    input pop,
-    input [WIDTH-1:0] push_data,
-    output [WIDTH-1:0] pop_data
-    );
+             input              clk,
+             input              push,
+             input              pop,
+             input [WIDTH-1:0]  push_data,
+             output reg [WIDTH-1:0] pop_data
+             );
 
-  parameter WIDTH = 16;
-  parameter INDEX_BITS = 6;
+   parameter WIDTH = 16;
+   parameter INDEX_BITS = 6;
 
-  reg [INDEX_BITS-1:0] index = 1'b0;
-  (* RAM_STYLE="AUTO" *)
-  reg [WIDTH-1:0] stack_memory [(2**INDEX_BITS)-1:0];
+   reg [INDEX_BITS-1:0]         top_of_stack = 1'b0;
+   (* RAM_STYLE="AUTO" *)
+   reg [WIDTH-1:0]              stack_memory [(2**INDEX_BITS)-1:0];
 
-  always @(posedge clk)
-    if (push & pop)
-      stack_memory[index] <= push_data;
-    else if (pop)
-      index <= index - 1'b1;
-    else if (push) begin
-      stack_memory[index+1'b1] <= push_data;
-      index <= index + 1'b1;
-    end
+   wire [INDEX_BITS-1:0]        index;
 
-  assign pop_data = stack_memory[index];
+   assign index = pop ? top_of_stack : (top_of_stack + 1'b1);
+   
+   always @(posedge clk)
+     if (push & pop) begin
+        stack_memory[index] <= push_data;
+        pop_data <= push_data;
+     end
+     else if (pop) begin
+        top_of_stack <= top_of_stack - 1'b1;
+        pop_data <= stack_memory[index];
+     end
+     else if (push) begin
+        stack_memory[index] <= push_data;
+        top_of_stack <= index;
+        pop_data <= push_data;
+     end
 endmodule

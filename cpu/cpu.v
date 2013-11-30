@@ -36,24 +36,24 @@ module cpu(
    
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
-   wire [NUM_FLAGS-1:0]  alu_flags;              // From Alu of alu.v
+   wire [15:0]          a_reg_rd_data;          // From RegisterFile of register_file.v
+   wire [NUM_FLAGS-1:0] alu_flags;              // From Alu of alu.v
    wire [WORD_WIDTH-1:0] alu_result;            // From Alu of alu.v
-   wire                  b_to_mem_addr;          // From Control of control.v
-   wire                  cond_p;                 // From Cond of flag_cond.v
-   wire                  imm_to_b;               // From Control of control.v
-   wire                  mem_to_decode;          // From Control of control.v
-   wire                  mem_to_inst_reg;        // From Control of control.v
-   wire                  mem_to_reg_file;        // From Control of control.v
-   wire [WIDTH-1:0]      param_stack_pop_data;   // From ParamStack of stack.v
-   wire [15:0]           pc;                     // From Pc of program_counter.v
-   wire [1:0]            pc_op;                  // From Control of control.v
-   wire                  pc_to_reg_file;         // From Control of control.v
-   wire                  reg_file_a_rd_en;       // From Control of control.v
-   wire                  reg_file_b_rd_en;       // From Control of control.v
-   wire                  reg_file_wr_en;         // From Control of control.v
-   wire [WIDTH-1:0]      return_stack_pop_data;  // From ReturnStack of stack.v
-   wire                  set_alu_result;         // From Control of control.v
-   wire                  set_flags;              // From Control of control.v
+   wire [15:0]          b_reg_rd_data;          // From RegisterFile of register_file.v
+   wire                 b_to_mem_addr;          // From Control of control.v
+   wire                 cond_p;                 // From Cond of flag_cond.v
+   wire                 imm_to_b;               // From Control of control.v
+   wire                 mem_to_decode;          // From Control of control.v
+   wire                 mem_to_inst_reg;        // From Control of control.v
+   wire                 mem_to_reg_file;        // From Control of control.v
+   wire [15:0]          pc;                     // From Pc of program_counter.v
+   wire [1:0]           pc_op;                  // From Control of control.v
+   wire                 pc_to_reg_file;         // From Control of control.v
+   wire                 reg_file_a_rd_en;       // From Control of control.v
+   wire                 reg_file_b_rd_en;       // From Control of control.v
+   wire                 reg_file_wr_en;         // From Control of control.v
+   wire                 set_alu_result;         // From Control of control.v
+   wire                 set_flags;              // From Control of control.v
    // End of automatics
 
    reg [4:0]             alu_flags_reg = 1'b0;
@@ -74,8 +74,8 @@ module cpu(
    assign a_reg_sel = dest;
    assign b_reg_sel = src;
 
-   assign mem_addr = b_to_mem_addr ? b_reg : pc;
-   assign mem_wr_data = a_reg;
+   assign mem_addr = b_to_mem_addr ? b_reg_rd_data : pc;
+   assign mem_wr_data = a_reg_rd_data;
    assign cond = mem_to_decode ? mem_rd_data[11:8] : dest;
    assign decode_op = mem_to_decode ? mem_rd_data[15:12] : op;
    assign decode_ext = mem_to_decode ? mem_rd_data[7:4] : ext;
@@ -87,7 +87,20 @@ module cpu(
        2'b01 : reg_wr_data = pc;
        2'b00 : reg_wr_data = alu_result_reg;
      endcase // case {mem_to_reg_file,pc_to_reg_file}
-   
+
+   register_file RegisterFile(.a_reg_rd_en     (reg_file_a_rd_en),
+                              .b_reg_rd_en     (reg_file_b_rd_en),
+                              .a_reg_wr_en     (reg_file_wr_en),
+                              .a_reg_wr_data   (reg_wr_data[15:0]),
+                              /*AUTOINST*/
+                              // Outputs
+                              .a_reg_rd_data   (a_reg_rd_data[15:0]),
+                              .b_reg_rd_data   (b_reg_rd_data[15:0]),
+                              // Inputs
+                              .clk             (clk),
+                              .a_reg_sel       (a_reg_sel),
+                              .b_reg_sel       (b_reg_sel));
+
    always @(posedge clk) begin
       if (set_flags) alu_flags_reg <= alu_flags;
       if (set_alu_result) alu_result_reg <= alu_result;
@@ -97,8 +110,8 @@ module cpu(
    wire [15:0] alu_a;
    wire [15:0] alu_b;
    wire [3:0]  alu_op;
-   assign alu_a = a_reg;
-   assign alu_b = imm_to_b ? {{8{ext[3]}},ext,src} : b_reg;   
+   assign alu_a = a_reg_rd_data;
+   assign alu_b = imm_to_b ? {{8{ext[3]}},ext,src} : b_reg_rd_data;   
    assign alu_op = op == 4'b0 ? ext : op;
    alu Alu (/*AUTOINST*/
             // Outputs
@@ -108,61 +121,6 @@ module cpu(
             .alu_a                      (alu_a[WORD_WIDTH-1:0]),
             .alu_b                      (alu_b[WORD_WIDTH-1:0]),
             .alu_op                     (alu_op[OPCODE_WIDTH-1:0]));
-
-   localparam NUM_GENERAL_REGS = 14;
-   reg [15:0]  regs [NUM_GENERAL_REGS-1:0];
-   reg [15:0]  a_reg = 1'b0;
-   reg [15:0]  b_reg = 1'b0;
-   always @(posedge clk) begin
-      if (reg_file_wr_en && dest < NUM_GENERAL_REGS) regs[dest] <= reg_wr_data;
-      if (reg_file_a_rd_en)
-        (* PARALLEL_CASE, FULL_CASE *)
-        case (a_reg_sel)
-          PARAM_STACK_REG : a_reg <= param_stack_pop_data;
-          RETURN_STACK_REG : a_reg <= return_stack_pop_data;
-          default : a_reg <= regs[a_reg_sel];
-        endcase // case (a_reg_sel)
-      if (reg_file_b_rd_en)
-        (* PARALLEL_CASE, FULL_CASE *)
-        case (b_reg_sel)
-          PARAM_STACK_REG : b_reg <= param_stack_pop_data;
-          RETURN_STACK_REG : b_reg <= return_stack_pop_data;
-          default : b_reg <= regs[b_reg_sel];
-        endcase // case (b_reg_sel)
-   end
-
-   localparam PARAM_STACK_REG = 4'hF;
-   localparam RETURN_STACK_REG = 4'hE;
-   wire     push_param_stack;
-   wire     pop_param_stack;
-   wire     push_return_stack;
-   wire     pop_return_stack;
-
-   assign push_param_stack = reg_file_wr_en && dest == PARAM_STACK_REG;
-   assign pop_param_stack = (reg_file_a_rd_en && a_reg_sel == PARAM_STACK_REG) ||
-                            (reg_file_b_rd_en && b_reg_sel == PARAM_STACK_REG);
-   assign push_return_stack = reg_file_wr_en && dest == RETURN_STACK_REG;
-   assign pop_return_stack = (reg_file_a_rd_en && a_reg_sel == RETURN_STACK_REG) ||
-                             (reg_file_b_rd_en && b_reg_sel == RETURN_STACK_REG);
-   
-   stack ParamStack (// Outputs
-                     .pop_data          (param_stack_pop_data[WIDTH-1:0]),
-                     // Inputs
-                     .push              (push_param_stack),
-                     .pop               (pop_param_stack),
-                     .push_data         (reg_wr_data),/*AUTOINST*/
-                     // Inputs
-                     .clk               (clk));
-
-   stack ReturnStack (// Outputs
-                      .pop_data          (return_stack_pop_data[WIDTH-1:0]),
-                      // Inputs
-                      .push              (push_return_stack),
-                      .pop               (pop_return_stack),
-                      .push_data         (reg_wr_data),/*AUTOINST*/
-                      // Inputs
-                      .clk              (clk));
-   
    flag_cond Cond (/*AUTOINST*/
                    // Outputs
                    .cond_p              (cond_p),
