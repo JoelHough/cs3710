@@ -28,7 +28,7 @@ module block_ram(
     );
 
    parameter RAM_WIDTH = 16;
-   parameter RAM_ADDR_BITS = 11;
+   parameter RAM_ADDR_BITS = 12;
    
    (* RAM_STYLE="AUTO" *)
    reg [RAM_WIDTH-1:0] ram [(2**RAM_ADDR_BITS)-1:0];

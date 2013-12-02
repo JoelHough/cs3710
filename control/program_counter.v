@@ -19,12 +19,14 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module program_counter(
-    input clk,
-    input [1:0] pc_op,
-    input [15:0] pc_a,
-    output reg [15:0] pc = 16'b0
+    input             clk,
+    input [1:0]       pc_op,
+    input [15:0]      pc_a,
+    output reg [15:0] pc = INITIAL_PC
     );
 
+   parameter INITIAL_PC = 16'b0;
+   
   always @(posedge clk)
     case (pc_op)
       2'b00: pc <= pc;

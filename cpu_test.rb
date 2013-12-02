@@ -1,6 +1,18 @@
 load 'assembler.rb'
 
 assemble 'cpu_test.hex' do
+  rs = r14
+  ps = r15
+  def retx
+    clri
+    juc r14
+  end
+
+  label :interrupt_jump_table
+  0.upto(15).each do |i|
+    buc "irq#{i}".to_sym
+  end
+
   movi r6, lo(:bad)
   def error
     juc r6
@@ -21,10 +33,28 @@ assemble 'cpu_test.hex' do
     cmpi r0, c
     assert_not cond
   end
+  lea r0, :buc
+  juc r0
+  label :irq0
+  mov r0, r1
+  retx
+  label :irq1
+  mov r1, r2
+  retx
+  label :irq2
+  movi r2, 1
+  retx
+  3.upto(15).each do |i|
+    label "irq#{i}".to_sym
+  end
+  retx
+
   label :buc
   buc :test_start
   label :bad # the bad loop. if buc doesn't work, this won't really work
-  buc :bad # if pc is ever at this line, something went wrong
+  movi r0, 0xff
+  load r1, r0
+  buc -1 # if pc is ever at this line, something went wrong
 
   label :test_start
   label :movi
@@ -262,8 +292,24 @@ assemble 'cpu_test.hex' do
   test_stack r15
   test_stack r14
 
+  label :interrupts
+  label :interrupt_control_register, 0x1001
+  lea r0, :interrupt_control_register
+  movi r2, 0
+  movi r1, 0b0000_0111
+  stor r1, r0
+  nop
+  nop
+  cmpi r0, 1
+  assert :eq
+
+  lea r0, :data_mem
+  movi r1, 0xEF
+  lui r1, 0xBE
+  stor r1, r0
   label :pass
-  buc 0
+  load r1, r0
+  buc :pass
 
   label :data_mem
   dw 0,0,0,0,0

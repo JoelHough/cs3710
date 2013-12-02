@@ -22,10 +22,14 @@ module cpu(
            input         clk,
            input         en,
            input [15:0]  mem_rd_data,
+           input         interrupt,
+           input [3:0]   interrupt_id,
            output [15:0] mem_addr,
            output        mem_wr_en,
            output        mem_rd_en,
-           output [15:0] mem_wr_data
+           output [15:0] mem_wr_data,
+           output        request_interrupt,
+           output        clear_interrupt
            /*AUTOARG*/);
 
    localparam WORD_WIDTH = 16;
@@ -54,6 +58,7 @@ module cpu(
    wire                 reg_file_wr_en;         // From Control of control.v
    wire                 set_alu_result;         // From Control of control.v
    wire                 set_flags;              // From Control of control.v
+   wire                 vector_to_pc;           // From Control of control.v
    // End of automatics
 
    reg [4:0]             alu_flags_reg = 1'b0;
@@ -68,10 +73,12 @@ module cpu(
    wire [3:0]            decode_ext;
    wire [3:0]            src;
    wire [3:0]            b_reg_sel; // also src_reg, addr_reg, target_reg
-   reg [15:0]            reg_wr_data;
+   reg [15:0]            reg_wr_data = 16'b0;
+   reg                   pending_interrupt = 1'b0;
+   reg [3:0]             pending_interrupt_id = 4'b0;
    
    assign {op,dest,ext,src} = inst_reg;
-   assign a_reg_sel = dest;
+   assign a_reg_sel = return_stack_dest ? 4'hE : dest;
    assign b_reg_sel = src;
 
    assign mem_addr = b_to_mem_addr ? b_reg_rd_data : pc;
@@ -81,11 +88,10 @@ module cpu(
    assign decode_ext = mem_to_decode ? mem_rd_data[7:4] : ext;
 
    always @*
-     (* PARALLEL_CASE, FULL_CASE *)
      case ({mem_to_reg_file,pc_to_reg_file})
        2'b10 : reg_wr_data = mem_rd_data;
        2'b01 : reg_wr_data = pc;
-       2'b00 : reg_wr_data = alu_result_reg;
+       default : reg_wr_data = alu_result_reg; // 2'b00 :
      endcase // case {mem_to_reg_file,pc_to_reg_file}
 
    register_file RegisterFile(.a_reg_rd_en     (reg_file_a_rd_en),
@@ -94,17 +100,23 @@ module cpu(
                               .a_reg_wr_data   (reg_wr_data[15:0]),
                               /*AUTOINST*/
                               // Outputs
-                              .a_reg_rd_data   (a_reg_rd_data[15:0]),
-                              .b_reg_rd_data   (b_reg_rd_data[15:0]),
+                              .a_reg_rd_data    (a_reg_rd_data[15:0]),
+                              .b_reg_rd_data    (b_reg_rd_data[15:0]),
                               // Inputs
-                              .clk             (clk),
-                              .a_reg_sel       (a_reg_sel),
-                              .b_reg_sel       (b_reg_sel));
+                              .clk              (clk),
+                              .a_reg_sel        (a_reg_sel[3:0]),
+                              .b_reg_sel        (b_reg_sel[3:0]));
 
    always @(posedge clk) begin
       if (set_flags) alu_flags_reg <= alu_flags;
       if (set_alu_result) alu_result_reg <= alu_result;
       if (mem_to_inst_reg) inst_reg <= mem_rd_data;
+      if (interrupt) begin
+         pending_interrupt <= interrupt;
+         pending_interrupt_id <= interrupt_id;
+      end      
+      else if (request_interrupt)
+        pending_interrupt <= 1'b0;
    end
 
    wire [15:0] alu_a;
@@ -128,18 +140,19 @@ module cpu(
                    .cond                (cond[3:0]),
                    .alu_flags_reg       (alu_flags_reg[4:0]));
 
-   wire [15:0] pc_a = alu_b;
-   program_counter Pc (/*AUTOINST*/
-                       // Outputs
-                       .pc              (pc[15:0]),
-                       // Inputs
-                       .clk             (clk),
-                       .pc_op           (pc_op[1:0]),
-                       .pc_a            (pc_a[15:0]));
+   wire [15:0] pc_a = vector_to_pc ? pending_interrupt_id : alu_b;
+   program_counter #(.INITIAL_PC(16'd16)) Pc (/*AUTOINST*/
+                                              // Outputs
+                                              .pc              (pc[15:0]),
+                                              // Inputs
+                                              .clk             (clk),
+                                              .pc_op           (pc_op[1:0]),
+                                              .pc_a            (pc_a[15:0]));
    
    
    control Control (.op                 (decode_op[3:0]),
                     .ext                (decode_ext[3:0]),
+                    .interrupt          (pending_interrupt),
                     /*AUTOINST*/
                     // Outputs
                     .mem_rd_en          (mem_rd_en),
@@ -156,6 +169,10 @@ module cpu(
                     .mem_to_inst_reg    (mem_to_inst_reg),
                     .mem_to_decode      (mem_to_decode),
                     .b_to_mem_addr      (b_to_mem_addr),
+                    .request_interrupt  (request_interrupt),
+                    .clear_interrupt    (clear_interrupt),
+                    .return_stack_dest  (return_stack_dest),
+                    .vector_to_pc       (vector_to_pc),
                     // Inputs
                     .clk                (clk),
                     .en                 (en),

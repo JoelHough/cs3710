@@ -25,7 +25,8 @@ module control(
 	       input [3:0]      op,
 	       input [3:0]      ext,
 	       input            cond_p,
-
+               input            interrupt,
+ 
 	       output reg       mem_rd_en,
 	       output reg       mem_wr_en,
 
@@ -44,7 +45,12 @@ module control(
 	       output reg       mem_to_inst_reg,
 	       output reg       mem_to_decode,
 
-	       output reg       b_to_mem_addr
+	       output reg       b_to_mem_addr,
+               
+               output reg       request_interrupt,
+               output reg       clear_interrupt,
+               output reg       return_stack_dest,
+               output reg       vector_to_pc
 	       /*AUTOARG*/);
 
    /* ops
@@ -59,6 +65,7 @@ module control(
     Bcond   {1100   cond  disph displ}
     Jcond   {0100   cond  1100  rtrgt}
     JAL     {0100   rlink 1000  rtrgt}
+    CLRI    {0100   0000  1111  0000} // extension op: clear an interrupt
     */
    /* ops */
    localparam BCOND	= 4'b1100;
@@ -70,6 +77,7 @@ module control(
    localparam SPECIAL	= 4'b0100;
    
    /* op exts */
+   localparam CLRI      = 4'b1111;
    localparam CMP	= 4'b1011;
    localparam JCOND	= 4'b1100;
    localparam JAL	= 4'b1000;
@@ -92,21 +100,26 @@ module control(
    localparam LOAD_B                 = 5'd4;
 
    // execute and store
-   localparam IMM_ALU_OP             = 5'd5;
-   localparam ALU_OP                 = 5'd6;
-   localparam ALU_FLAG_OP            = 5'd7;
-   localparam IMM_ALU_FLAG_OP        = 5'd8;
-   localparam ALU_FLAGLESS_OP        = 5'd9;
-   localparam IMM_ALU_FLAGLESS_OP    = 5'd10;
-   localparam BRANCH                 = 5'd11;
-   localparam LOAD_FROM_MEM          = 5'd12;
-   localparam STORE_TO_MEM           = 5'd13;
-   localparam JUMP                   = 5'd14;
-   localparam JUMP_AND_LINK          = 5'd15;
+   localparam CLEAR_INTERRUPT        = 5'd5;
+   localparam SERVICE_INTERRUPT      = 4'd6;
+   localparam IMM_ALU_OP             = 5'd7;
+   localparam ALU_OP                 = 5'd8;
+   localparam ALU_FLAG_OP            = 5'd9;
+   localparam IMM_ALU_FLAG_OP        = 5'd10;
+   localparam ALU_FLAGLESS_OP        = 5'd11;
+   localparam IMM_ALU_FLAGLESS_OP    = 5'd12;
+   localparam BRANCH                 = 5'd13;
+   localparam LOAD_FROM_MEM          = 5'd14;
+   localparam STORE_TO_MEM           = 5'd15;
+   localparam JUMP                   = 5'd16;
+   localparam JUMP_AND_LINK          = 5'd17;
 
    // memory load
-   localparam ALU_RESULT_TO_REG_FILE = 5'd16;
-   localparam MEM_TO_REG_FILE        = 5'd17;
+   localparam ALU_RESULT_TO_REG_FILE = 5'd18;
+   localparam MEM_TO_REG_FILE        = 5'd19;
+
+   // error
+   localparam ERROR                  = 5'd20;
    
    reg [4:0] 		   state = FETCH;
    reg [4:0] 		   next_state;
@@ -115,10 +128,11 @@ module control(
      if (en) state <= next_state;
 
    /* state transitions */
-   always @(/*AS*/cond_p or ext or op or state)
+   always @(/*AS*/cond_p or ext or op or state or interrupt)
      case (state)
+       ERROR : next_state = ERROR;
        // fetch
-       FETCH  : next_state = DECODE;
+       FETCH  : next_state = interrupt ? SERVICE_INTERRUPT : DECODE;
 
        // decode
        DECODE : case (op)
@@ -133,11 +147,12 @@ module control(
 			    default	: next_state = LOAD_A; // LSHI
 			  endcase // case (ext)
 		  SPECIAL : case (ext)
+                              CLRI      : next_state = CLEAR_INTERRUPT;
 			      JAL	: next_state = LOAD_B;
 			      JCOND	: next_state = cond_p ? LOAD_B : FETCH;
 			      LOAD	: next_state = LOAD_B;
 			      STORE	: next_state = LOAD_A_B;
-			      default	: next_state = FETCH; // bad op
+			      default	: next_state = ERROR; // bad op
 			    endcase // case (ext)
 		  default : next_state = LOAD_A; // assume an immediate alu op
 		endcase // case (op)
@@ -162,11 +177,13 @@ module control(
 			      JAL	: next_state = JUMP_AND_LINK;
 			      JCOND	: next_state = JUMP;
 			      LOAD	: next_state = LOAD_FROM_MEM;
-			      default   : next_state = FETCH; // bad state 
+			      default   : next_state = ERROR; // bad state 
 			    endcase // case (ext)
 		endcase // case (op)
        
        // execute and store
+       CLEAR_INTERRUPT     : next_state = FETCH;
+       SERVICE_INTERRUPT   : next_state = FETCH;
        IMM_ALU_OP          : next_state = ALU_RESULT_TO_REG_FILE;
        ALU_OP              : next_state = ALU_RESULT_TO_REG_FILE;
        ALU_FLAG_OP         : next_state = FETCH;
@@ -182,7 +199,7 @@ module control(
        // memory load
        ALU_RESULT_TO_REG_FILE : next_state = FETCH;
        MEM_TO_REG_FILE  : next_state = FETCH;
-       default : next_state = FETCH; // bad state
+       default : next_state = ERROR; // bad state
      endcase // case (state)
 
    /* outputs */
@@ -206,12 +223,18 @@ module control(
       mem_to_decode = 1'b0;
       
       b_to_mem_addr = 1'b0;
+
+      request_interrupt = 1'b0;
+      clear_interrupt = 1'b0;
+      return_stack_dest = 1'b0;
+      vector_to_pc = 1'b0;
       
       case (state)
 	// fetch
 	FETCH : begin
 	   // this is the default: pc_to_mem_addr = 1'b1;
 	   mem_rd_en = 1'b1;
+           request_interrupt = 1'b1;
 	end
 
 	// decode
@@ -230,6 +253,14 @@ module control(
 	LOAD_B : reg_file_b_rd_en = 1'b1;
 
 	// execute and store
+        CLEAR_INTERRUPT : clear_interrupt = 1'b1;
+        SERVICE_INTERRUPT : begin
+           return_stack_dest = 1'b1;
+           pc_op = 2'b11;
+           pc_to_reg_file = 1'b1;
+           vector_to_pc = 1'b1;
+           reg_file_wr_en = 1'b1;
+        end
 	IMM_ALU_OP : begin
 	   imm_to_b = 1'b1;
 	   set_flags = 1'b1;

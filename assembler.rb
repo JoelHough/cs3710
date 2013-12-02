@@ -238,6 +238,14 @@ def lshi(a, b)
   op 0b1000,a,(b < 0 ? 1 : 0),b, "lshi #{a}, #{b}"
 end
 
+def clri
+  op 0b0100,0b0000,0b1111,0b0000, "clri"
+end
+
+def nop
+  op 0,0,0b1101,0, "nop" # mov r0, r0
+end
+
 def assemble_at(addr)
   assemble_at_address(addr)
 end
