@@ -19,74 +19,84 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module interrupt_controller(
-                            input            clk,
-                            input            handle_interrupt,
-                            input            clear_interrupt,
-                            input [15:0]     interrupt_lines,
-                            output reg       cpu_interrupt,
-                            output reg [3:0] cpu_interrupt_id
+                            input        clk,
+                            input        handle_interrupt,
+                            input        clear_interrupt,
+                            input [3:0]  clear_interrupt_id,
+                            input [15:0] interrupt_lines,
+                            output reg   cpu_interrupt,
+                            output [3:0] cpu_interrupt_id
                             );
    initial begin
       cpu_interrupt = 1'b0;
-      cpu_interrupt_id = 4'b0;
    end
    
-   wire [16:0]                           handle;
-   wire [16:0]                           clear_in_process;
-   wire [15:0]                           handling;
-   reg [3:0]                             handling_id = 4'b0;
-   wire                                  trigger;
+   reg [15:0]  handling = 16'b0;
+   reg [15:0]  pending = 16'b0;
+   reg [15:0]  highest_pending_bit = 16'b0;
+   reg [3:0]   handling_id = 4'b0;
+   wire        trigger;
+   wire [15:0] clear_interrupt_bit = 2**clear_interrupt_id;
 
-   assign handle[16] = handle_interrupt;
-   assign clear_in_process[16] = clear_interrupt;
-   assign trigger = |handling;
-   
-   interrupt Interrupts[15:0] (.clk(clk),
-                               .set_pending(interrupt_lines),
-                               .clear_in_process(clear_in_process[16:1]),
-                               .handle(handle[16:1]),
-                               .clear_in_process_carry(clear_in_process[15:0]),
-                               .handle_carry(handle[15:0]),
-                               .handling(handling));
-   
-   always @(handling) begin
-      casez (handling)
-        16'b0000_0000_0000_000z : handling_id = 4'd0;
-        16'b0000_0000_0000_001z : handling_id = 4'd1;
-        16'b0000_0000_0000_01zz : handling_id = 4'd2;
-        16'b0000_0000_0000_1zzz : handling_id = 4'd3;
-        16'b0000_0000_0001_zzzz : handling_id = 4'd4;
-        16'b0000_0000_001z_zzzz : handling_id = 4'd5;
-        16'b0000_0000_01zz_zzzz : handling_id = 4'd6;
-        16'b0000_0000_1zzz_zzzz : handling_id = 4'd7;
-        16'b0000_0001_zzzz_zzzz : handling_id = 4'd8;
-        16'b0000_001z_zzzz_zzzz : handling_id = 4'd9;
-        16'b0000_01zz_zzzz_zzzz : handling_id = 4'd10;
-        16'b0000_1zzz_zzzz_zzzz : handling_id = 4'd11;
-        16'b0001_zzzz_zzzz_zzzz : handling_id = 4'd12;
-        16'b001z_zzzz_zzzz_zzzz : handling_id = 4'd13;
-        16'b01zz_zzzz_zzzz_zzzz : handling_id = 4'd14;
-        16'b1zzz_zzzz_zzzz_zzzz : handling_id = 4'd15;
-      endcase // case (handling)
-   end // always @ (handling)
+   assign cpu_interrupt_id = handling_id;
+   assign trigger = highest_pending_bit > handling;
 
-   always @(posedge clk) begin
-      cpu_interrupt <= trigger;
-      cpu_interrupt_id <= handling_id;
-   end
-   /*
-   always @(posedge clk) begin
-      
-      // mssb = most significant set bit
-      // if (clear_interrupt)
-      //   unset mssb in in_process_interrupts
-      // if (pending_mssb > in_process_mssb)
-      //   unset pending_mssb
-      //   trigger pending_mssb
-      //   set new in_process_mssb
-      pending_interrupts <= pending_interrupts | interrupt_lines;
-      cpu_interrupt_id <= priority_interrupt;
-      cpu_interrupt <= priority_interrupt > cpu_interrupt_id | pending_interrupts[0];
-   end
-    */
+   always @(posedge clk)
+     if (handle_interrupt && trigger)
+       pending <= (pending & ~highest_pending_bit) | interrupt_lines;
+     else
+       pending <= pending | interrupt_lines;
+       
+   always @(posedge clk)
+     if (clear_interrupt)
+       cpu_interrupt <= 1'b0;
+     else
+       cpu_interrupt <= trigger;
+   
+   always @(posedge clk)
+     if (clear_interrupt)
+       handling <= handling & ~clear_interrupt_bit;
+     else if (handle_interrupt && trigger)
+       handling <= handling | highest_pending_bit;
+   
+   always @(pending)
+     casez (pending)
+       16'b0000_0000_0000_0000 : highest_pending_bit = 16'h0;
+       16'b0000_0000_0000_0001 : highest_pending_bit = 16'h1;
+       16'b0000_0000_0000_001z : highest_pending_bit = 16'h2;
+       16'b0000_0000_0000_01zz : highest_pending_bit = 16'h4;
+       16'b0000_0000_0000_1zzz : highest_pending_bit = 16'h8;
+       16'b0000_0000_0001_zzzz : highest_pending_bit = 16'h10;
+       16'b0000_0000_001z_zzzz : highest_pending_bit = 16'h20;
+       16'b0000_0000_01zz_zzzz : highest_pending_bit = 16'h40;
+       16'b0000_0000_1zzz_zzzz : highest_pending_bit = 16'h80;
+       16'b0000_0001_zzzz_zzzz : highest_pending_bit = 16'h100;
+       16'b0000_001z_zzzz_zzzz : highest_pending_bit = 16'h200;
+       16'b0000_01zz_zzzz_zzzz : highest_pending_bit = 16'h400;
+       16'b0000_1zzz_zzzz_zzzz : highest_pending_bit = 16'h800;
+       16'b0001_zzzz_zzzz_zzzz : highest_pending_bit = 16'h1000;
+       16'b001z_zzzz_zzzz_zzzz : highest_pending_bit = 16'h2000;
+       16'b01zz_zzzz_zzzz_zzzz : highest_pending_bit = 16'h4000;
+       16'b1zzz_zzzz_zzzz_zzzz : highest_pending_bit = 16'h8000;
+     endcase // casez (pending)
+   
+   always @(handling)
+     casez (handling)
+       16'b0000_0000_0000_000z : handling_id = 4'd0;
+       16'b0000_0000_0000_001z : handling_id = 4'd1;
+       16'b0000_0000_0000_01zz : handling_id = 4'd2;
+       16'b0000_0000_0000_1zzz : handling_id = 4'd3;
+       16'b0000_0000_0001_zzzz : handling_id = 4'd4;
+       16'b0000_0000_001z_zzzz : handling_id = 4'd5;
+       16'b0000_0000_01zz_zzzz : handling_id = 4'd6;
+       16'b0000_0000_1zzz_zzzz : handling_id = 4'd7;
+       16'b0000_0001_zzzz_zzzz : handling_id = 4'd8;
+       16'b0000_001z_zzzz_zzzz : handling_id = 4'd9;
+       16'b0000_01zz_zzzz_zzzz : handling_id = 4'd10;
+       16'b0000_1zzz_zzzz_zzzz : handling_id = 4'd11;
+       16'b0001_zzzz_zzzz_zzzz : handling_id = 4'd12;
+       16'b001z_zzzz_zzzz_zzzz : handling_id = 4'd13;
+       16'b01zz_zzzz_zzzz_zzzz : handling_id = 4'd14;
+       16'b1zzz_zzzz_zzzz_zzzz : handling_id = 4'd15;
+     endcase // case (handling)
 endmodule

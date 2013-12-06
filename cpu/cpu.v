@@ -29,7 +29,8 @@ module cpu(
            output        mem_rd_en,
            output [15:0] mem_wr_data,
            output        request_interrupt,
-           output        clear_interrupt
+           output        clear_interrupt,
+           output [3:0]  clear_interrupt_id       
            /*AUTOARG*/);
 
    localparam WORD_WIDTH = 16;
@@ -76,6 +77,8 @@ module cpu(
    reg [15:0]            reg_wr_data = 16'b0;
    reg                   pending_interrupt = 1'b0;
    reg [3:0]             pending_interrupt_id = 4'b0;
+
+   assign clear_interrupt_id = pending_interrupt_id;
    
    assign {op,dest,ext,src} = inst_reg;
    assign a_reg_sel = return_stack_dest ? 4'hE : dest;

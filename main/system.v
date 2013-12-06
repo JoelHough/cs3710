@@ -26,6 +26,7 @@ module system(
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
    wire                 clear_interrupt;        // From Cpu of cpu.v
+   wire [3:0]           clear_interrupt_id;     // From Cpu of cpu.v
    wire                 cpu_interrupt;          // From InterruptController of interrupt_controller.v
    wire [3:0]           cpu_interrupt_id;       // From InterruptController of interrupt_controller.v
    wire [15:0]          mem_addr;               // From Cpu of cpu.v
@@ -54,6 +55,7 @@ module system(
             .mem_wr_data                (mem_wr_data[15:0]),
             .request_interrupt          (request_interrupt),
             .clear_interrupt            (clear_interrupt),
+            .clear_interrupt_id         (clear_interrupt_id[3:0]),
             // Inputs
             .clk                        (clk),
             .en                         (en),
@@ -74,6 +76,7 @@ module system(
                                             // Inputs
                                             .clk                (clk),
                                             .clear_interrupt    (clear_interrupt),
+                                            .clear_interrupt_id (clear_interrupt_id),
                                             .interrupt_lines    (interrupt_lines[15:0]));
 
    block_ram BlockRam (.en       (block_ram_en),
