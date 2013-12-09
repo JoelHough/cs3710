@@ -1,6 +1,7 @@
 load 'assembler.rb'
 
 assemble 'cpu_test.hex' do
+  psr = r13
   rs = r14
   ps = r15
   def retx
@@ -36,13 +37,13 @@ assemble 'cpu_test.hex' do
   lea r0, :buc
   juc r0
   label :irq0
-  mov r0, r1
+  add r4, r3
   retx
   label :irq1
-  mov r1, r2
+  add r3, r2
   retx
   label :irq2
-  movi r2, 1
+  addi r2, 1
   retx
   3.upto(15).each do |i|
     label "irq#{i}".to_sym
@@ -295,12 +296,28 @@ assemble 'cpu_test.hex' do
   label :interrupts
   label :interrupt_control_register, 0x1001
   lea r0, :interrupt_control_register
-  movi r2, 0
+  movi r2, 1
+  movi r3, 2
+  movi r4, 3
   movi r1, 0b0000_0111
   stor r1, r0
   nop
   nop
+  cmpi r2, 2
+  assert :eq
+  cmpi r3, 4
+  assert :eq
+  cmpi r4, 7
+  assert :eq
+
+  label :psr_saving
+  movi r0, 1
   cmpi r0, 1
+  assert :eq
+  mov r1, psr
+  cmpi r0, 0
+  assert :ne
+  mov psr, r1
   assert :eq
 
   lea r0, :data_mem

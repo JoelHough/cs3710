@@ -38,7 +38,7 @@ module control(
                output reg       set_alu_result, 
 	       output reg       imm_to_b, 
 
-	       output reg [1:0] pc_op, 
+	       output reg [1:0] pc_op,
 	       output reg       pc_to_reg_file,
 
 	       output reg       mem_to_reg_file,

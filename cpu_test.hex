@@ -18,13 +18,13 @@ d620      // 00000010: movi 6, :bad_lo
 d01f      // 00000011: movi 0, :buc_lo
 f000      // 00000012: lui 0, :buc_hi
 4ec0      // 00000013: juc 0
-00d1      // 00000014, irq0: mov 0, 1
+0453      // 00000014, irq0: add 4, 3
 40f0      // 00000015: clri
 4ece      // 00000016: juc 14
-01d2      // 00000017, irq1: mov 1, 2
+0352      // 00000017, irq1: add 3, 2
 40f0      // 00000018: clri
 4ece      // 00000019: juc 14
-d201      // 0000001a, irq2: movi 2, 1
+5201      // 0000001a, irq2: addi 2, 1
 40f0      // 0000001b: clri
 4ece      // 0000001c: juc 14
 40f0      // 0000001d, irq3, irq4, irq5, irq6, irq7, irq8, irq9, irq10, irq11, irq12, irq13, irq14, irq15: clri
@@ -321,7 +321,7 @@ b001      // 0000013f: cmpi 0, 1
 c002      // 00000140: beq 2
 4ec6      // 00000141: juc 6
 d001      // 00000142, load, stor: movi 0, 1
-d1e6      // 00000143: movi 1, :data_mem_lo
+d1f9      // 00000143: movi 1, :data_mem_lo
 f101      // 00000144: lui 1, :data_mem_hi
 4041      // 00000145: stor 0, 1
 5001      // 00000146: addi 0, 1
@@ -339,7 +339,7 @@ f101      // 00000144: lui 1, :data_mem_hi
 5001      // 00000152: addi 0, 1
 5102      // 00000153: addi 1, 2
 d001      // 00000154: movi 0, 1
-d1e6      // 00000155: movi 1, :data_mem_lo
+d1f9      // 00000155: movi 1, :data_mem_lo
 f101      // 00000156: lui 1, :data_mem_hi
 4001      // 00000157: load 0, 1
 8001      // 00000158: lshi 0, 1
@@ -367,7 +367,7 @@ f101      // 00000156: lui 1, :data_mem_hi
 4041      // 0000016e: stor 0, 1
 5101      // 0000016f: addi 1, 1
 d000      // 00000170: movi 0, 0
-d1e6      // 00000171: movi 1, :data_mem_lo
+d1f9      // 00000171: movi 1, :data_mem_lo
 f101      // 00000172: lui 1, :data_mem_hi
 4001      // 00000173: load 0, 1
 b001      // 00000174: cmpi 0, 1
@@ -469,21 +469,40 @@ c002      // 000001d3: beq 2
 4ec6      // 000001d4: juc 6
 d001      // 000001d5, interrupts: movi 0, :interrupt_control_register_lo
 f010      // 000001d6: lui 0, :interrupt_control_register_hi
-d200      // 000001d7: movi 2, 0
-d107      // 000001d8: movi 1, 7
-4140      // 000001d9: stor 1, 0
-00d0      // 000001da: nop
-00d0      // 000001db: nop
-b001      // 000001dc: cmpi 0, 1
-c002      // 000001dd: beq 2
-4ec6      // 000001de: juc 6
-d0e6      // 000001df: movi 0, :data_mem_lo
-f001      // 000001e0: lui 0, :data_mem_hi
-d1ef      // 000001e1: movi 1, 239
-f1be      // 000001e2: lui 1, 190
-4140      // 000001e3: stor 1, 0
-4100      // 000001e4, pass: load 1, 0
-ceff      // 000001e5: buc :pass
+d201      // 000001d7: movi 2, 1
+d302      // 000001d8: movi 3, 2
+d403      // 000001d9: movi 4, 3
+d107      // 000001da: movi 1, 7
+4140      // 000001db: stor 1, 0
+00d0      // 000001dc: nop
+00d0      // 000001dd: nop
+b202      // 000001de: cmpi 2, 2
+c002      // 000001df: beq 2
+4ec6      // 000001e0: juc 6
+b304      // 000001e1: cmpi 3, 4
+c002      // 000001e2: beq 2
+4ec6      // 000001e3: juc 6
+b407      // 000001e4: cmpi 4, 7
+c002      // 000001e5: beq 2
+4ec6      // 000001e6: juc 6
+d001      // 000001e7, psr_saving: movi 0, 1
+b001      // 000001e8: cmpi 0, 1
+c002      // 000001e9: beq 2
+4ec6      // 000001ea: juc 6
+01dd      // 000001eb: mov 1, 13
+b000      // 000001ec: cmpi 0, 0
+c102      // 000001ed: bne 2
+4ec6      // 000001ee: juc 6
+0dd1      // 000001ef: mov 13, 1
+c002      // 000001f0: beq 2
+4ec6      // 000001f1: juc 6
+d0f9      // 000001f2: movi 0, :data_mem_lo
+f001      // 000001f3: lui 0, :data_mem_hi
+d1ef      // 000001f4: movi 1, 239
+f1be      // 000001f5: lui 1, 190
+4140      // 000001f6: stor 1, 0
+4100      // 000001f7, pass: load 1, 0
+ceff      // 000001f8: buc :pass
 // data_mem: 
 0000 0000  0000 0000
 0000

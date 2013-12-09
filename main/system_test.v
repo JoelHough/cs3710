@@ -33,7 +33,7 @@ module system_test;
 	// Instantiate the Unit Under Test (UUT)
 	system uut (
 		.clk(clk), 
-		.block_ram_rd_data(mem_rd_data)
+		.mem_rd_data(mem_rd_data)
   );
 
   always begin

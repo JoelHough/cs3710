@@ -51,7 +51,7 @@ module interrupt_controller(
      if (clear_interrupt)
        cpu_interrupt <= 1'b0;
      else
-       cpu_interrupt <= trigger;
+       cpu_interrupt <= trigger & handle_interrupt;
    
    always @(posedge clk)
      if (clear_interrupt)

@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module system(
               input clk,
-              output [15:0] block_ram_rd_data
+              output reg [15:0] mem_rd_data = 16'b0
               );
 
    /*AUTOWIRE*/
@@ -36,12 +36,12 @@ module system(
    wire                 request_interrupt;      // From Cpu of cpu.v
    // End of automatics
 
-   reg [15:0]           mem_rd_data = 16'b0;
+   //reg [15:0]           mem_rd_data = 16'b0;
    reg [15:0]           last_addr_read = 16'hFFFF;
    reg                  block_ram_en = 1'b0;
    reg                  interrupt_control_en = 1'b0;
    reg [15:0]           interrupt_lines = 16'b0;
-   //wire [15:0]          block_ram_read_data;
+   wire [15:0]          block_ram_rd_data;
    wire                 en;
    assign en = 1'b1;
    

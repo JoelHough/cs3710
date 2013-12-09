@@ -54,15 +54,17 @@ module cpu(
    wire [15:0]          pc;                     // From Pc of program_counter.v
    wire [1:0]           pc_op;                  // From Control of control.v
    wire                 pc_to_reg_file;         // From Control of control.v
+   wire [15:0]          psr_rd_data;            // From RegisterFile of register_file.v
    wire                 reg_file_a_rd_en;       // From Control of control.v
    wire                 reg_file_b_rd_en;       // From Control of control.v
    wire                 reg_file_wr_en;         // From Control of control.v
+   wire                 return_stack_dest;      // From Control of control.v
    wire                 set_alu_result;         // From Control of control.v
    wire                 set_flags;              // From Control of control.v
    wire                 vector_to_pc;           // From Control of control.v
    // End of automatics
 
-   reg [4:0]             alu_flags_reg = 1'b0;
+   wire [4:0]            alu_flags_reg = psr_rd_data[4:0];
    reg [15:0]            alu_result_reg = 1'b0;
    reg [15:0]            inst_reg = 16'b0101_0000_0000_0001; // ADDI 1, R0
    wire [3:0]            op;
@@ -101,8 +103,11 @@ module cpu(
                               .b_reg_rd_en     (reg_file_b_rd_en),
                               .a_reg_wr_en     (reg_file_wr_en),
                               .a_reg_wr_data   (reg_wr_data[15:0]),
+                              .psr_wr_en       (set_flags),
+                              .psr_wr_data     ({11'b0,alu_flags}),
                               /*AUTOINST*/
                               // Outputs
+                              .psr_rd_data      (psr_rd_data[15:0]),
                               .a_reg_rd_data    (a_reg_rd_data[15:0]),
                               .b_reg_rd_data    (b_reg_rd_data[15:0]),
                               // Inputs
@@ -111,7 +116,6 @@ module cpu(
                               .b_reg_sel        (b_reg_sel[3:0]));
 
    always @(posedge clk) begin
-      if (set_flags) alu_flags_reg <= alu_flags;
       if (set_alu_result) alu_result_reg <= alu_result;
       if (mem_to_inst_reg) inst_reg <= mem_rd_data;
       if (interrupt) begin
@@ -146,11 +150,11 @@ module cpu(
    wire [15:0] pc_a = vector_to_pc ? pending_interrupt_id : alu_b;
    program_counter #(.INITIAL_PC(16'd16)) Pc (/*AUTOINST*/
                                               // Outputs
-                                              .pc              (pc[15:0]),
+                                              .pc               (pc[15:0]),
                                               // Inputs
-                                              .clk             (clk),
-                                              .pc_op           (pc_op[1:0]),
-                                              .pc_a            (pc_a[15:0]));
+                                              .clk              (clk),
+                                              .pc_op            (pc_op[1:0]),
+                                              .pc_a             (pc_a[15:0]));
    
    
    control Control (.op                 (decode_op[3:0]),
