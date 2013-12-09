@@ -43,10 +43,12 @@ module system(
    reg [15:0]           interrupt_lines = 16'b0;
    wire [15:0]          block_ram_rd_data;
    wire [15:0]          prng_rd_data;
-   
+   wire pixel_clk, timer_clk;
    wire                 en;
    assign en = 1'b1;
    
+   clock_manager ClockManager (.clk(clk), .sys_clk(sys_clk), .pixel_clk(pixel_clk), .timer_clk(timer_clk));
+
    cpu Cpu (.interrupt                  (cpu_interrupt),
             .interrupt_id               (cpu_interrupt_id),
             /*AUTOINST*/
@@ -59,26 +61,26 @@ module system(
             .clear_interrupt            (clear_interrupt),
             .clear_interrupt_id         (clear_interrupt_id[3:0]),
             // Inputs
-            .clk                        (clk),
+            .clk                        (sys_clk),
             .en                         (en),
             .mem_rd_data                (mem_rd_data[15:0]));
 
-   always @(posedge clk)
+   always @(posedge sys_clk)
      if (interrupt_control_en & mem_wr_en)
        interrupt_lines <= mem_wr_data;
      else
        interrupt_lines <= 16'b0;
    
 
-   lfsr Lfsr (.clk(clk), .rd_data(prng_rd_data));
+   lfsr Lfsr (.clk(sys_clk), .rd_data(prng_rd_data));
    
-   interrupt_controller InterruptController(.handle_interrupt   (request_interrupt),
+   interrupt_controller InterruptController(.clk                (sys_clk),
+                                            .handle_interrupt   (request_interrupt),
                                             /*AUTOINST*/
                                             // Outputs
                                             .cpu_interrupt      (cpu_interrupt),
                                             .cpu_interrupt_id   (cpu_interrupt_id[3:0]),
                                             // Inputs
-                                            .clk                (clk),
                                             .clear_interrupt    (clear_interrupt),
                                             .clear_interrupt_id (clear_interrupt_id[3:0]),
                                             .interrupt_lines    (interrupt_lines[15:0]));
@@ -86,7 +88,7 @@ module system(
    block_ram BlockRam (.en       (block_ram_en),
                        .wr_en    (block_ram_en & mem_wr_en),
                        .data_out (block_ram_rd_data),
-                       .clk      (clk),
+                       .clk      (sys_clk),
                        .addr     (mem_addr[11:0]),
                        .data_in  (mem_wr_data));
    
@@ -105,7 +107,7 @@ module system(
    end
 
    /* memory map read data */
-   always @(posedge clk)
+   always @(posedge sys_clk)
      if (mem_rd_en)
        last_addr_read <= mem_addr;
    
