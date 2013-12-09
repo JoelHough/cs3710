@@ -42,6 +42,8 @@ module system(
    reg                  interrupt_control_en = 1'b0;
    reg [15:0]           interrupt_lines = 16'b0;
    wire [15:0]          block_ram_rd_data;
+   wire [15:0]          prng_rd_data;
+   
    wire                 en;
    assign en = 1'b1;
    
@@ -67,6 +69,8 @@ module system(
      else
        interrupt_lines <= 16'b0;
    
+
+   lfsr Lfsr (.clk(clk), .rd_data(prng_rd_data));
    
    interrupt_controller InterruptController(.handle_interrupt   (request_interrupt),
                                             /*AUTOINST*/
@@ -76,7 +80,7 @@ module system(
                                             // Inputs
                                             .clk                (clk),
                                             .clear_interrupt    (clear_interrupt),
-                                            .clear_interrupt_id (clear_interrupt_id),
+                                            .clear_interrupt_id (clear_interrupt_id[3:0]),
                                             .interrupt_lines    (interrupt_lines[15:0]));
 
    block_ram BlockRam (.en       (block_ram_en),
@@ -88,6 +92,7 @@ module system(
    
    localparam BLOCK_RAM_ADDR = 16'h0zzz; //16'b0000_zzzz_zzzz_zzzz;
    localparam INTERRUPT_CONTROL_ADDR = 16'h1001;
+   localparam PRNG_ADDR = 16'h1002;
    
    /* memory map enables */
    always @(mem_addr) begin
@@ -107,6 +112,7 @@ module system(
    always @*
      casez (last_addr_read)
        BLOCK_RAM_ADDR : mem_rd_data = block_ram_rd_data;
+       PRNG_ADDR : mem_rd_data = prng_rd_data;
        default : mem_rd_data = 16'hDEAF;
      endcase // casez (last_addr_read)
    
