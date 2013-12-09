@@ -37,10 +37,14 @@ assemble 'cpu_test.hex' do
   lea r0, :buc
   juc r0
   label :irq0
+  mov ps, psr
   add r4, r3
+  mov psr, ps
   retx
   label :irq1
+  mov ps, psr
   add r3, r2
+  mov psr, ps
   retx
   label :irq2
   addi r2, 1
@@ -319,6 +323,35 @@ assemble 'cpu_test.hex' do
   assert :ne
   mov psr, r1
   assert :eq
+
+  label :timers
+  label :timer0_register, 0x1004 #irq0
+  label :timer1_register, 0x1005 #irq1
+  # timer1 -> r3 += r2
+  # timer0 -> r4 += r3
+  movi r1, 0x7F
+  movi r2, 10
+  movi r3, 1
+  movi r4, 0
+  lea r0, :timer0_register
+  movi r1, 3
+  stor r1, r0
+  lea r0, :timer1_register
+  movi r1, 2
+  stor r1, r0
+  movi r1, 0x00 # should be long enough to catch 3ms
+  lui r1, 0xB0
+
+  label :timer_loop
+  cmpi r4, 11
+  beq :end_timer
+  cmpi r4, 1
+  assert :ne
+  subi r1, 1
+  cmpi r1, 0
+  assert :ne
+  buc :timer_loop
+  label :end_timer
 
   lea r0, :data_mem
   movi r1, 0xEF
