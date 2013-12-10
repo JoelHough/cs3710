@@ -18,9 +18,10 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module system(
-              input clk,
-              output reg [15:0] mem_rd_data = 16'b0
+module system(input clk,
+              output Hsync,
+              output Vsync,
+              output [7:0] vgaColor
               );
 
    /*AUTOWIRE*/
@@ -36,19 +37,28 @@ module system(
    wire                 request_interrupt;      // From Cpu of cpu.v
    // End of automatics
 
-   //reg [15:0]           mem_rd_data = 16'b0;
+   reg [15:0]           mem_rd_data = 16'b0;
    reg [15:0]           last_addr_read = 16'hFFFF;
    reg                  block_ram_en = 1'b0;
+
    reg                  interrupt_control_en = 1'b0;
    wire [15:0]          interrupt_lines;
    reg [15:0]           memmap_interrupts = 16'b0;           
+
    wire [15:0]          block_ram_rd_data;
+
    wire [15:0]          prng_rd_data;
+
    reg [16:0]           ms_counter = 17'b0;
    wire                 pixel_clk, ms_strobe;
    reg [1:0]            timer_en = 2'b0;
    wire [1:0]           timer_done;
    wire [1:0]           timer_strobe;
+
+   wire [7:0]           pixel;
+   wire                 pixel_rdy, pixel_rq, new_frame;
+   reg                  tgg_en = 1'b0;
+   wire [15:0]          tgg_rd_data;
    
    wire                 en;
    assign en = 1'b1;
@@ -76,9 +86,7 @@ module system(
    assign ms_strobe = ms_counter == 17'b0;
 
    timer Timer [1:0] (.clk(sys_clk), .cnt_en(ms_strobe), .wr_en(timer_en & {2{mem_wr_en}}), .wr_data(mem_wr_data), .done(timer_done));
-//   timer Timer1 (.clk(ms_strobe), .wr_en(timer1_wr_en), .wr_data(timer1_wr_data), .done(timer1_done));   
    one_shot TimerOS [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));
-//   one_shot Timer1OS (.clk(sys_clk), .signal(timer1_done), .strobe(timer1_strobe));
    
    lfsr Lfsr (.clk(sys_clk), .rd_data(prng_rd_data));
    
@@ -106,21 +114,46 @@ module system(
                        .clk      (sys_clk),
                        .addr     (mem_addr[11:0]),
                        .data_in  (mem_wr_data));
-   
+
+   pixel_buffer_vga_controller PixelBufferVgaController (.pixel(pixel),
+                                                         .wr_clk(sys_clk),
+                                                         .wr_en(pixel_rdy),
+                                                         .pixel_clk(pixel_clk),
+                                                         .wr_rq(pixel_rq),
+                                                         .resync(new_frame),
+                                                         .color(vgaColor),
+                                                         .hsync(Hsync),
+                                                         .vsync(Vsync));
+   //assign pixel_rdy = pixel_rq;
+   //assign pixel = 8'b11_101_101;
+   tank_game_graphics TankGameGraphics (.clk(sys_clk),
+                                        .addr(mem_addr[2:0]),
+                                        .wr_en(tgg_en & mem_wr_en),
+                                        .wr_data(mem_wr_data),
+                                        .rd_en(tgg_en),
+                                        .rd_data(tgg_rd_data),
+                                        .new_frame(new_frame),
+                                        .pixel_rq(pixel_rq),
+                                        .pixel_data(pixel),
+                                        .pixel_rdy(pixel_rdy));
+
    localparam BLOCK_RAM_ADDR = 16'h0zzz; //16'b0000_zzzz_zzzz_zzzz;
    localparam INTERRUPT_CONTROL_ADDR = 16'h1001;
    localparam PRNG_ADDR = 16'h1002;
-   localparam TIMER_ADDR = 16'b0001_0000_0000_010Z;
+   localparam TIMER_ADDR = 16'b0001_0000_0000_010z;
+   localparam TGG_ADDR = 16'b0001_0000_0000_1zzz;
 
    /* memory map enables */
    always @(mem_addr) begin
       block_ram_en = 1'b0;
       interrupt_control_en = 1'b0;
       timer_en = 2'b0;
+      tgg_en = 1'b0;
       casez (mem_addr)
         BLOCK_RAM_ADDR : block_ram_en = 1'b1;
         INTERRUPT_CONTROL_ADDR : interrupt_control_en = 1'b1;
         TIMER_ADDR : timer_en = mem_addr[0] + 2'b1;
+        TGG_ADDR : tgg_en = 1'b1;
       endcase // casez (mem_addr)
    end
 
@@ -133,6 +166,7 @@ module system(
      casez (last_addr_read)
        BLOCK_RAM_ADDR : mem_rd_data = block_ram_rd_data;
        PRNG_ADDR : mem_rd_data = prng_rd_data;
+       TGG_ADDR : mem_rd_data = tgg_rd_data;
        default : mem_rd_data = 16'hDEAF;
      endcase // casez (last_addr_read)
    

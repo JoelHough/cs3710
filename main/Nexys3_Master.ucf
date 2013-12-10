@@ -257,28 +257,3 @@ NET "Vsync"          LOC = "P7"  |IOSTANDARD = "LVCMOS33";   # Bank = 2, Pin nam
 #NET "EXP-IO_N<18>"   LOC = "C14" | IOSTANDARD = "LVCMOS33";   #Bank = 0, Pin name = IO_L65N_SCP2,                      Sch name = EXP_IO19_N
 #NET "EXP-IO_P<19>"   LOC = "B16" | IOSTANDARD = "LVCMOS33";   #Bank = 0, Pin name = IO_L66P_SCP1,                      Sch name = EXP_IO20_P
 #NET "EXP-IO_N<19>"   LOC = "A16" | IOSTANDARD = "LVCMOS33";   #Bank = 0, Pin name = IO_L66N_SCP0,                      Sch name = EXP_IO20_N
-#Created by Constraints Editor (xc6slx16-csg324-3) - 2013/11/21
-#cpu instruction register
-INST "uut/inst_reg_0" TNM = inst_reg;
-INST "uut/inst_reg_0_1" TNM = inst_reg;
-INST "uut/inst_reg_1" TNM = inst_reg;
-INST "uut/inst_reg_2" TNM = inst_reg;
-INST "uut/inst_reg_2_1" TNM = inst_reg;
-INST "uut/inst_reg_3" TNM = inst_reg;
-INST "uut/inst_reg_4" TNM = inst_reg;
-INST "uut/inst_reg_5" TNM = inst_reg;
-INST "uut/inst_reg_6" TNM = inst_reg;
-INST "uut/inst_reg_7" TNM = inst_reg;
-INST "uut/inst_reg_8" TNM = inst_reg;
-INST "uut/inst_reg_9" TNM = inst_reg;
-INST "uut/inst_reg_10" TNM = inst_reg;
-INST "uut/inst_reg_11" TNM = inst_reg;
-INST "uut/inst_reg_12" TNM = inst_reg;
-INST "uut/inst_reg_13" TNM = inst_reg;
-INST "uut/inst_reg_14" TNM = inst_reg;
-INST "uut/inst_reg_15" TNM = inst_reg;
-#Created by Constraints Editor (xc6slx16-csg324-3) - 2013/11/21
-#stack_memory
-INST "uut/stack*" TNM = stack_data;
-#we don't push to the stack for a couple of states after the inst reg load
-TIMESPEC TS_inst_to_stack = FROM "inst_reg" TO "stack_data" TS_sys_clk_pin / 2;

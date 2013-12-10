@@ -1,0 +1,34 @@
+ce11      // 00000000: buc :irq
+ce10      // 00000001: buc :irq
+ce0f      // 00000002: buc :irq
+ce0e      // 00000003: buc :irq
+ce0d      // 00000004: buc :irq
+ce0c      // 00000005: buc :irq
+ce0b      // 00000006: buc :irq
+ce0a      // 00000007: buc :irq
+ce09      // 00000008: buc :irq
+ce08      // 00000009: buc :irq
+ce07      // 0000000a: buc :irq
+ce06      // 0000000b: buc :irq
+ce05      // 0000000c: buc :irq
+ce04      // 0000000d: buc :irq
+ce03      // 0000000e: buc :irq
+ce02      // 0000000f: buc :irq
+ce03      // 00000010: buc :start
+40f0      // 00000011, irq: clri
+4ece      // 00000012: juc rs
+d008      // 00000013, start: movi r0, :ground_index_lo
+f010      // 00000014: lui r0, :ground_index_hi
+d109      // 00000015: movi r1, :ground_height_lo
+f110      // 00000016: lui r1, :ground_height_hi
+d200      // 00000017: movi r2, 0
+d3f0      // 00000018: movi r3, 240
+f300      // 00000019: lui r3, 0
+d480      // 0000001a: movi r4, 128
+f402      // 0000001b: lui r4, 2
+4240      // 0000001c, set_ground_height: stor r2, r0
+4341      // 0000001d: stor r3, r1
+5201      // 0000001e: addi r2, 1
+02b4      // 0000001f: cmp r2, r4
+c1fc      // 00000020: bne :set_ground_height
+ceff      // 00000021: buc -1
