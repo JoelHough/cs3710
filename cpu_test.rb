@@ -1,14 +1,6 @@
 load 'assembler.rb'
 
 assemble 'cpu_test.hex' do
-  psr = r13
-  rs = r14
-  ps = r15
-  def retx
-    clri
-    juc r14
-  end
-
   label :interrupt_jump_table
   0.upto(15).each do |i|
     buc "irq#{i}".to_sym
@@ -294,8 +286,8 @@ assemble 'cpu_test.hex' do
     assert :eq
   end
 
-  test_stack r15
-  test_stack r14
+  test_stack ps
+  test_stack rs
 
   label :interrupts
   label :interrupt_control_register, 0x1001
@@ -318,10 +310,10 @@ assemble 'cpu_test.hex' do
   movi r0, 1
   cmpi r0, 1
   assert :eq
-  mov r1, psr
-  cmpi r0, 0
-  assert :ne
-  mov psr, r1
+  preserving psr do
+    cmpi r0, 0
+    assert :ne
+  end
   assert :eq
 
   label :timers

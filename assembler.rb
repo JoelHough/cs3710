@@ -5,13 +5,26 @@
 
 @op_padding = 10
 
-0.upto(15) do |i|
-  define_singleton_method("r#{i}") {i}
+class Register
+  def initialize(i, name=nil)
+    @i = i
+    @name = name || "r#{i}"
+  end
+  def to_i
+    @i
+  end
+  def to_s
+    @name
+  end
 end
 
-def regs
-  0.upto(15).to_a
+0.upto(12) do |i|
+  define_singleton_method("r#{i}") {Register.new(i)}
 end
+
+define_singleton_method("psr") {Register.new(13, 'psr')}
+define_singleton_method("rs") {Register.new(14, 'rs')}
+define_singleton_method("ps") {Register.new(15, 'ps')}
 
 arith_ops = {
   add: 0b0101,
@@ -111,7 +124,7 @@ def dw(*words)
     comment = labeled_comment(labels_for(pc), words)
     ws = [' ', '  ', ' ', "\n"]
     words.each do |w|
-      throw "word #{w} is out of range" if w >= 2**16 || w < -2**15      
+      throw "word #{w} is out of range" if w >= 2**16 || w < -2**15
       hex += w.to_hex(4) + ws.rotate!.last
     end
     comment + hex.strip
@@ -165,9 +178,9 @@ def op(opcode, a, ext, b, text)
 end
 
 def reg_op(name, opcode, a, ext, b)
-  throw "'a' out of range" if a < 0 || a > 15
-  throw "'b' out of range" if b < 0 || b > 15
-  op opcode, a, ext, b, "#{name} #{a}, #{b}"
+  throw "'a' must be a register" unless a.is_a? Register
+  throw "'b' must be a register" unless b.is_a? Register
+  op opcode, a.to_i, ext, b.to_i, "#{name} #{a}, #{b}"
 end
 
 def arith_op(name, opcode)
@@ -176,15 +189,16 @@ def arith_op(name, opcode)
     reg_op name, 0, a, opcode, b
   end
   define_singleton_method("#{name}i") do |a, b|
-    throw "'a' out of range" if a < 0 || a > 15
+    throw "'a' must be a register" unless a.is_a? Register
     text = "#{name}i #{a}, #{b.inspect}"
     if b.is_a?(Symbol)
       pc_op do |pc|
-        [[opcode, a, addr_for(b)>>4 & 0xF, addr_for(b) & 0xF], text]
+        [[opcode, a.to_i, addr_for(b)>>4 & 0xF, addr_for(b) & 0xF], text]
       end
     else
+      throw "'b' must be an immediate value or a label" unless b.is_a? Fixnum
       throw "'b' out of range" if b < -128 || b > 255
-      op opcode, a, b>>4 & 0xF, b & 0xF, text
+      op opcode, a.to_i, b>>4 & 0xF, b & 0xF, text
     end
   end
 end
@@ -195,10 +209,11 @@ end
 
 def define_branch(cond, code)
   define_method("j#{cond}", lambda do |dest_reg|
-    throw "'dest_reg' out of range" if dest_reg < 0 || dest_reg > 15
-    op 0b0100,code,0b1100,dest_reg, "j#{cond} #{dest_reg}"
+    throw "'dest_reg' must be a register" unless dest_reg.is_a? Register
+    op 0b0100,code,0b1100,dest_reg.to_i, "j#{cond} #{dest_reg}"
   end)
   define_method("b#{cond}", lambda do |disp|
+    throw "'disp' must be an immediate value or a label" unless disp.is_a?(Fixnum) || disp.is_a?(Symbol)
     throw "'disp' out of range" if !disp.is_a?(Symbol) && (disp < -128 || disp > 127)
     pc_op do |pc|
       if disp.is_a?(Symbol)
@@ -233,9 +248,10 @@ def lsh(a, b)
 end
 
 def lshi(a, b)
-  throw "'a' out of range" if a < 0 || a > 15
+  throw "'a' must be a register" unless a.is_a? Register
+  throw "'b' must be an immediate value" unless b.is_a? Fixnum
   throw "'b' out of range" if b < -16 || b > 16
-  op 0b1000,a,(b < 0 ? 1 : 0),b, "lshi #{a}, #{b}"
+  op 0b1000,a.to_i,(b < 0 ? 1 : 0),b, "lshi #{a}, #{b}"
 end
 
 def clri
@@ -263,7 +279,34 @@ def hi(label)
   (label.to_s + '_hi').to_sym
 end
 
+# pseudo ops
+def ret
+  juc rs
+end
+
+def retx
+  clri
+  ret
+end
+
 def lea(reg, label)
   movi reg, lo(label)
   lui reg, hi(label)
+end
+
+def preserve(*regs)
+  regs.each {|r| mov ps, r}
+  yield
+  regs.reverse.each {|r| mov r, ps}
+end
+alias :preserving :preserve
+
+def movwi(reg, w)
+  throw "'word' is out of range" if w >= 2**16 || w < -2**15
+  movi reg, w & 0xff
+  lui reg, (w >> 8) & 0xff if w > 0x7f || w < -128
+end
+
+def wait
+  buc -1
 end
