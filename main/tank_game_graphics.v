@@ -24,7 +24,7 @@ module tank_game_graphics(
     input wr_en,
     input [15:0] wr_data,
     input rd_en,
-    output [15:0] rd_data,
+    output reg [15:0] rd_data,
     input new_frame,
     input pixel_rq,
     output reg [7:0] pixel_data,
@@ -54,6 +54,8 @@ module tank_game_graphics(
    reg [7:0] ground_pixel = transparent_pixel;
    /*reg [7:0]*/localparam background_pixel = 8'b11_101_101;
    /*reg [7:0]*/localparam transparent_pixel = 8'b10_110_111;
+
+   localparam bullet_color = 8'b0;//11_111_111;
 
    reg        counter_en = 1'b0;
    reg        counter_rst = 1'b1;
@@ -101,9 +103,11 @@ module tank_game_graphics(
      else if (state == RESET)
        new_frame_ack <= 1'b1;
    
-   always @(posedge clk)
-     ground_pixel <= ground_y[x] >= y ? ground_color : transparent_pixel;
-
+   always @(posedge clk) begin
+      bullet_pixel <= bullet_x == x && bullet_y == y ? bullet_color : transparent_pixel;
+      ground_pixel <= ground_y[x] >= y ? ground_color : transparent_pixel;
+   end
+   
    always @*
      if (bullet_pixel != transparent_pixel)
        pixel_data = bullet_pixel;
@@ -129,6 +133,17 @@ module tank_game_graphics(
          3'b111 : tank2_y <= wr_y;
        endcase // case (addr)
 
-   assign rd_data = 16'hFAFF;
-   
+   always @(posedge clk)
+     if (rd_en)
+       case (addr)
+         3'b000 : rd_data <= {6'b0,ground_index};
+         3'b001 : rd_data <= {7'b0,ground_y[ground_index]};
+         3'b010 : rd_data <= {6'b0,bullet_x};
+         3'b011 : rd_data <= {7'b0,bullet_y};
+         3'b100 : rd_data <= {6'b0,tank1_x};
+         3'b101 : rd_data <= {7'b0,tank1_y};
+         3'b110 : rd_data <= {6'b0,tank2_x};
+         3'b111 : rd_data <= {7'b0,tank2_y};
+       endcase
+         
 endmodule

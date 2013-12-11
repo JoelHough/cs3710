@@ -50,7 +50,8 @@ module control(
                output reg       request_interrupt,
                output reg       clear_interrupt,
                output reg       return_stack_dest,
-               output reg       vector_to_pc
+               output reg       vector_to_pc,
+               output reg       ack_interrupt
 	       /*AUTOARG*/);
 
    /* ops
@@ -228,17 +229,18 @@ module control(
       clear_interrupt = 1'b0;
       return_stack_dest = 1'b0;
       vector_to_pc = 1'b0;
+      ack_interrupt = 1'b0;
       
       case (state)
 	// fetch
 	FETCH : begin
 	   // this is the default: pc_to_mem_addr = 1'b1;
 	   mem_rd_en = 1'b1;
-           request_interrupt = 1'b1;
 	end
 
 	// decode
 	DECODE : begin
+           request_interrupt = 1'b1;
 	   mem_to_inst_reg = 1'b1;
 	   mem_to_decode = 1'b1;
 	   pc_op = 2'b1;
@@ -260,6 +262,7 @@ module control(
            pc_to_reg_file = 1'b1;
            vector_to_pc = 1'b1;
            reg_file_wr_en = 1'b1;
+           ack_interrupt = 1'b1;
         end
 	IMM_ALU_OP : begin
 	   imm_to_b = 1'b1;

@@ -27,13 +27,9 @@ module system_test;
 	// Inputs
 	reg clk = 0;
 	
-	// Outputs
-	wire [15:0] mem_rd_data;
-
 	// Instantiate the Unit Under Test (UUT)
 	system uut (
-		.clk(clk), 
-		.mem_rd_data(mem_rd_data)
+		.clk(clk)
   );
 
   always begin

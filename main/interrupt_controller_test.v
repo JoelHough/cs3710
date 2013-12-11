@@ -26,9 +26,10 @@ module interrupt_controller_test;
 
 	// Inputs
 	reg clk;
-  reg handle_interrupt;
+  reg request_interrupt;
 	reg clear_interrupt;
-  reg [3:0] clear_interrupt_id;
+  reg ack_interrupt;
+  reg [3:0] ack_interrupt_id;
 	reg [15:0] interrupt_lines;
 
 	// Outputs
@@ -38,9 +39,10 @@ module interrupt_controller_test;
 	// Instantiate the Unit Under Test (UUT)
 	interrupt_controller uut (
 		.clk(clk),
-    .handle_interrupt(handle_interrupt),
+    .request_interrupt(request_interrupt),
 		.clear_interrupt(clear_interrupt),
-    .clear_interrupt_id(clear_interrupt_id),
+    .ack_interrupt(ack_interrupt),
+    .ack_interrupt_id(ack_interrupt_id),
 		.interrupt_lines(interrupt_lines), 
 		.cpu_interrupt(cpu_interrupt), 
 		.cpu_interrupt_id(cpu_interrupt_id)
@@ -71,10 +73,19 @@ module interrupt_controller_test;
   end
   endtask
   
+  task one_shot_ack_interrupt;
+  input [3:0] id;
+  begin
+    ack_interrupt = 1'b1;
+    ack_interrupt_id = id;
+    clock;
+    ack_interrupt = 1'b0;
+  end
+  endtask
+  
   task one_shot_clear_interrupt;
   input [3:0] id;
   begin
-    clear_interrupt_id = id;
     clear_interrupt = 1'b1;
     clock;
     clear_interrupt = 1'b0;
@@ -84,9 +95,10 @@ module interrupt_controller_test;
 	initial begin
 		// Initialize Inputs
 		clk = 0;
-    handle_interrupt = 1;
+    request_interrupt = 1;
 		clear_interrupt = 0;
-    clear_interrupt_id = 0;
+    ack_interrupt = 0;
+    ack_interrupt_id = 0;
 		interrupt_lines = 0;
 
 		// Wait 100 ns for global reset to finish
@@ -101,12 +113,16 @@ module interrupt_controller_test;
     // irq0, delay, clear irq0, delay
     one_shot_interrupt(2**0);
     clock4;
+    one_shot_ack_interrupt(0);
+    clock4;
     one_shot_clear_interrupt(0);
     clock4;
     #20;
     
     // irq15, delay, clear irq15, delay
     one_shot_interrupt(2**15);
+    clock4;
+    one_shot_ack_interrupt(15);
     clock4;
     one_shot_clear_interrupt(15);
     clock4;
@@ -115,7 +131,11 @@ module interrupt_controller_test;
     // irq1, delay, irq2 interrupts irq1, delay, clear, delay, clear, delay
     one_shot_interrupt(2**1);
     clock4;
+    one_shot_ack_interrupt(1);
+    clock4;
     one_shot_interrupt(2**2);
+    clock4;
+    one_shot_ack_interrupt(2);
     clock4;
     one_shot_clear_interrupt(2);
     clock4;
@@ -126,9 +146,13 @@ module interrupt_controller_test;
     // irq2, delay, irq1 queues up behind irq2, delay, clear (irq1 should fire), delay, clear, delay
     one_shot_interrupt(2**2);
     clock4;
+    one_shot_ack_interrupt(2);
+    clock4;
     one_shot_interrupt(2**1);
     clock4;
     one_shot_clear_interrupt(2);
+    clock4;
+    one_shot_ack_interrupt(1);
     clock4;
     one_shot_clear_interrupt(1);
     clock4;
@@ -137,7 +161,11 @@ module interrupt_controller_test;
     // irq1 and irq2, delay, clear, delay, clear, delay
     one_shot_interrupt(2**1 + 2**2);
     clock4;
+    one_shot_ack_interrupt(2);
+    clock4;
     one_shot_clear_interrupt(2);
+    clock4;
+    one_shot_ack_interrupt(1);
     clock4;
     one_shot_clear_interrupt(1);
     clock4;
@@ -146,13 +174,21 @@ module interrupt_controller_test;
     // irq0 held for retriggering
     interrupt_lines = 2**0;
     clock4;
-    one_shot_clear_interrupt(0);
+    one_shot_ack_interrupt(0);
     clock4;
     one_shot_clear_interrupt(0);
+    clock4;
+    one_shot_ack_interrupt(0);
+    clock4;
+    one_shot_clear_interrupt(0);
+    clock4;
+    one_shot_ack_interrupt(0);
     clock4;
     interrupt_lines = 0;
     clock4;
     one_shot_clear_interrupt(0);
+    clock4;
+    one_shot_ack_interrupt(0);
     clock4;
     one_shot_clear_interrupt(0);
     clock4;
@@ -162,7 +198,11 @@ module interrupt_controller_test;
     one_shot_interrupt(2**1);
     one_shot_interrupt(2**2);
     clock4;
+    one_shot_ack_interrupt(2);
+    clock4;
     one_shot_clear_interrupt(2);
+    clock4;
+    one_shot_ack_interrupt(1);
     clock4;
     one_shot_clear_interrupt(1);
     clock4;
@@ -172,27 +212,35 @@ module interrupt_controller_test;
     one_shot_interrupt(2**2);
     one_shot_interrupt(2**1);
     clock4;
+    one_shot_ack_interrupt(2);
+    clock4;
     one_shot_clear_interrupt(2);
+    clock4;
+    one_shot_ack_interrupt(1);
     clock4;
     one_shot_clear_interrupt(1);
     clock4;
     #20;
     
-    // irq2, handle and irq1 immediately after, delay, clear, handle + delay, clear
-    handle_interrupt = 0;
+    // irq2, request and irq1 immediately after, delay, clear, request + delay, clear
+    request_interrupt = 0;
     one_shot_interrupt(2**2);
-    handle_interrupt = 1;
+    request_interrupt = 1;
     one_shot_interrupt(2**1);
-    handle_interrupt = 0;
+    request_interrupt = 0;
     clock;
-    handle_interrupt = 1;
+    one_shot_ack_interrupt(2);
+    clock4;
+    request_interrupt = 1;
     clock;
-    handle_interrupt = 0;
+    request_interrupt = 0;
     clock4;
     one_shot_clear_interrupt(2);
-    handle_interrupt = 1;
+    request_interrupt = 1;
     clock;
-    handle_interrupt = 0;
+    request_interrupt = 0;
+    one_shot_ack_interrupt(1);
+    clock4;
     clock4;
     one_shot_clear_interrupt(1);
     clock4;

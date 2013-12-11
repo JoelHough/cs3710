@@ -35,6 +35,7 @@ module block_ram(
    
    initial
       $readmemh("../tank_game.hex", ram, 0, 'h3FF);
+      //$readmemh("../cpu_test.hex", ram, 0, 'h3FF);
 
    always @(posedge clk)
       if (en) begin

@@ -26,8 +26,9 @@ module system(input clk,
 
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
+   wire                 ack_interrupt;          // From Cpu of cpu.v
+   wire [3:0]           ack_interrupt_id;       // From Cpu of cpu.v
    wire                 clear_interrupt;        // From Cpu of cpu.v
-   wire [3:0]           clear_interrupt_id;     // From Cpu of cpu.v
    wire                 cpu_interrupt;          // From InterruptController of interrupt_controller.v
    wire [3:0]           cpu_interrupt_id;       // From InterruptController of interrupt_controller.v
    wire [15:0]          mem_addr;               // From Cpu of cpu.v
@@ -54,7 +55,8 @@ module system(input clk,
    reg [1:0]            timer_en = 2'b0;
    wire [1:0]           timer_done;
    wire [1:0]           timer_strobe;
-
+   wire                 vsync_strobe;
+   
    wire [7:0]           pixel;
    wire                 pixel_rdy, pixel_rq, new_frame;
    reg                  tgg_en = 1'b0;
@@ -65,7 +67,8 @@ module system(input clk,
    
    clock_manager ClockManager (.clk(clk), .sys_clk(sys_clk), .pixel_clk(pixel_clk));
 
-   cpu Cpu (.interrupt                  (cpu_interrupt),
+   cpu Cpu (.clk                        (sys_clk),
+            .interrupt                  (cpu_interrupt),
             .interrupt_id               (cpu_interrupt_id),
             /*AUTOINST*/
             // Outputs
@@ -75,9 +78,9 @@ module system(input clk,
             .mem_wr_data                (mem_wr_data[15:0]),
             .request_interrupt          (request_interrupt),
             .clear_interrupt            (clear_interrupt),
-            .clear_interrupt_id         (clear_interrupt_id[3:0]),
+            .ack_interrupt              (ack_interrupt),
+            .ack_interrupt_id           (ack_interrupt_id[3:0]),
             // Inputs
-            .clk                        (sys_clk),
             .en                         (en),
             .mem_rd_data                (mem_rd_data[15:0]));
 
@@ -86,21 +89,24 @@ module system(input clk,
    assign ms_strobe = ms_counter == 17'b0;
 
    timer Timer [1:0] (.clk(sys_clk), .cnt_en(ms_strobe), .wr_en(timer_en & {2{mem_wr_en}}), .wr_data(mem_wr_data), .done(timer_done));
-   one_shot TimerOS [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));
+   one_shot TimerOs [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));
    
    lfsr Lfsr (.clk(sys_clk), .rd_data(prng_rd_data));
    
    interrupt_controller InterruptController(.clk                (sys_clk),
-                                            .handle_interrupt   (request_interrupt),
                                             /*AUTOINST*/
                                             // Outputs
                                             .cpu_interrupt      (cpu_interrupt),
                                             .cpu_interrupt_id   (cpu_interrupt_id[3:0]),
                                             // Inputs
                                             .clear_interrupt    (clear_interrupt),
-                                            .clear_interrupt_id (clear_interrupt_id[3:0]),
+                                            .ack_interrupt      (ack_interrupt),
+                                            .ack_interrupt_id   (ack_interrupt_id[3:0]),
+                                            .request_interrupt  (request_interrupt),
                                             .interrupt_lines    (interrupt_lines[15:0]));
-   assign interrupt_lines = {14'b0,timer_strobe} | memmap_interrupts;
+
+   one_shot VsyncOs (.clk(sys_clk), .signal(Vsync), .strobe(vsync_strobe));
+   assign interrupt_lines = {13'b0,vsync_strobe,timer_strobe} | memmap_interrupts;
    always @(posedge sys_clk)
      if (interrupt_control_en & mem_wr_en)
        memmap_interrupts <= mem_wr_data;
