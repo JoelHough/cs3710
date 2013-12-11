@@ -1,5 +1,6 @@
 @instructions = []
 @labels = {}
+@gen_labels = []
 @current_labels = []
 @pc = 0
 
@@ -51,6 +52,18 @@ def assemble(filename, &block)
   end
 end
 
+def gen_label(root)
+  i = 0
+  l = nil
+  loop do
+    l = "#{root}_#{i}".to_sym
+    break unless @labels.include?(l) || @gen_labels.include?(l)
+    i += 1
+  end
+  @gen_labels << l
+  l
+end
+
 def labels_for(addr)
   ret = []
   @labels.each {|k,v| ret << k if v == addr}
@@ -74,9 +87,10 @@ def addr_for(label)
   end
 end
 
-def label(sym, addr=@pc)
+def label(sym, addr=@pc, &proc)
   throw "duplicate label #{sym.to_s}" if @labels[sym]
   @labels[sym] = addr
+  proc.call if proc
 end
 
 class Fixnum
@@ -295,9 +309,9 @@ def lea(reg, label)
 end
 
 def preserve(*regs)
-  regs.each {|r| mov ps, r}
+  regs.each {|r| mov rs, r}
   yield
-  regs.reverse.each {|r| mov r, ps}
+  regs.reverse.each {|r| mov r, rs}
 end
 alias :preserving :preserve
 
@@ -308,5 +322,66 @@ def movwi(reg, w)
 end
 
 def wait
-  buc -1
+  buc 0
 end
+
+def lstorwi(w, label)
+  throw "'word' is out of range" if w >= 2**16 || w < -2**15
+  lea rs, label
+  movwi ps, w
+  stor ps, rs
+end
+
+def lload(reg, label)
+  lea reg, label
+  load reg, reg
+end
+
+def lstor(reg, label)
+  lea ps, label
+  stor reg, ps
+end
+
+def call(label)
+  lea ps, label
+  jal rs, ps
+end
+
+def call_and_return_to(label, ret_label)
+  lea rs, ret_label
+  lea ps, label
+  juc ps
+end
+
+def ceil(a, b)
+  cmp a, b
+  bge 2
+  mov a, b
+end
+
+def floor(a, b)
+  cmp a, b
+  ble 2
+  mov a, b
+end
+
+def eq?
+  if_label = gen_label(:eq)
+  done_label = gen_label(:not_eq)
+  beq if_label
+  buc done_label
+  label if_label
+  yield
+  label done_label
+end
+
+def ne?
+  if_label = gen_label(:ne)
+  done_label = gen_label(:not_ne)
+  bne if_label
+  buc done_label
+  label if_label
+  yield
+  label done_label
+end
+
