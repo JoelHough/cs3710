@@ -65,26 +65,26 @@ begin
 	if(data_clk_en) 
 	begin
 		if(count_6us<600)
-			count_6us=count_6us+1; //16x 12us-wide-50%-duty pulses
+			count_6us<=count_6us+1; //16x 12us-wide-50%-duty pulses
 		else
 		begin
-			data_clock=~data_clock;
-			count_6us=0;
+			data_clock<=~data_clock;
+			count_6us<=0;
 		end
 	end
 	else //just to ensure
 	begin
-		count_6us=0;
-		data_clock=1'b1;    
+		count_6us<=0;
+		data_clock<=1'b1;    
 	end
 	
 	if(count_60==21000 && old_reg!=buttons && clk_60)
 	begin
-		old_reg=buttons;
-		interrupt = 1'b1;
+		old_reg<=buttons;
+		interrupt <= old_reg != 16'hFFFF;
 	end
 	else
-		interrupt = 1'b0;
+		interrupt <= 1'b0;
 end
 
 always@(negedge data_clock)

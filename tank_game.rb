@@ -5,6 +5,8 @@ assemble 'tank_game.hex' do
   def pps(p)
     p * 128 / 30
   end
+  initial_tank1_x = 64
+  initial_tank2_x = 640 - 64 + 8
   middle_button = 0
   up_button = 1
   left_button = 2
@@ -25,11 +27,15 @@ assemble 'tank_game.hex' do
   label :ground_height, tank_game_base + 0x1
   label :bullet_x, tank_game_base + 0x2
   label :bullet_y, tank_game_base + 0x3
+  label :tank1_x, tank_game_base + 0x4
+  label :tank1_y, tank_game_base + 0x5
+  label :tank2_x, tank_game_base + 0x6
+  label :tank2_y, tank_game_base + 0x7
   label :switches, 0x1020
   label :leds, 0x1021
   label :seg, 0x1022
 
-  game_states = %i(player1_aiming player1_firing player2_aiming player2_firing)
+  @game_states = %i(player1_aiming player1_firing player2_aiming player2_firing)
 
   buc :timer0_irqh
   buc :timer1_irqh
@@ -38,7 +44,11 @@ assemble 'tank_game.hex' do
   4.upto(15).each do |i|
     buc :irq # "irq#{i}".to_sym
   end
-  buc :start
+
+  call :restart
+  lstorwi timer0_interval, :timer0
+  lstorwi timer1_interval, :timer1
+  wait
 
   ifunc :timer0_irqh, r0,r1,r2 do
     call :game_loop
@@ -60,35 +70,60 @@ assemble 'tank_game.hex' do
   ifunc :irq do
   end
 
-  label :start
-  lea r0, :ground_index
-  lea r1, :ground_height
-  movi r2, 0
-  movwi r3, 128
-  movwi r4, 640
-  label :set_ground_height
-  stor r2, r0
-  stor r3, r1
-  addi r2, 1
-  lload r5, :rand
-  _andi r5, 3
-  cmpi r5, 1
-  eq? do
-    addi r3, 1
-    movwi r5, 639
-    ceil r3, r5
+  func :restart, r0,r1,r2,r3,r4,r5,r6,r7,r8 do
+    ground_index_addr = r0
+    ground_height_addr = r1
+    ground_index = r2
+    ground_height = r3
+    tmp = r4
+    rand = r5
+    left_edge = r6
+    tank1_x = r7
+    tank2_x = r8
+    lea ground_index_addr, :ground_index
+    lea ground_height_addr, :ground_height
+    movi ground_index, 0
+    movwi ground_height, 128
+    movwi left_edge, 640
+    movwi tank1_x, initial_tank1_x
+    movwi tank2_x, initial_tank2_x
+    mov tmp, tank1_x
+    subi tmp, 8
+    lstor tmp, :tank1_x
+    mov tmp, tank2_x
+    subi tmp, 8
+    lstor tmp, :tank2_x
+    label :set_ground_height
+    stor ground_index, ground_index_addr
+    stor ground_height, ground_height_addr
+    addi ground_index, 1
+    lload rand, :rand
+    _andi rand, 3
+    cmpi rand, 1
+    eq? do
+      addi ground_height, 1
+      movwi tmp, 500
+      ceil ground_height, tmp
+    end
+    cmpi rand, 3
+    eq? do
+      subi ground_height, 1
+      movi tmp, 0
+      floor ground_height, tmp
+    end
+    mov tmp, ground_height
+    addi tmp, 15
+    cmp ground_index, tank1_x
+    eq? do
+      lstor tmp, :tank1_y
+    end
+    cmp ground_index, tank2_x
+    eq? do
+      lstor tmp, :tank2_y
+    end
+    cmp ground_index, left_edge
+    bne :set_ground_height
   end
-  cmpi r5, 3
-  eq? do
-    subi r3, 1
-    movi r5, 0
-    floor r3, r5
-  end
-  cmp r2, r4
-  bne :set_ground_height
-  lstorwi timer0_interval, :timer0
-  lstorwi timer1_interval, :timer1
-  wait
 
   func :handle_input, r0, r1, r2, r3 do
     switches = r0
@@ -97,8 +132,12 @@ assemble 'tank_game.hex' do
     power = r3
     lload switches, :switches
     lload state, :game_state
-    
-    cmpi state, game_states.index(:player1_aiming)
+    tbit switches, 9
+    on? do
+      call :restart
+    end
+
+    cmpi state, @game_states.index(:player1_aiming)
     eq? do
       lload angle, :tank1_angle
       lload power, :tank1_power
@@ -136,7 +175,7 @@ assemble 'tank_game.hex' do
       buc :handle_input_done
     end
 
-    cmpi state, game_states.index(:player2_aiming)
+    cmpi state, @game_states.index(:player2_aiming)
     eq? do
       lload angle, :tank2_angle
       lload power, :tank2_power
@@ -285,9 +324,34 @@ assemble 'tank_game.hex' do
       movi ps, 1
       buc :handle_collision_done
     end
-    #lload c, :tank1_x
-    #cmp bx, c
-    
+    lload c, :tank1_x
+    sub c, bx
+    cmpi c, 16
+    hi? do
+      lload c, :tank1_y
+      sub c, by
+      cmpi c, 16
+      hi? do
+        movi ps, 1
+        movi ps, 1
+        buc :handle_collision_done
+      end
+    end
+
+    lload c, :tank2_x
+    sub c, bx
+    cmpi c, 16
+    hi? do
+      lload c, :tank2_y
+      sub c, by
+      cmpi c, 16
+      hi? do
+        movi ps, 2
+        movi ps, 1
+        buc :handle_collision_done
+      end
+    end
+
     movi ps, 0
   end
 
@@ -295,12 +359,22 @@ assemble 'tank_game.hex' do
   end
 
   func :ground_explode do
+    # lower_cut = bx - circle_bottom
+    # cut = ground_height - lower_cut
+    # floor cut 0
+    # ceil cut upper cut
   end
   
   func :tank1_explode do
+    lload ps, :tank1_y
+    sbit ps, 15
+    lstor ps, :tank1_y
   end
 
   func :tank2_explode do
+    lload ps, :tank2_y
+    sbit ps, 15
+    lstor ps, :tank2_y
   end
 
   func :random_shot do # -- power angle
@@ -337,7 +411,7 @@ assemble 'tank_game.hex' do
   func :fire, r0 do
     tmp = r0
     lload tmp, :game_state
-    cmpi tmp, game_states.index(:player1_aiming)
+    cmpi tmp, @game_states.index(:player1_aiming)
     eq? do
       switch 15
       on? do
@@ -345,17 +419,21 @@ assemble 'tank_game.hex' do
         lstor ps, :tank1_power
         lstor ps, :tank1_angle
       end
-      lstorwi 64, :bullet_x
-      lstorwi 180, :bullet_y
+      lload tmp, :tank1_x
+      subi tmp, 2
+      lstor tmp, :bullet_x
+      lload tmp, :tank1_y
+      addi tmp, 1
+      lstor tmp, :bullet_y
       lload ps, :tank1_angle
       lload ps, :tank1_power
       call :deltas
       lstor ps, :bullet_dy
       lstor ps, :bullet_dx
-      lstorwi game_states.index(:player1_firing), :game_state
+      lstorwi @game_states.index(:player1_firing), :game_state
       buc :fire_done
     end
-    cmpi tmp, game_states.index(:player2_aiming)
+    cmpi tmp, @game_states.index(:player2_aiming)
     eq? do
       switch 8
       on? do
@@ -363,49 +441,33 @@ assemble 'tank_game.hex' do
         lstor ps, :tank2_power
         lstor ps, :tank2_angle
       end
-      lstorwi (640 - 64), :bullet_x
-      lstorwi 180, :bullet_y
+      lload tmp, :tank2_x
+      subi tmp, 14
+      lstor tmp, :bullet_x
+      lload tmp, :tank2_y
+      addi tmp, 1
+      lstor tmp, :bullet_y
       lload ps, :tank2_angle
       lload ps, :tank2_power
       call :deltas
       lstor ps, :bullet_dy
       neg ps
       lstor ps, :bullet_dx
-      lstorwi game_states.index(:player2_firing), :game_state
+      lstorwi @game_states.index(:player2_firing), :game_state
       buc :fire_done
     end
   end
 
-  func :game_loop, r0, r1 do
-    state = r0
-    lload state, :game_state
-
-    cmpi state, game_states.index(:player1_aiming)
-    eq? do
-      lstorwi 128, :leds
-      switch 15
-      on? {call :fire}
-      buc :game_loop_done
-    end
-
-    cmpi state, game_states.index(:player2_aiming)
-    eq? do
-      lstorwi 1, :leds
-      switch 8
-      on? {call :fire}
-      buc :game_loop_done
-    end
-
-    cmpi state, game_states.index(:player1_firing)
-    eq? do
-      lload ps, :tank1_angle
-      lload ps, :tank1_power
+  def firing_func(tank, next_state)
+    func "#{tank}_firing".to_sym, r0 do
+      lload ps, "#{tank}_angle".to_sym
+      lload ps, "#{tank}_power".to_sym
       call :disp_shot
       call :update_bullet # -- out_of_bounds?
       cmpi ps, 0
       ne? do
-        lstorwi game_states.index(:player2_aiming), :game_state
-        buc :game_loop_done
+        lstorwi @game_states.index(next_state), :game_state
+        buc "#{tank}_firing_done".to_sym
       end
       call :handle_collision # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
       cmpi ps, 0
@@ -416,40 +478,45 @@ assemble 'tank_game.hex' do
         eq? {call :ground_explode}
         cmpi r0, 1
         eq? {call :tank1_explode}
-        #cmpi r0, 2
-        #eq? {call :tank2_explode}
-        lstorwi game_states.index(:player2_aiming), :game_state
+        cmpi r0, 2
+        eq? {call :tank2_explode}
+        lstorwi @game_states.index(next_state), :game_state
         call :reset_bullet
       end
+    end
+  end
+
+  firing_func(:tank1, :player2_aiming)
+  firing_func(:tank2, :player1_aiming)
+
+  func :game_loop, r0, r1 do
+    state = r0
+    lload state, :game_state
+
+    cmpi state, @game_states.index(:player1_aiming)
+    eq? do
+      lstorwi 128, :leds
+      switch 15
+      on? {call :fire}
       buc :game_loop_done
     end
 
-    cmpi state, game_states.index(:player2_firing)
+    cmpi state, @game_states.index(:player2_aiming)
     eq? do
-      lload ps, :tank2_angle
-      lload ps, :tank2_power
-      call :disp_shot
-      call :update_bullet # -- out_of_bounds?
-      cmpi ps, 0
-      ne? do
-        lstorwi game_states.index(:player1_aiming), :game_state
-        buc :game_loop_done
-      end
-      call :handle_collision # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
-      cmpi ps, 0
-      ne? do
-        mov r0, ps
-        call :bullet_explode
-        cmpi r0, 0
-        eq? {call :ground_explode}
-        #cmpi r0, 1
-        #eq? {call :tank1_explode}
-        cmpi r0, 2
-        eq? {call :tank2_explode}
-        lstorwi game_states.index(:player1_aiming), :game_state
-        call :reset_bullet
-      end
+      lstorwi 1, :leds
+      switch 8
+      on? {call :fire}
       buc :game_loop_done
+    end
+
+    cmpi state, @game_states.index(:player1_firing)
+    eq? do
+      call_and_return_to :tank1_firing, :game_loop_done
+    end
+
+    cmpi state, @game_states.index(:player2_firing)
+    eq? do
+      call_and_return_to :tank2_firing, :game_loop_done
     end
   end
 
@@ -485,6 +552,10 @@ assemble 'tank_game.hex' do
   label :disp_table
   0.upto(31) do |disp|
     dw (disp * 99 / 31.0).to_s.to_i(16)
+  end
+  label :explosion_table
+  0.upto(15) do |x|
+    dw (Math.cos((Math::PI * x) / 15) * 8).to_i
   end
   nop
 end

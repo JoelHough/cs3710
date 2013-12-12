@@ -417,6 +417,12 @@ def ifunc(name, *regs)
   rem "endhandler: #{name}"
 end  
 
+def sbit(reg, n)
+  movi rs, 1
+  lshi rs, n
+  _or reg, rs
+end
+
 def tbit(reg, n)
   mov ps, reg
   lshi ps, -n
