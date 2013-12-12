@@ -31,9 +31,8 @@ assemble 'tank_game.hex' do
   end
   buc :start
 
-  label :timer0_irqh
-  call :game_loop
-  preserving r0,r1,r2 do
+  ifunc :timer0_irqh, r0,r1,r2 do
+    call :game_loop
     lload r1, :switches
     movi r0, 1
     _and r0, r1
@@ -53,21 +52,20 @@ assemble 'tank_game.hex' do
       lstor r2, :bullet_ddy
       lstor r2, :seg
     end
+    lstorwi timer0_interval, :timer0
   end
-  lstorwi timer0_interval, :timer0
-  retx
 
-  label :vsync_irqh
-  retx
+  ifunc :vsync_irqh do
+  end
 
-  label :timer1_irqh
-  lstorwi timer1_interval, :timer1
-  label :input_irqh
-  call :fire
-  retx
+  ifunc :timer1_irqh do
+    lstorwi timer1_interval, :timer1
+    label :input_irqh
+    call :fire
+  end
 
-  label :irq
-  retx
+  ifunc :irq do
+  end
 
   label :start
   lea r0, :ground_index
@@ -99,225 +97,231 @@ assemble 'tank_game.hex' do
   lstorwi timer1_interval, :timer1
   wait
 
-  label :update_bullet do
-    preserving r0,r1,r2,r3 do
-      frac = r0
-      d = r1
-      tmp = r2
-      full = r3
-      movi ps, 0
-      lload full, :bullet_x
-      lload frac, :bullet_frac_x
-      lload d, :bullet_dx
-      add frac, d
-      mov tmp, frac
-      cmpi frac, 127
-      lt? do
-        _andi frac, 127
-        lshi tmp, -7
-        add full, tmp
-        buc :bullet_out_of_bounds_check
-      end
-      cmpi frac, -127
-      gt? do
-        neg frac
-        _andi frac, 127
-        neg frac
-        neg tmp
-        lshi tmp, -7
-        sub full, tmp
-      end
-      label :bullet_out_of_bounds_check
-      lstor frac, :bullet_frac_x
-      cmpi full, 0
-      bgt :bullet_out_of_bounds
-      movwi tmp, 640
-      cmp full, tmp
-      ble :bullet_out_of_bounds
-      lstor full, :bullet_x
-
-      lload full, :bullet_y
-      lload frac, :bullet_frac_y
-      lload d, :bullet_dy
-      add frac, d
-      mov tmp, frac
-      cmpi frac, 127
-      lt? do
-        _andi frac, 127
-        lshi tmp, -7
-        add full, tmp
-        buc :floor_bullet_y
-      end
-      cmpi frac, -127
-      gt? do
-        neg frac
-        _andi frac, 127
-        neg frac
-        neg tmp
-        lshi tmp, -7
-        sub full, tmp
-      end
-
-      label :floor_bullet_y
-      lstor frac, :bullet_frac_y
-      cmpi full, 0
-      blt :cap_bullet_y
-      movi full, 0
-      lstor full, :bullet_frac_y
-      lstor full, :bullet_y
-      buc :update_bullet_accel
-      label :cap_bullet_y
-      rem "ceil y"
-      movwi tmp, 479
-      ceil full, tmp
-      lstor full, :bullet_y
-      buc :update_bullet_accel
-
-      label :update_bullet_accel
-      lload tmp, :bullet_ddy
-      add d, tmp
-      lstor d, :bullet_dy
-      buc :update_bullet_done
-
-      label :bullet_out_of_bounds
-      movwi tmp, 0
-      lstor tmp, :bullet_dx
-      lstor tmp, :bullet_frac_x
-      lstor tmp, :bullet_x
-      lstor tmp, :bullet_dy
-      lstor tmp, :bullet_frac_y
-      lstor tmp, :bullet_y
-      mov tmp, ps
-      movi ps, 1
-
-      label :update_bullet_done
-    end
-    ret
-  end
-
-  label :handle_collision do # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
+  func :update_bullet, r0,r1,r2,r3 do
+    frac = r0
+    d = r1
+    tmp = r2
+    full = r3
     movi ps, 0
-    ret
-    preserving r0, r1 do
-      lload r0, :bullet_x
-      lstor r0, :ground_index
-      lload r1, :ground_height
-      cmp r0, r1
-      gt? do
-        movi ps, 0
-        movi ps, 1
-        buc :handle_collision_done
-      end
-      movi ps, 0
-      label :handle_collision_done
+    lload full, :bullet_x
+    lload frac, :bullet_frac_x
+    lload d, :bullet_dx
+    add frac, d
+    mov tmp, frac
+    cmpi frac, 127
+    lt? do
+      _andi frac, 127
+      lshi tmp, -7
+      add full, tmp
+      buc :bullet_out_of_bounds_check
     end
-    ret
+    cmpi frac, -127
+    gt? do
+      neg frac
+      _andi frac, 127
+      neg frac
+      neg tmp
+      lshi tmp, -7
+      sub full, tmp
+    end
+    label :bullet_out_of_bounds_check
+    lstor frac, :bullet_frac_x
+    cmpi full, 0
+    bgt :bullet_out_of_bounds
+    movwi tmp, 640
+    cmp full, tmp
+    ble :bullet_out_of_bounds
+    lstor full, :bullet_x
+    
+    lload full, :bullet_y
+    lload frac, :bullet_frac_y
+    lload d, :bullet_dy
+    add frac, d
+    mov tmp, frac
+    cmpi frac, 127
+    lt? do
+      _andi frac, 127
+      lshi tmp, -7
+      add full, tmp
+      buc :floor_bullet_y
+    end
+    cmpi frac, -127
+    gt? do
+      neg frac
+      _andi frac, 127
+      neg frac
+      neg tmp
+      lshi tmp, -7
+      sub full, tmp
+    end
+    
+    label :floor_bullet_y
+    lstor frac, :bullet_frac_y
+    cmpi full, 0
+    blt :cap_bullet_y
+    movi full, 0
+    lstor full, :bullet_frac_y
+    lstor full, :bullet_y
+    buc :update_bullet_accel
+    label :cap_bullet_y
+    rem "ceil y"
+    movwi tmp, 479
+    ceil full, tmp
+    lstor full, :bullet_y
+    buc :update_bullet_accel
+    
+    label :update_bullet_accel
+    lload tmp, :bullet_ddy
+    add d, tmp
+    lstor d, :bullet_dy
+    buc :update_bullet_done
+    
+    label :bullet_out_of_bounds
+    call :reset_bullet
+    mov tmp, ps
+    movi ps, 1
   end
 
-  label :bullet_explode do
-    ret
+  func :reset_bullet, r0 do
+    tmp = r0
+    movwi tmp, 0
+    lstor tmp, :bullet_dx
+    lstor tmp, :bullet_frac_x
+    lstor tmp, :bullet_x
+    lstor tmp, :bullet_dy
+    lstor tmp, :bullet_frac_y
+    lstor tmp, :bullet_y
   end
 
-  label :ground_explode do
-    ret
+  func :handle_collision, r0, r1, r2 do # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
+    bx = r0
+    by = r1
+    c = r2
+    lload bx, :bullet_x
+    lload by, :bullet_y
+    lstor bx, :ground_index
+    lload c, :ground_height
+    cmp by, c
+    gt? do
+      movi ps, 0
+      movi ps, 1
+      buc :handle_collision_done
+    end
+    #lload c, :tank1_x
+    #cmp bx, c
+    
+    movi ps, 0
+  end
+
+  func :bullet_explode do
+  end
+
+  func :ground_explode do
   end
   
-  label :tank1_explode do
-    ret
+  func :tank1_explode do
   end
 
-  label :tank2_explode do
-    ret
+  func :tank2_explode do
   end
 
-  label :fire do
-    preserving r0 do
-      lload r0, :game_state
-      cmpi r0, game_states.index(:player1_aiming)
-      eq? do
-        lstorwi 64, :bullet_x
-        lstorwi 180, :bullet_y
-        lstorwi pps(640 / 3), :bullet_dx
-        lstorwi pps(480 / 3), :bullet_dy
-        lstorwi game_states.index(:player1_firing), :game_state
-        buc :fire_done
-      end
-      cmpi r0, game_states.index(:player2_aiming)
-      eq? do
-        lstorwi (640 - 64), :bullet_x
-        lstorwi 180, :bullet_y
-        lstorwi pps(-640 / 3), :bullet_dx
-        lstorwi pps(480 / 3), :bullet_dy
-        lstorwi game_states.index(:player2_firing), :game_state
-        buc :fire_done
-      end
-      label :fire_done
+  func :fire, r0,r1,r2 do
+    angle = r0
+    power = r1
+    tmp = r2
+    lload angle, :rand
+    _andi angle, 31
+    lload power, :rand
+    _andi power, 31
+    lea tmp, :d_table
+    lshi angle, 1
+    lshi power, 6
+    add tmp, angle
+    add tmp, power
+    load angle, tmp
+    addi tmp, 1
+    load power, tmp
+    lload tmp, :game_state
+    cmpi tmp, game_states.index(:player1_aiming)
+    eq? do
+      lstorwi 64, :bullet_x
+      lstorwi 180, :bullet_y
+      lstor angle, :bullet_dx
+      lstor power, :bullet_dy
+      lstorwi game_states.index(:player1_firing), :game_state
+      buc :fire_done
     end
-    ret
+    cmpi tmp, game_states.index(:player2_aiming)
+    eq? do
+      lstorwi (640 - 64), :bullet_x
+      lstorwi 180, :bullet_y
+      neg angle
+      lstor angle, :bullet_dx
+      lstor power, :bullet_dy
+      lstorwi game_states.index(:player2_firing), :game_state
+      buc :fire_done
+    end
   end
 
-  label :game_loop do
-    preserving r0,r1 do
-      lload r0, :game_state
-      lea r1, :game_state_jump_table
-      add r1, r0
-      juc r1
-      label :game_state_jump_table
-      game_states.each {|state| buc state}
+  func :game_loop, r0, r1 do
+    lload r0, :game_state
+    lea r1, :game_state_jump_table
+    add r1, r0
+    juc r1
+    label :game_state_jump_table
+    game_states.each {|state| buc state}
 
-      label :player1_aiming
-      label :player2_aiming
-      buc :game_loop_done
+    label :player1_aiming
+    label :player2_aiming
+    buc :game_loop_done
 
-      label :player1_firing do
-        call :update_bullet # -- out_of_bounds?
-        cmpi ps, 0
-        ne? do
-          lstorwi game_states.index(:player2_aiming), :game_state
-          buc :game_loop_done
-        end
-        call :handle_collision # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
-        cmpi ps, 0
-        ne? do
-          mov r0, ps
-          call :bullet_explode
-          cmpi r0, 0
-          eq? {call :ground_explode}
-          cmpi r0, 1
-          eq? {call :tank1_explode}
-          #cmpi r0, 2
-          #eq? {call :tank2_explode}
-          buc :game_loop_done
-        end
+    label :player1_firing do
+      call :update_bullet # -- out_of_bounds?
+      cmpi ps, 0
+      ne? do
+        lstorwi game_states.index(:player2_aiming), :game_state
+        buc :game_loop_done
       end
-
-      label :player2_firing do
-        call :update_bullet # -- out_of_bounds?
-        cmpi ps, 0
-        ne? do
-          lstorwi game_states.index(:player1_aiming), :game_state
-          buc :game_loop_done
-        end
-        call :handle_collision # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
-        cmpi ps, 0
-        ne? do
-          mov r0, ps
-          call :bullet_explode
-          cmpi r0, 0
-          eq? {call :ground_explode}
-          #cmpi r0, 1
-          #eq? {call :tank1_explode}
-          cmpi r0, 2
-          eq? {call :tank2_explode}
-          buc :game_loop_done
-        end
+      call :handle_collision # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
+      cmpi ps, 0
+      ne? do
+        mov r0, ps
+        call :bullet_explode
+        cmpi r0, 0
+        eq? {call :ground_explode}
+        cmpi r0, 1
+        eq? {call :tank1_explode}
+        #cmpi r0, 2
+        #eq? {call :tank2_explode}
+        lstorwi game_states.index(:player2_aiming), :game_state
+        call :reset_bullet
       end
-      
       buc :game_loop_done
-      
-      label :game_loop_done
     end
-    ret
+
+    label :player2_firing do
+      call :update_bullet # -- out_of_bounds?
+      cmpi ps, 0
+      ne? do
+        lstorwi game_states.index(:player1_aiming), :game_state
+        buc :game_loop_done
+      end
+      call :handle_collision # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
+      cmpi ps, 0
+      ne? do
+        mov r0, ps
+        call :bullet_explode
+        cmpi r0, 0
+        eq? {call :ground_explode}
+        #cmpi r0, 1
+        #eq? {call :tank1_explode}
+        cmpi r0, 2
+        eq? {call :tank2_explode}
+        lstorwi game_states.index(:player1_aiming), :game_state
+        call :reset_bullet
+      end
+      buc :game_loop_done
+    end
   end
 
   label :data_mem
@@ -335,4 +339,19 @@ assemble 'tank_game.hex' do
   dw 0
   label :bullet_ddy
   dw -2
+  label :tank1_angle
+  dw 15
+  label :tank1_power
+  dw 15
+  label :tank2_angle
+  dw 15
+  label :tank2_power
+  dw 15
+  label :d_table
+  0.upto(31) do |power|
+    0.upto(31) do |angle|
+      dw (Math.cos((Math::PI * angle) / (2 * 31)) * power * 16).to_i, (Math.sin((Math::PI * angle) / (2 * 31)) * power * 16).to_i
+    end
+  end
+  nop
 end

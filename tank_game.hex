@@ -15,12 +15,13 @@ ce40      // 0000000d: buc :irq
 ce3f      // 0000000e: buc :irq
 ce3e      // 0000000f: buc :irq
 ce3f      // 00000010: buc :start
-df59      // 00000011, timer0_irqh: movi ps, :game_loop_lo
-ff01      // 00000012: lui ps, :game_loop_hi
-4e8f      // 00000013: jal rs, ps
-0ed0      // 00000014: mov rs, r0
-0ed1      // 00000015: mov rs, r1
-0ed2      // 00000016: mov rs, r2
+// handler: timer0_irqh
+0ed0      // 00000011, timer0_irqh: mov rs, r0
+0ed1      // 00000012: mov rs, r1
+0ed2      // 00000013: mov rs, r2
+df71      // 00000014: movi ps, :game_loop_lo
+ff01      // 00000015: lui ps, :game_loop_hi
+4e8f      // 00000016: jal rs, ps
 d120      // 00000017: movi r1, :switches_lo
 f110      // 00000018: lui r1, :switches_hi
 4101      // 00000019: load r1, r1
@@ -29,11 +30,11 @@ d001      // 0000001a: movi r0, 1
 b000      // 0000001c: cmpi r0, 0
 c102      // 0000001d: bne :ne_0
 ce0b      // 0000001e: buc :not_ne_0
-d2b5      // 0000001f, ne_0: movi r2, :bullet_ddy_lo
+d2da      // 0000001f, ne_0: movi r2, :bullet_ddy_lo
 f201      // 00000020: lui r2, :bullet_ddy_hi
 4202      // 00000021: load r2, r2
 5201      // 00000022: addi r2, 1
-dfb5      // 00000023: movi ps, :bullet_ddy_lo
+dfda      // 00000023: movi ps, :bullet_ddy_lo
 ff01      // 00000024: lui ps, :bullet_ddy_hi
 424f      // 00000025: stor r2, ps
 df22      // 00000026: movi ps, :seg_lo
@@ -44,39 +45,46 @@ d002      // 00000029, not_ne_0: movi r0, 2
 b000      // 0000002b: cmpi r0, 0
 c102      // 0000002c: bne :ne_1
 ce0b      // 0000002d: buc :not_ne_1
-d2b5      // 0000002e, ne_1: movi r2, :bullet_ddy_lo
+d2da      // 0000002e, ne_1: movi r2, :bullet_ddy_lo
 f201      // 0000002f: lui r2, :bullet_ddy_hi
 4202      // 00000030: load r2, r2
 9201      // 00000031: subi r2, 1
-dfb5      // 00000032: movi ps, :bullet_ddy_lo
+dfda      // 00000032: movi ps, :bullet_ddy_lo
 ff01      // 00000033: lui ps, :bullet_ddy_hi
 424f      // 00000034: stor r2, ps
 df22      // 00000035: movi ps, :seg_lo
 ff10      // 00000036: lui ps, :seg_hi
 424f      // 00000037: stor r2, ps
-02de      // 00000038, not_ne_1: mov r2, rs
-01de      // 00000039: mov r1, rs
-00de      // 0000003a: mov r0, rs
-de04      // 0000003b: movi rs, :timer0_lo
-fe10      // 0000003c: lui rs, :timer0_hi
-df21      // 0000003d: movi ps, 33
-4f4e      // 0000003e: stor ps, rs
+de04      // 00000038, not_ne_1: movi rs, :timer0_lo
+fe10      // 00000039: lui rs, :timer0_hi
+df21      // 0000003a: movi ps, 33
+4f4e      // 0000003b: stor ps, rs
+02de      // 0000003c, timer0_irqh_done: mov r2, rs
+01de      // 0000003d: mov r1, rs
+00de      // 0000003e: mov r0, rs
 40f0      // 0000003f: clri
 4ece      // 00000040: juc rs
-40f0      // 00000041, vsync_irqh: clri
+// endhandler: timer0_irqh
+// handler: vsync_irqh
+40f0      // 00000041, vsync_irqh, vsync_irqh_done: clri
 4ece      // 00000042: juc rs
+// endhandler: vsync_irqh
+// handler: timer1_irqh
 de05      // 00000043, timer1_irqh: movi rs, :timer1_lo
 fe10      // 00000044: lui rs, :timer1_hi
 dfb8      // 00000045: movi ps, 184
 ff0b      // 00000046: lui ps, 11
 4f4e      // 00000047: stor ps, rs
-df1c      // 00000048, input_irqh: movi ps, :fire_lo
+df25      // 00000048, input_irqh: movi ps, :fire_lo
 ff01      // 00000049: lui ps, :fire_hi
 4e8f      // 0000004a: jal rs, ps
-40f0      // 0000004b: clri
+40f0      // 0000004b, timer1_irqh_done: clri
 4ece      // 0000004c: juc rs
-40f0      // 0000004d, irq: clri
+// endhandler: timer1_irqh
+// handler: irq
+40f0      // 0000004d, irq, irq_done: clri
 4ece      // 0000004e: juc rs
+// endhandler: irq
 d008      // 0000004f, start: movi r0, :ground_index_lo
 f010      // 00000050: lui r0, :ground_index_hi
 d109      // 00000051: movi r1, :ground_height_lo
@@ -122,6 +130,7 @@ dfb8      // 00000078: movi ps, 184
 ff0b      // 00000079: lui ps, 11
 4f4e      // 0000007a: stor ps, rs
 ce00      // 0000007b: buc 0
+// sub: update_bullet
 0ed0      // 0000007c, update_bullet: mov rs, r0
 0ed1      // 0000007d: mov rs, r1
 0ed2      // 0000007e: mov rs, r2
@@ -130,10 +139,10 @@ df00      // 00000080: movi ps, 0
 d30a      // 00000081: movi r3, :bullet_x_lo
 f310      // 00000082: lui r3, :bullet_x_hi
 4303      // 00000083: load r3, r3
-d0b3      // 00000084: movi r0, :bullet_frac_x_lo
+d0d8      // 00000084: movi r0, :bullet_frac_x_lo
 f001      // 00000085: lui r0, :bullet_frac_x_hi
 4000      // 00000086: load r0, r0
-d1b1      // 00000087: movi r1, :bullet_dx_lo
+d1d6      // 00000087: movi r1, :bullet_dx_lo
 f101      // 00000088: lui r1, :bullet_dx_hi
 4101      // 00000089: load r1, r1
 0051      // 0000008a: add r0, r1
@@ -157,7 +166,7 @@ ce0a      // 00000095: buc :not_gt_0
 5201      // 0000009c: addi r2, 1
 8219      // 0000009d: lshi r2, -7
 0392      // 0000009e: sub r3, r2
-dfb3      // 0000009f, not_gt_0, bullet_out_of_bounds_check: movi ps, :bullet_frac_x_lo
+dfd8      // 0000009f, not_gt_0, bullet_out_of_bounds_check: movi ps, :bullet_frac_x_lo
 ff01      // 000000a0: lui ps, :bullet_frac_x_hi
 404f      // 000000a1: stor r0, ps
 b300      // 000000a2: cmpi r3, 0
@@ -172,10 +181,10 @@ ff10      // 000000a9: lui ps, :bullet_x_hi
 d30b      // 000000ab: movi r3, :bullet_y_lo
 f310      // 000000ac: lui r3, :bullet_y_hi
 4303      // 000000ad: load r3, r3
-d0b4      // 000000ae: movi r0, :bullet_frac_y_lo
+d0d9      // 000000ae: movi r0, :bullet_frac_y_lo
 f001      // 000000af: lui r0, :bullet_frac_y_hi
 4000      // 000000b0: load r0, r0
-d1b2      // 000000b1: movi r1, :bullet_dy_lo
+d1d7      // 000000b1: movi r1, :bullet_dy_lo
 f101      // 000000b2: lui r1, :bullet_dy_hi
 4101      // 000000b3: load r1, r1
 0051      // 000000b4: add r0, r1
@@ -199,13 +208,13 @@ ce0a      // 000000bf: buc :not_gt_1
 5201      // 000000c6: addi r2, 1
 8219      // 000000c7: lshi r2, -7
 0392      // 000000c8: sub r3, r2
-dfb4      // 000000c9, not_gt_1, floor_bullet_y: movi ps, :bullet_frac_y_lo
+dfd9      // 000000c9, not_gt_1, floor_bullet_y: movi ps, :bullet_frac_y_lo
 ff01      // 000000ca: lui ps, :bullet_frac_y_hi
 404f      // 000000cb: stor r0, ps
 b300      // 000000cc: cmpi r3, 0
 cc09      // 000000cd: blt :cap_bullet_y
 d300      // 000000ce: movi r3, 0
-dfb4      // 000000cf: movi ps, :bullet_frac_y_lo
+dfd9      // 000000cf: movi ps, :bullet_frac_y_lo
 ff01      // 000000d0: lui ps, :bullet_frac_y_hi
 434f      // 000000d1: stor r3, ps
 df0b      // 000000d2: movi ps, :bullet_y_lo
@@ -222,214 +231,268 @@ df0b      // 000000db: movi ps, :bullet_y_lo
 ff10      // 000000dc: lui ps, :bullet_y_hi
 434f      // 000000dd: stor r3, ps
 ce01      // 000000de: buc :update_bullet_accel
-d2b5      // 000000df, update_bullet_accel: movi r2, :bullet_ddy_lo
+d2da      // 000000df, update_bullet_accel: movi r2, :bullet_ddy_lo
 f201      // 000000e0: lui r2, :bullet_ddy_hi
 4202      // 000000e1: load r2, r2
 0152      // 000000e2: add r1, r2
-dfb2      // 000000e3: movi ps, :bullet_dy_lo
+dfd7      // 000000e3: movi ps, :bullet_dy_lo
 ff01      // 000000e4: lui ps, :bullet_dy_hi
 414f      // 000000e5: stor r1, ps
-ce16      // 000000e6: buc :update_bullet_done
-d200      // 000000e7, bullet_out_of_bounds: movi r2, 0
-dfb1      // 000000e8: movi ps, :bullet_dx_lo
-ff01      // 000000e9: lui ps, :bullet_dx_hi
-424f      // 000000ea: stor r2, ps
-dfb3      // 000000eb: movi ps, :bullet_frac_x_lo
-ff01      // 000000ec: lui ps, :bullet_frac_x_hi
-424f      // 000000ed: stor r2, ps
-df0a      // 000000ee: movi ps, :bullet_x_lo
-ff10      // 000000ef: lui ps, :bullet_x_hi
-424f      // 000000f0: stor r2, ps
-dfb2      // 000000f1: movi ps, :bullet_dy_lo
-ff01      // 000000f2: lui ps, :bullet_dy_hi
-424f      // 000000f3: stor r2, ps
-dfb4      // 000000f4: movi ps, :bullet_frac_y_lo
-ff01      // 000000f5: lui ps, :bullet_frac_y_hi
-424f      // 000000f6: stor r2, ps
-df0b      // 000000f7: movi ps, :bullet_y_lo
-ff10      // 000000f8: lui ps, :bullet_y_hi
-424f      // 000000f9: stor r2, ps
-02df      // 000000fa: mov r2, ps
-df01      // 000000fb: movi ps, 1
-03de      // 000000fc, update_bullet_done: mov r3, rs
-02de      // 000000fd: mov r2, rs
-01de      // 000000fe: mov r1, rs
-00de      // 000000ff: mov r0, rs
-4ece      // 00000100: juc rs
-df00      // 00000101, handle_collision: movi ps, 0
-4ece      // 00000102: juc rs
-0ed0      // 00000103: mov rs, r0
-0ed1      // 00000104: mov rs, r1
-d00a      // 00000105: movi r0, :bullet_x_lo
-f010      // 00000106: lui r0, :bullet_x_hi
-4000      // 00000107: load r0, r0
-df08      // 00000108: movi ps, :ground_index_lo
-ff10      // 00000109: lui ps, :ground_index_hi
-404f      // 0000010a: stor r0, ps
-d109      // 0000010b: movi r1, :ground_height_lo
-f110      // 0000010c: lui r1, :ground_height_hi
-4101      // 0000010d: load r1, r1
-00b1      // 0000010e: cmp r0, r1
-c602      // 0000010f: bgt :gt_2
-ce04      // 00000110: buc :not_gt_2
-df00      // 00000111, gt_2: movi ps, 0
-df01      // 00000112: movi ps, 1
-ce02      // 00000113: buc :handle_collision_done
-df00      // 00000114, not_gt_2: movi ps, 0
-01de      // 00000115, handle_collision_done: mov r1, rs
-00de      // 00000116: mov r0, rs
-4ece      // 00000117: juc rs
-4ece      // 00000118, bullet_explode: juc rs
-4ece      // 00000119, ground_explode: juc rs
-4ece      // 0000011a, tank1_explode: juc rs
-4ece      // 0000011b, tank2_explode: juc rs
-0ed0      // 0000011c, fire: mov rs, r0
-d0b0      // 0000011d: movi r0, :game_state_lo
-f001      // 0000011e: lui r0, :game_state_hi
-4000      // 0000011f: load r0, r0
-b000      // 00000120: cmpi r0, 0
-c002      // 00000121: beq :eq_2
-ce19      // 00000122: buc :not_eq_2
-de0a      // 00000123, eq_2: movi rs, :bullet_x_lo
-fe10      // 00000124: lui rs, :bullet_x_hi
-df40      // 00000125: movi ps, 64
-4f4e      // 00000126: stor ps, rs
-de0b      // 00000127: movi rs, :bullet_y_lo
-fe10      // 00000128: lui rs, :bullet_y_hi
-dfb4      // 00000129: movi ps, 180
-ff00      // 0000012a: lui ps, 0
-4f4e      // 0000012b: stor ps, rs
-deb1      // 0000012c: movi rs, :bullet_dx_lo
-fe01      // 0000012d: lui rs, :bullet_dx_hi
-df8c      // 0000012e: movi ps, 140
-ff03      // 0000012f: lui ps, 3
-4f4e      // 00000130: stor ps, rs
-deb2      // 00000131: movi rs, :bullet_dy_lo
-fe01      // 00000132: lui rs, :bullet_dy_hi
-dfaa      // 00000133: movi ps, 170
-ff02      // 00000134: lui ps, 2
-4f4e      // 00000135: stor ps, rs
-deb0      // 00000136: movi rs, :game_state_lo
-fe01      // 00000137: lui rs, :game_state_hi
-df01      // 00000138: movi ps, 1
-4f4e      // 00000139: stor ps, rs
-ce1d      // 0000013a: buc :fire_done
-b002      // 0000013b, not_eq_2: cmpi r0, 2
-c002      // 0000013c: beq :eq_3
-ce1a      // 0000013d: buc :not_eq_3
-de0a      // 0000013e, eq_3: movi rs, :bullet_x_lo
-fe10      // 0000013f: lui rs, :bullet_x_hi
-df40      // 00000140: movi ps, 64
-ff02      // 00000141: lui ps, 2
+ce06      // 000000e6: buc :update_bullet_done
+dff1      // 000000e7, bullet_out_of_bounds: movi ps, :reset_bullet_lo
+ff00      // 000000e8: lui ps, :reset_bullet_hi
+4e8f      // 000000e9: jal rs, ps
+02df      // 000000ea: mov r2, ps
+df01      // 000000eb: movi ps, 1
+03de      // 000000ec, update_bullet_done: mov r3, rs
+02de      // 000000ed: mov r2, rs
+01de      // 000000ee: mov r1, rs
+00de      // 000000ef: mov r0, rs
+4ece      // 000000f0: juc rs
+// endsub: update_bullet
+// sub: reset_bullet
+0ed0      // 000000f1, reset_bullet: mov rs, r0
+d000      // 000000f2: movi r0, 0
+dfd6      // 000000f3: movi ps, :bullet_dx_lo
+ff01      // 000000f4: lui ps, :bullet_dx_hi
+404f      // 000000f5: stor r0, ps
+dfd8      // 000000f6: movi ps, :bullet_frac_x_lo
+ff01      // 000000f7: lui ps, :bullet_frac_x_hi
+404f      // 000000f8: stor r0, ps
+df0a      // 000000f9: movi ps, :bullet_x_lo
+ff10      // 000000fa: lui ps, :bullet_x_hi
+404f      // 000000fb: stor r0, ps
+dfd7      // 000000fc: movi ps, :bullet_dy_lo
+ff01      // 000000fd: lui ps, :bullet_dy_hi
+404f      // 000000fe: stor r0, ps
+dfd9      // 000000ff: movi ps, :bullet_frac_y_lo
+ff01      // 00000100: lui ps, :bullet_frac_y_hi
+404f      // 00000101: stor r0, ps
+df0b      // 00000102: movi ps, :bullet_y_lo
+ff10      // 00000103: lui ps, :bullet_y_hi
+404f      // 00000104: stor r0, ps
+00de      // 00000105, reset_bullet_done: mov r0, rs
+4ece      // 00000106: juc rs
+// endsub: reset_bullet
+// sub: handle_collision
+0ed0      // 00000107, handle_collision: mov rs, r0
+0ed1      // 00000108: mov rs, r1
+0ed2      // 00000109: mov rs, r2
+d00a      // 0000010a: movi r0, :bullet_x_lo
+f010      // 0000010b: lui r0, :bullet_x_hi
+4000      // 0000010c: load r0, r0
+d10b      // 0000010d: movi r1, :bullet_y_lo
+f110      // 0000010e: lui r1, :bullet_y_hi
+4101      // 0000010f: load r1, r1
+df08      // 00000110: movi ps, :ground_index_lo
+ff10      // 00000111: lui ps, :ground_index_hi
+404f      // 00000112: stor r0, ps
+d209      // 00000113: movi r2, :ground_height_lo
+f210      // 00000114: lui r2, :ground_height_hi
+4202      // 00000115: load r2, r2
+01b2      // 00000116: cmp r1, r2
+c602      // 00000117: bgt :gt_2
+ce04      // 00000118: buc :not_gt_2
+df00      // 00000119, gt_2: movi ps, 0
+df01      // 0000011a: movi ps, 1
+ce02      // 0000011b: buc :handle_collision_done
+df00      // 0000011c, not_gt_2: movi ps, 0
+02de      // 0000011d, handle_collision_done: mov r2, rs
+01de      // 0000011e: mov r1, rs
+00de      // 0000011f: mov r0, rs
+4ece      // 00000120: juc rs
+// endsub: handle_collision
+// sub: bullet_explode
+4ece      // 00000121, bullet_explode, bullet_explode_done: juc rs
+// endsub: bullet_explode
+// sub: ground_explode
+4ece      // 00000122, ground_explode, ground_explode_done: juc rs
+// endsub: ground_explode
+// sub: tank1_explode
+4ece      // 00000123, tank1_explode, tank1_explode_done: juc rs
+// endsub: tank1_explode
+// sub: tank2_explode
+4ece      // 00000124, tank2_explode, tank2_explode_done: juc rs
+// endsub: tank2_explode
+// sub: fire
+0ed0      // 00000125, fire: mov rs, r0
+0ed1      // 00000126: mov rs, r1
+0ed2      // 00000127: mov rs, r2
+d002      // 00000128: movi r0, :rand_lo
+f010      // 00000129: lui r0, :rand_hi
+4000      // 0000012a: load r0, r0
+101f      // 0000012b: _andi r0, 31
+d102      // 0000012c: movi r1, :rand_lo
+f110      // 0000012d: lui r1, :rand_hi
+4101      // 0000012e: load r1, r1
+111f      // 0000012f: _andi r1, 31
+d2df      // 00000130: movi r2, :d_table_lo
+f201      // 00000131: lui r2, :d_table_hi
+8001      // 00000132: lshi r0, 1
+8106      // 00000133: lshi r1, 6
+0250      // 00000134: add r2, r0
+0251      // 00000135: add r2, r1
+4002      // 00000136: load r0, r2
+5201      // 00000137: addi r2, 1
+4102      // 00000138: load r1, r2
+d2d5      // 00000139: movi r2, :game_state_lo
+f201      // 0000013a: lui r2, :game_state_hi
+4202      // 0000013b: load r2, r2
+b200      // 0000013c: cmpi r2, 0
+c002      // 0000013d: beq :eq_2
+ce15      // 0000013e: buc :not_eq_2
+de0a      // 0000013f, eq_2: movi rs, :bullet_x_lo
+fe10      // 00000140: lui rs, :bullet_x_hi
+df40      // 00000141: movi ps, 64
 4f4e      // 00000142: stor ps, rs
 de0b      // 00000143: movi rs, :bullet_y_lo
 fe10      // 00000144: lui rs, :bullet_y_hi
 dfb4      // 00000145: movi ps, 180
 ff00      // 00000146: lui ps, 0
 4f4e      // 00000147: stor ps, rs
-deb1      // 00000148: movi rs, :bullet_dx_lo
-fe01      // 00000149: lui rs, :bullet_dx_hi
-df6e      // 0000014a: movi ps, 110
-fffc      // 0000014b: lui ps, 252
-4f4e      // 0000014c: stor ps, rs
-deb2      // 0000014d: movi rs, :bullet_dy_lo
-fe01      // 0000014e: lui rs, :bullet_dy_hi
-dfaa      // 0000014f: movi ps, 170
-ff02      // 00000150: lui ps, 2
+dfd6      // 00000148: movi ps, :bullet_dx_lo
+ff01      // 00000149: lui ps, :bullet_dx_hi
+404f      // 0000014a: stor r0, ps
+dfd7      // 0000014b: movi ps, :bullet_dy_lo
+ff01      // 0000014c: lui ps, :bullet_dy_hi
+414f      // 0000014d: stor r1, ps
+ded5      // 0000014e: movi rs, :game_state_lo
+fe01      // 0000014f: lui rs, :game_state_hi
+df01      // 00000150: movi ps, 1
 4f4e      // 00000151: stor ps, rs
-deb0      // 00000152: movi rs, :game_state_lo
-fe01      // 00000153: lui rs, :game_state_hi
-df03      // 00000154: movi ps, 3
-4f4e      // 00000155: stor ps, rs
-ce01      // 00000156: buc :fire_done
-00de      // 00000157, not_eq_3, fire_done: mov r0, rs
-4ece      // 00000158: juc rs
-0ed0      // 00000159, game_loop: mov rs, r0
-0ed1      // 0000015a: mov rs, r1
-d0b0      // 0000015b: movi r0, :game_state_lo
-f001      // 0000015c: lui r0, :game_state_hi
-4000      // 0000015d: load r0, r0
-d162      // 0000015e: movi r1, :game_state_jump_table_lo
-f101      // 0000015f: lui r1, :game_state_jump_table_hi
-0150      // 00000160: add r1, r0
-4ec1      // 00000161: juc r1
-ce04      // 00000162, game_state_jump_table: buc :player1_aiming
-ce04      // 00000163: buc :player1_firing
-ce02      // 00000164: buc :player2_aiming
-ce24      // 00000165: buc :player2_firing
-ce46      // 00000166, player1_aiming, player2_aiming: buc :game_loop_done
-df7c      // 00000167, player1_firing: movi ps, :update_bullet_lo
-ff00      // 00000168: lui ps, :update_bullet_hi
-4e8f      // 00000169: jal rs, ps
-bf00      // 0000016a: cmpi ps, 0
-c102      // 0000016b: bne :ne_2
-ce06      // 0000016c: buc :not_ne_2
-deb0      // 0000016d, ne_2: movi rs, :game_state_lo
-fe01      // 0000016e: lui rs, :game_state_hi
-df02      // 0000016f: movi ps, 2
-4f4e      // 00000170: stor ps, rs
-ce3b      // 00000171: buc :game_loop_done
-df01      // 00000172, not_ne_2: movi ps, :handle_collision_lo
-ff01      // 00000173: lui ps, :handle_collision_hi
-4e8f      // 00000174: jal rs, ps
-bf00      // 00000175: cmpi ps, 0
-c102      // 00000176: bne :ne_3
-ce12      // 00000177: buc :not_ne_3
-00df      // 00000178, ne_3: mov r0, ps
-df18      // 00000179: movi ps, :bullet_explode_lo
-ff01      // 0000017a: lui ps, :bullet_explode_hi
-4e8f      // 0000017b: jal rs, ps
-b000      // 0000017c: cmpi r0, 0
-c002      // 0000017d: beq :eq_4
-ce04      // 0000017e: buc :not_eq_4
-df19      // 0000017f, eq_4: movi ps, :ground_explode_lo
-ff01      // 00000180: lui ps, :ground_explode_hi
+ce1b      // 00000152: buc :fire_done
+b202      // 00000153, not_eq_2: cmpi r2, 2
+c002      // 00000154: beq :eq_3
+ce18      // 00000155: buc :not_eq_3
+de0a      // 00000156, eq_3: movi rs, :bullet_x_lo
+fe10      // 00000157: lui rs, :bullet_x_hi
+df40      // 00000158: movi ps, 64
+ff02      // 00000159: lui ps, 2
+4f4e      // 0000015a: stor ps, rs
+de0b      // 0000015b: movi rs, :bullet_y_lo
+fe10      // 0000015c: lui rs, :bullet_y_hi
+dfb4      // 0000015d: movi ps, 180
+ff00      // 0000015e: lui ps, 0
+4f4e      // 0000015f: stor ps, rs
+30ff      // 00000160: xori r0, 255
+5001      // 00000161: addi r0, 1
+dfd6      // 00000162: movi ps, :bullet_dx_lo
+ff01      // 00000163: lui ps, :bullet_dx_hi
+404f      // 00000164: stor r0, ps
+dfd7      // 00000165: movi ps, :bullet_dy_lo
+ff01      // 00000166: lui ps, :bullet_dy_hi
+414f      // 00000167: stor r1, ps
+ded5      // 00000168: movi rs, :game_state_lo
+fe01      // 00000169: lui rs, :game_state_hi
+df03      // 0000016a: movi ps, 3
+4f4e      // 0000016b: stor ps, rs
+ce01      // 0000016c: buc :fire_done
+02de      // 0000016d, not_eq_3, fire_done: mov r2, rs
+01de      // 0000016e: mov r1, rs
+00de      // 0000016f: mov r0, rs
+4ece      // 00000170: juc rs
+// endsub: fire
+// sub: game_loop
+0ed0      // 00000171, game_loop: mov rs, r0
+0ed1      // 00000172: mov rs, r1
+d0d5      // 00000173: movi r0, :game_state_lo
+f001      // 00000174: lui r0, :game_state_hi
+4000      // 00000175: load r0, r0
+d17a      // 00000176: movi r1, :game_state_jump_table_lo
+f101      // 00000177: lui r1, :game_state_jump_table_hi
+0150      // 00000178: add r1, r0
+4ec1      // 00000179: juc r1
+ce04      // 0000017a, game_state_jump_table: buc :player1_aiming
+ce04      // 0000017b: buc :player1_firing
+ce02      // 0000017c: buc :player2_aiming
+ce2b      // 0000017d: buc :player2_firing
+ce53      // 0000017e, player1_aiming, player2_aiming: buc :game_loop_done
+df7c      // 0000017f, player1_firing: movi ps, :update_bullet_lo
+ff00      // 00000180: lui ps, :update_bullet_hi
 4e8f      // 00000181: jal rs, ps
-b001      // 00000182, not_eq_4: cmpi r0, 1
-c002      // 00000183: beq :eq_5
-ce04      // 00000184: buc :not_eq_5
-df1a      // 00000185, eq_5: movi ps, :tank1_explode_lo
-ff01      // 00000186: lui ps, :tank1_explode_hi
-4e8f      // 00000187: jal rs, ps
-ce24      // 00000188, not_eq_5: buc :game_loop_done
-df7c      // 00000189, not_ne_3, player2_firing: movi ps, :update_bullet_lo
-ff00      // 0000018a: lui ps, :update_bullet_hi
-4e8f      // 0000018b: jal rs, ps
-bf00      // 0000018c: cmpi ps, 0
-c102      // 0000018d: bne :ne_4
-ce06      // 0000018e: buc :not_ne_4
-deb0      // 0000018f, ne_4: movi rs, :game_state_lo
-fe01      // 00000190: lui rs, :game_state_hi
-df00      // 00000191: movi ps, 0
-4f4e      // 00000192: stor ps, rs
-ce19      // 00000193: buc :game_loop_done
-df01      // 00000194, not_ne_4: movi ps, :handle_collision_lo
-ff01      // 00000195: lui ps, :handle_collision_hi
-4e8f      // 00000196: jal rs, ps
-bf00      // 00000197: cmpi ps, 0
-c102      // 00000198: bne :ne_5
-ce12      // 00000199: buc :not_ne_5
-00df      // 0000019a, ne_5: mov r0, ps
-df18      // 0000019b: movi ps, :bullet_explode_lo
-ff01      // 0000019c: lui ps, :bullet_explode_hi
-4e8f      // 0000019d: jal rs, ps
-b000      // 0000019e: cmpi r0, 0
-c002      // 0000019f: beq :eq_6
-ce04      // 000001a0: buc :not_eq_6
-df19      // 000001a1, eq_6: movi ps, :ground_explode_lo
-ff01      // 000001a2: lui ps, :ground_explode_hi
-4e8f      // 000001a3: jal rs, ps
-b002      // 000001a4, not_eq_6: cmpi r0, 2
-c002      // 000001a5: beq :eq_7
-ce04      // 000001a6: buc :not_eq_7
-df1b      // 000001a7, eq_7: movi ps, :tank2_explode_lo
-ff01      // 000001a8: lui ps, :tank2_explode_hi
-4e8f      // 000001a9: jal rs, ps
-ce02      // 000001aa, not_eq_7: buc :game_loop_done
-ce01      // 000001ab, not_ne_5: buc :game_loop_done
-01de      // 000001ac, game_loop_done: mov r1, rs
-00de      // 000001ad: mov r0, rs
-4ece      // 000001ae: juc rs
+bf00      // 00000182: cmpi ps, 0
+c102      // 00000183: bne :ne_2
+ce06      // 00000184: buc :not_ne_2
+ded5      // 00000185, ne_2: movi rs, :game_state_lo
+fe01      // 00000186: lui rs, :game_state_hi
+df02      // 00000187: movi ps, 2
+4f4e      // 00000188: stor ps, rs
+ce48      // 00000189: buc :game_loop_done
+df07      // 0000018a, not_ne_2: movi ps, :handle_collision_lo
+ff01      // 0000018b: lui ps, :handle_collision_hi
+4e8f      // 0000018c: jal rs, ps
+bf00      // 0000018d: cmpi ps, 0
+c102      // 0000018e: bne :ne_3
+ce18      // 0000018f: buc :not_ne_3
+00df      // 00000190, ne_3: mov r0, ps
+df21      // 00000191: movi ps, :bullet_explode_lo
+ff01      // 00000192: lui ps, :bullet_explode_hi
+4e8f      // 00000193: jal rs, ps
+b000      // 00000194: cmpi r0, 0
+c002      // 00000195: beq :eq_4
+ce04      // 00000196: buc :not_eq_4
+df22      // 00000197, eq_4: movi ps, :ground_explode_lo
+ff01      // 00000198: lui ps, :ground_explode_hi
+4e8f      // 00000199: jal rs, ps
+b001      // 0000019a, not_eq_4: cmpi r0, 1
+c002      // 0000019b: beq :eq_5
+ce04      // 0000019c: buc :not_eq_5
+df23      // 0000019d, eq_5: movi ps, :tank1_explode_lo
+ff01      // 0000019e: lui ps, :tank1_explode_hi
+4e8f      // 0000019f: jal rs, ps
+ded5      // 000001a0, not_eq_5: movi rs, :game_state_lo
+fe01      // 000001a1: lui rs, :game_state_hi
+df02      // 000001a2: movi ps, 2
+4f4e      // 000001a3: stor ps, rs
+dff1      // 000001a4: movi ps, :reset_bullet_lo
+ff00      // 000001a5: lui ps, :reset_bullet_hi
+4e8f      // 000001a6: jal rs, ps
+ce2a      // 000001a7, not_ne_3: buc :game_loop_done
+df7c      // 000001a8, player2_firing: movi ps, :update_bullet_lo
+ff00      // 000001a9: lui ps, :update_bullet_hi
+4e8f      // 000001aa: jal rs, ps
+bf00      // 000001ab: cmpi ps, 0
+c102      // 000001ac: bne :ne_4
+ce06      // 000001ad: buc :not_ne_4
+ded5      // 000001ae, ne_4: movi rs, :game_state_lo
+fe01      // 000001af: lui rs, :game_state_hi
+df00      // 000001b0: movi ps, 0
+4f4e      // 000001b1: stor ps, rs
+ce1f      // 000001b2: buc :game_loop_done
+df07      // 000001b3, not_ne_4: movi ps, :handle_collision_lo
+ff01      // 000001b4: lui ps, :handle_collision_hi
+4e8f      // 000001b5: jal rs, ps
+bf00      // 000001b6: cmpi ps, 0
+c102      // 000001b7: bne :ne_5
+ce18      // 000001b8: buc :not_ne_5
+00df      // 000001b9, ne_5: mov r0, ps
+df21      // 000001ba: movi ps, :bullet_explode_lo
+ff01      // 000001bb: lui ps, :bullet_explode_hi
+4e8f      // 000001bc: jal rs, ps
+b000      // 000001bd: cmpi r0, 0
+c002      // 000001be: beq :eq_6
+ce04      // 000001bf: buc :not_eq_6
+df22      // 000001c0, eq_6: movi ps, :ground_explode_lo
+ff01      // 000001c1: lui ps, :ground_explode_hi
+4e8f      // 000001c2: jal rs, ps
+b002      // 000001c3, not_eq_6: cmpi r0, 2
+c002      // 000001c4: beq :eq_7
+ce04      // 000001c5: buc :not_eq_7
+df24      // 000001c6, eq_7: movi ps, :tank2_explode_lo
+ff01      // 000001c7: lui ps, :tank2_explode_hi
+4e8f      // 000001c8: jal rs, ps
+ded5      // 000001c9, not_eq_7: movi rs, :game_state_lo
+fe01      // 000001ca: lui rs, :game_state_hi
+df00      // 000001cb: movi ps, 0
+4f4e      // 000001cc: stor ps, rs
+dff1      // 000001cd: movi ps, :reset_bullet_lo
+ff00      // 000001ce: lui ps, :reset_bullet_hi
+4e8f      // 000001cf: jal rs, ps
+ce01      // 000001d0, not_ne_5: buc :game_loop_done
+01de      // 000001d1, game_loop_done: mov r1, rs
+00de      // 000001d2: mov r0, rs
+4ece      // 000001d3: juc rs
+// endsub: game_loop
 // data_mem, g: 
 ffff
 // game_state: 
@@ -444,3 +507,1037 @@ ffff
 0000
 // bullet_ddy: 
 fffe
+// tank1_angle: 
+000f
+// tank1_power: 
+000f
+// tank2_angle: 
+000f
+// tank2_power: 
+000f
+// d_table: 
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0010 0000
+000f 0000
+000f 0001
+000f 0002
+000f 0003
+000f 0004
+000f 0004
+000f 0005
+000e 0006
+000e 0007
+000d 0007
+000d 0008
+000d 0009
+000c 0009
+000c 000a
+000b 000b
+000b 000b
+000a 000c
+0009 000c
+0009 000d
+0008 000d
+0007 000d
+0007 000e
+0006 000e
+0005 000f
+0004 000f
+0004 000f
+0003 000f
+0002 000f
+0001 000f
+0000 000f
+0000 0010
+0020 0000
+001f 0001
+001f 0003
+001f 0004
+001f 0006
+001e 0008
+001e 0009
+001e 000b
+001d 000c
+001c 000e
+001b 000f
+001b 0010
+001a 0012
+0019 0013
+0018 0014
+0017 0016
+0016 0017
+0014 0018
+0013 0019
+0012 001a
+0010 001b
+000f 001b
+000e 001c
+000c 001d
+000b 001e
+0009 001e
+0008 001e
+0006 001f
+0004 001f
+0003 001f
+0001 001f
+0000 0020
+0030 0000
+002f 0002
+002f 0004
+002f 0007
+002f 0009
+002e 000c
+002d 000e
+002d 0010
+002c 0012
+002b 0015
+0029 0017
+0028 0019
+0027 001b
+0025 001d
+0024 001f
+0022 0021
+0021 0022
+001f 0024
+001d 0025
+001b 0027
+0019 0028
+0017 0029
+0015 002b
+0012 002c
+0010 002d
+000e 002d
+000c 002e
+0009 002f
+0007 002f
+0004 002f
+0002 002f
+0000 0030
+0040 0000
+003f 0003
+003f 0006
+003f 0009
+003e 000c
+003d 0010
+003d 0013
+003c 0016
+003a 0019
+0039 001c
+0037 001f
+0036 0021
+0034 0024
+0032 0027
+0030 0029
+002e 002c
+002c 002e
+0029 0030
+0027 0032
+0024 0034
+0021 0036
+001f 0037
+001c 0039
+0019 003a
+0016 003c
+0013 003d
+0010 003d
+000c 003e
+0009 003f
+0006 003f
+0003 003f
+0000 0040
+0050 0000
+004f 0004
+004f 0008
+004f 000c
+004e 0010
+004d 0014
+004c 0017
+004b 001b
+0049 001f
+0047 0023
+0045 0026
+0043 002a
+0041 002d
+003f 0030
+003c 0034
+0039 0037
+0037 0039
+0034 003c
+0030 003f
+002d 0041
+002a 0043
+0026 0045
+0023 0047
+001f 0049
+001b 004b
+0017 004c
+0014 004d
+0010 004e
+000c 004f
+0008 004f
+0004 004f
+0000 0050
+0060 0000
+005f 0004
+005f 0009
+005e 000e
+005e 0013
+005c 0018
+005b 001c
+005a 0021
+0058 0025
+0056 002a
+0053 002e
+0051 0032
+004e 0036
+004b 003a
+0048 003e
+0045 0042
+0042 0045
+003e 0048
+003a 004b
+0036 004e
+0032 0051
+002e 0053
+002a 0056
+0025 0058
+0021 005a
+001c 005b
+0018 005c
+0013 005e
+000e 005e
+0009 005f
+0004 005f
+0000 0060
+0070 0000
+006f 0005
+006f 000b
+006e 0010
+006d 0016
+006c 001c
+006a 0021
+0069 0026
+0066 002c
+0064 0031
+0061 0036
+005f 003b
+005b 003f
+0058 0044
+0054 0048
+0051 004d
+004d 0051
+0048 0054
+0044 0058
+003f 005b
+003b 005f
+0036 0061
+0031 0064
+002c 0066
+0026 0069
+0021 006a
+001c 006c
+0016 006d
+0010 006e
+000b 006f
+0005 006f
+0000 0070
+0080 0000
+007f 0006
+007f 000c
+007e 0013
+007d 0019
+007b 0020
+007a 0026
+0078 002c
+0075 0032
+0072 0038
+006f 003e
+006c 0043
+0069 0049
+0065 004e
+0061 0053
+005c 0058
+0058 005c
+0053 0061
+004e 0065
+0049 0069
+0043 006c
+003e 006f
+0038 0072
+0032 0075
+002c 0078
+0026 007a
+0020 007b
+0019 007d
+0013 007e
+000c 007f
+0006 007f
+0000 0080
+0090 0000
+008f 0007
+008f 000e
+008e 0015
+008d 001c
+008b 0024
+0089 002b
+0087 0032
+0084 0038
+0081 003f
+007d 0045
+007a 004c
+0076 0052
+0071 0058
+006d 005d
+0068 0063
+0063 0068
+005d 006d
+0058 0071
+0052 0076
+004c 007a
+0045 007d
+003f 0081
+0038 0084
+0032 0087
+002b 0089
+0024 008b
+001c 008d
+0015 008e
+000e 008f
+0007 008f
+0000 0090
+00a0 0000
+009f 0008
+009f 0010
+009e 0018
+009c 0020
+009a 0028
+0098 002f
+0096 0037
+0093 003f
+008f 0046
+008b 004d
+0087 0054
+0083 005b
+007e 0061
+0079 0068
+0073 006e
+006e 0073
+0068 0079
+0061 007e
+005b 0083
+0054 0087
+004d 008b
+0046 008f
+003f 0093
+0037 0096
+002f 0098
+0028 009a
+0020 009c
+0018 009e
+0010 009f
+0008 009f
+0000 00a0
+00b0 0000
+00af 0008
+00af 0011
+00ad 001a
+00ac 0023
+00aa 002c
+00a7 0034
+00a5 003d
+00a1 0045
+009e 004d
+0099 0055
+0095 005d
+0090 0064
+008b 006b
+0085 0072
+007f 0079
+0079 007f
+0072 0085
+006b 008b
+0064 0090
+005d 0095
+0055 0099
+004d 009e
+0045 00a1
+003d 00a5
+0034 00a7
+002c 00aa
+0023 00ac
+001a 00ad
+0011 00af
+0008 00af
+0000 00b0
+00c0 0000
+00bf 0009
+00bf 0013
+00bd 001d
+00bc 0026
+00b9 0030
+00b7 0039
+00b4 0042
+00b0 004b
+00ac 0054
+00a7 005d
+00a2 0065
+009d 006d
+0097 0075
+0091 007d
+008b 0084
+0084 008b
+007d 0091
+0075 0097
+006d 009d
+0065 00a2
+005d 00a7
+0054 00ac
+004b 00b0
+0042 00b4
+0039 00b7
+0030 00b9
+0026 00bc
+001d 00bd
+0013 00bf
+0009 00bf
+0000 00c0
+00d0 0000
+00cf 000a
+00ce 0015
+00cd 001f
+00cb 0029
+00c9 0034
+00c6 003e
+00c3 0048
+00bf 0052
+00ba 005b
+00b5 0064
+00b0 006e
+00aa 0076
+00a4 007f
+009d 0087
+0096 008f
+008f 0096
+0087 009d
+007f 00a4
+0076 00aa
+006e 00b0
+0064 00b5
+005b 00ba
+0052 00bf
+0048 00c3
+003e 00c6
+0034 00c9
+0029 00cb
+001f 00cd
+0015 00ce
+000a 00cf
+0000 00d0
+00e0 0000
+00df 000b
+00de 0016
+00dd 0021
+00db 002d
+00d8 0038
+00d5 0043
+00d2 004d
+00cd 0058
+00c9 0062
+00c3 006c
+00be 0076
+00b7 007f
+00b1 0089
+00a9 0091
+00a2 009a
+009a 00a2
+0091 00a9
+0089 00b1
+007f 00b7
+0076 00be
+006c 00c3
+0062 00c9
+0058 00cd
+004d 00d2
+0043 00d5
+0038 00d8
+002d 00db
+0021 00dd
+0016 00de
+000b 00df
+0000 00e0
+00f0 0000
+00ef 000c
+00ee 0018
+00ed 0024
+00eb 0030
+00e8 003c
+00e4 0047
+00e1 0053
+00dc 005e
+00d7 0069
+00d1 0074
+00cb 007e
+00c4 0089
+00bd 0092
+00b6 009c
+00ad 00a5
+00a5 00ad
+009c 00b6
+0092 00bd
+0089 00c4
+007e 00cb
+0074 00d1
+0069 00d7
+005e 00dc
+0053 00e1
+0047 00e4
+003c 00e8
+0030 00eb
+0024 00ed
+0018 00ee
+000c 00ef
+0000 00f0
+0100 0000
+00ff 000c
+00fe 0019
+00fd 0026
+00fa 0033
+00f7 0040
+00f4 004c
+00f0 0058
+00eb 0064
+00e5 0070
+00df 007c
+00d9 0087
+00d2 0092
+00ca 009c
+00c2 00a6
+00b9 00b0
+00b0 00b9
+00a6 00c2
+009c 00ca
+0092 00d2
+0087 00d9
+007c 00df
+0070 00e5
+0064 00eb
+0058 00f0
+004c 00f4
+0040 00f7
+0033 00fa
+0026 00fd
+0019 00fe
+000c 00ff
+0000 0100
+0110 0000
+010f 000d
+010e 001b
+010c 0029
+010a 0036
+0107 0044
+0103 0051
+00ff 005e
+00f9 006b
+00f4 0077
+00ed 0084
+00e6 008f
+00df 009b
+00d7 00a6
+00ce 00b1
+00c5 00bb
+00bb 00c5
+00b1 00ce
+00a6 00d7
+009b 00df
+008f 00e6
+0084 00ed
+0077 00f4
+006b 00f9
+005e 00ff
+0051 0103
+0044 0107
+0036 010a
+0029 010c
+001b 010e
+000d 010f
+0000 0110
+0120 0000
+011f 000e
+011e 001d
+011c 002b
+011a 0039
+0116 0048
+0112 0056
+010e 0064
+0108 0071
+0102 007e
+00fb 008b
+00f4 0098
+00ec 00a4
+00e3 00b0
+00da 00bb
+00d0 00c6
+00c6 00d0
+00bb 00da
+00b0 00e3
+00a4 00ec
+0098 00f4
+008b 00fb
+007e 0102
+0071 0108
+0064 010e
+0056 0112
+0048 0116
+0039 011a
+002b 011c
+001d 011e
+000e 011f
+0000 0120
+0130 0000
+012f 000f
+012e 001e
+012c 002e
+0129 003d
+0126 004c
+0122 005b
+011d 0069
+0117 0077
+0110 0085
+0109 0093
+0101 00a0
+00f9 00ad
+00f0 00ba
+00e6 00c6
+00dc 00d1
+00d1 00dc
+00c6 00e6
+00ba 00f0
+00ad 00f9
+00a0 0101
+0093 0109
+0085 0110
+0077 0117
+0069 011d
+005b 0122
+004c 0126
+003d 0129
+002e 012c
+001e 012e
+000f 012f
+0000 0130
+0140 0000
+013f 0010
+013e 0020
+013c 0030
+0139 0040
+0135 0050
+0131 005f
+012c 006f
+0126 007e
+011f 008c
+0117 009b
+010f 00a9
+0106 00b6
+00fd 00c3
+00f2 00d0
+00e7 00dc
+00dc 00e7
+00d0 00f2
+00c3 00fd
+00b6 0106
+00a9 010f
+009b 0117
+008c 011f
+007e 0126
+006f 012c
+005f 0131
+0050 0135
+0040 0139
+0030 013c
+0020 013e
+0010 013f
+0000 0140
+0150 0000
+014f 0011
+014e 0021
+014c 0032
+0149 0043
+0145 0054
+0140 0064
+013b 0074
+0134 0084
+012d 0093
+0125 00a3
+011d 00b1
+0113 00bf
+0109 00cd
+00fe 00da
+00f3 00e7
+00e7 00f3
+00da 00fe
+00cd 0109
+00bf 0113
+00b1 011d
+00a3 0125
+0093 012d
+0084 0134
+0074 013b
+0064 0140
+0054 0145
+0043 0149
+0032 014c
+0021 014e
+0011 014f
+0000 0150
+0160 0000
+015f 0011
+015e 0023
+015b 0035
+0158 0046
+0154 0058
+014f 0069
+014a 007a
+0143 008a
+013c 009b
+0133 00aa
+012a 00ba
+0120 00c9
+0116 00d7
+010b 00e5
+00ff 00f2
+00f2 00ff
+00e5 010b
+00d7 0116
+00c9 0120
+00ba 012a
+00aa 0133
+009b 013c
+008a 0143
+007a 014a
+0069 014f
+0058 0154
+0046 0158
+0035 015b
+0023 015e
+0011 015f
+0000 0160
+0170 0000
+016f 0012
+016e 0025
+016b 0037
+0168 004a
+0164 005c
+015f 006e
+0159 007f
+0152 0091
+014a 00a2
+0141 00b2
+0138 00c2
+012e 00d2
+0123 00e1
+0117 00ef
+010a 00fd
+00fd 010a
+00ef 0117
+00e1 0123
+00d2 012e
+00c2 0138
+00b2 0141
+00a2 014a
+0091 0152
+007f 0159
+006e 015f
+005c 0164
+004a 0168
+0037 016b
+0025 016e
+0012 016f
+0000 0170
+0180 0000
+017f 0013
+017e 0026
+017b 003a
+0178 004d
+0173 0060
+016e 0072
+0168 0085
+0160 0097
+0158 00a9
+014f 00ba
+0145 00cb
+013b 00db
+012f 00eb
+0123 00fa
+0116 0108
+0108 0116
+00fa 0123
+00eb 012f
+00db 013b
+00cb 0145
+00ba 014f
+00a9 0158
+0097 0160
+0085 0168
+0072 016e
+0060 0173
+004d 0178
+003a 017b
+0026 017e
+0013 017f
+0000 0180
+0190 0000
+018f 0014
+018d 0028
+018b 003c
+0187 0050
+0183 0064
+017d 0077
+0177 008a
+016f 009d
+0167 00b0
+015d 00c2
+0153 00d3
+0148 00e4
+013c 00f4
+012f 0104
+0121 0113
+0113 0121
+0104 012f
+00f4 013c
+00e4 0148
+00d3 0153
+00c2 015d
+00b0 0167
+009d 016f
+008a 0177
+0077 017d
+0064 0183
+0050 0187
+003c 018b
+0028 018d
+0014 018f
+0000 0190
+01a0 0000
+019f 0015
+019d 002a
+019b 003e
+0197 0053
+0192 0068
+018c 007c
+0186 0090
+017e 00a4
+0175 00b7
+016b 00c9
+0161 00dc
+0155 00ed
+0148 00fe
+013b 010e
+012d 011e
+011e 012d
+010e 013b
+00fe 0148
+00ed 0155
+00dc 0161
+00c9 016b
+00b7 0175
+00a4 017e
+0090 0186
+007c 018c
+0068 0192
+0053 0197
+003e 019b
+002a 019d
+0015 019f
+0000 01a0
+01b0 0000
+01af 0015
+01ad 002b
+01ab 0041
+01a7 0056
+01a2 006c
+019c 0081
+0195 0096
+018c 00aa
+0183 00be
+0179 00d1
+016e 00e4
+0162 00f6
+0155 0108
+0147 0119
+0139 0129
+0129 0139
+0119 0147
+0108 0155
+00f6 0162
+00e4 016e
+00d1 0179
+00be 0183
+00aa 018c
+0096 0195
+0081 019c
+006c 01a2
+0056 01a7
+0041 01ab
+002b 01ad
+0015 01af
+0000 01b0
+01c0 0000
+01bf 0016
+01bd 002d
+01ba 0043
+01b6 005a
+01b1 0070
+01ab 0086
+01a4 009b
+019b 00b0
+0192 00c5
+0187 00d9
+017c 00ec
+016f 00ff
+0162 0112
+0153 0123
+0144 0134
+0134 0144
+0123 0153
+0112 0162
+00ff 016f
+00ec 017c
+00d9 0187
+00c5 0192
+00b0 019b
+009b 01a4
+0086 01ab
+0070 01b1
+005a 01b6
+0043 01ba
+002d 01bd
+0016 01bf
+0000 01c0
+01d0 0000
+01cf 0017
+01cd 002e
+01ca 0046
+01c6 005d
+01c1 0074
+01ba 008a
+01b3 00a1
+01aa 00b6
+01a0 00cc
+0195 00e1
+0189 00f5
+017c 0109
+016e 011c
+0160 012e
+0150 013f
+013f 0150
+012e 0160
+011c 016e
+0109 017c
+00f5 0189
+00e1 0195
+00cc 01a0
+00b6 01aa
+00a1 01b3
+008a 01ba
+0074 01c1
+005d 01c6
+0046 01ca
+002e 01cd
+0017 01cf
+0000 01d0
+01e0 0000
+01df 0018
+01dd 0030
+01da 0048
+01d6 0060
+01d0 0078
+01c9 008f
+01c2 00a6
+01b9 00bd
+01ae 00d3
+01a3 00e8
+0197 00fd
+0189 0112
+017b 0125
+016c 0138
+015b 014a
+014a 015b
+0138 016c
+0125 017b
+0112 0189
+00fd 0197
+00e8 01a3
+00d3 01ae
+00bd 01b9
+00a6 01c2
+008f 01c9
+0078 01d0
+0060 01d6
+0048 01da
+0030 01dd
+0018 01df
+0000 01e0
+01f0 0000
+01ef 0019
+01ed 0032
+01ea 004b
+01e5 0063
+01e0 007c
+01d9 0094
+01d1 00ac
+01c7 00c3
+01bd 00da
+01b1 00f0
+01a4 0106
+0197 011b
+0188 012f
+0178 0143
+0167 0155
+0155 0167
+0143 0178
+012f 0188
+011b 0197
+0106 01a4
+00f0 01b1
+00da 01bd
+00c3 01c7
+00ac 01d1
+0094 01d9
+007c 01e0
+0063 01e5
+004b 01ea
+0032 01ed
+0019 01ef
+0000 01f0
+00d0      // 000009df: nop

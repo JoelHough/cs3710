@@ -56,7 +56,8 @@ module system(input clk,
    wire [15:0]          prng_rd_data;
 
    reg [16:0]           ms_counter = 17'b0;
-   wire                 pixel_clk, ms_strobe;
+   wire                 pixel_clk;
+   reg                  ms_strobe = 1'b0;
    reg [1:0]            timer_en = 2'b0;
    wire [1:0]           timer_done;
    wire [1:0]           timer_strobe;
@@ -91,9 +92,10 @@ module system(input clk,
             .en                         (en),
             .mem_rd_data                (mem_rd_data[15:0]));
 
-   always @(posedge sys_clk) // 100Mhz * 100000 = 1ms
+   always @(posedge sys_clk) begin // 100Mhz * 100000 = 1ms
      ms_counter <= ms_counter == 17'd99999 ? 17'b0 : ms_counter + 1'b1;
-   assign ms_strobe = ms_counter == 17'b0;
+     ms_strobe <= ms_counter == 17'b0;
+   end
 
    timer Timer [1:0] (.clk(sys_clk), .cnt_en(ms_strobe), .wr_en(timer_en & {2{mem_wr_en}}), .wr_data(mem_wr_data), .done(timer_done));
    one_shot TimerOs [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));

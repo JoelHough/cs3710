@@ -34,7 +34,7 @@ module block_ram(
    reg [RAM_WIDTH-1:0] ram [(2**RAM_ADDR_BITS)-1:0];
    
    initial
-      $readmemh("../tank_game.hex", ram, 0, 'h3FF);
+      $readmemh("../tank_game.hex", ram, 0, 'hFFF);
       //$readmemh("../cpu_test.hex", ram, 0, 'h3FF);
 
    always @(posedge clk)

@@ -382,3 +382,25 @@ def neg(a)
   xori a, 0xff
   addi a, 1
 end
+
+def func(name, *regs)
+  rem "sub: #{name}"
+  label name
+  preserving(*regs) do
+    yield
+    label "#{name}_done".to_sym
+  end
+  ret
+  rem "endsub: #{name}"
+end
+
+def ifunc(name, *regs)
+  rem "handler: #{name}"
+  label name
+  preserving(*regs) do
+    yield
+    label "#{name}_done".to_sym
+  end
+  retx
+  rem "endhandler: #{name}"
+end  

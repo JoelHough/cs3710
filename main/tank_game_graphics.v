@@ -104,7 +104,7 @@ module tank_game_graphics(
        new_frame_ack <= 1'b1;
    
    always @(posedge clk) begin
-      bullet_pixel <= bullet_x == x && bullet_y == y ? bullet_color : transparent_pixel;
+      bullet_pixel <= (bullet_x == x || bullet_x + 1 == x) && (bullet_y == y || bullet_y + 1 == y) ? bullet_color : transparent_pixel;
       ground_pixel <= ground_y[x] >= y ? ground_color : transparent_pixel;
    end
    
