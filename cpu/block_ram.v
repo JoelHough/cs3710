@@ -28,13 +28,13 @@ module block_ram(
     );
 
    parameter RAM_WIDTH = 16;
-   parameter RAM_ADDR_BITS = 12;
+   parameter RAM_ADDR_BITS = 14;
    
    (* RAM_STYLE="AUTO" *)
    reg [RAM_WIDTH-1:0] ram [(2**RAM_ADDR_BITS)-1:0];
    
    initial
-      $readmemh("../tank_game.hex", ram, 0, 'hFFF);
+      $readmemh("../tank_game.hex", ram, 0, 'h3FFF);
       //$readmemh("../cpu_test.hex", ram, 0, 'h3FF);
 
    always @(posedge clk)

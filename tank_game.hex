@@ -1,1419 +1,1453 @@
-ce1d      // 00000000: buc :timer0_irqh
-ce2d      // 00000001: buc :timer1_irqh
-ce2a      // 00000002: buc :vsync_irqh
-ce35      // 00000003: buc :input_irqh
-ce39      // 00000004: buc :irq
-ce38      // 00000005: buc :irq
-ce37      // 00000006: buc :irq
-ce36      // 00000007: buc :irq
-ce35      // 00000008: buc :irq
-ce34      // 00000009: buc :irq
-ce33      // 0000000a: buc :irq
-ce32      // 0000000b: buc :irq
-ce31      // 0000000c: buc :irq
-ce30      // 0000000d: buc :irq
-ce2f      // 0000000e: buc :irq
-ce2e      // 0000000f: buc :irq
-df3f      // 00000010: movi ps, :restart_lo
+ce1c      // 00000000: buc :timer0_irqh
+ce2c      // 00000001: buc :timer1_irqh
+ce29      // 00000002: buc :vsync_irqh
+ce33      // 00000003: buc :input_irqh
+ce3c      // 00000004: buc :irq
+ce3b      // 00000005: buc :irq
+ce3a      // 00000006: buc :irq
+ce39      // 00000007: buc :irq
+ce38      // 00000008: buc :irq
+ce37      // 00000009: buc :irq
+ce36      // 0000000a: buc :irq
+ce35      // 0000000b: buc :irq
+ce34      // 0000000c: buc :irq
+ce33      // 0000000d: buc :irq
+ce32      // 0000000e: buc :irq
+ce31      // 0000000f: buc :irq
+df42      // 00000010: movi ps, :restart_lo
 ff00      // 00000011: lui ps, :restart_hi
 4e8f      // 00000012: jal rs, ps
 de04      // 00000013: movi rs, :timer0_lo
-fe10      // 00000014: lui rs, :timer0_hi
+fe40      // 00000014: lui rs, :timer0_hi
 df21      // 00000015: movi ps, 33
 4f4e      // 00000016: stor ps, rs
 de05      // 00000017: movi rs, :timer1_lo
-fe10      // 00000018: lui rs, :timer1_hi
-dfc8      // 00000019: movi ps, 200
-ff00      // 0000001a: lui ps, 0
-4f4e      // 0000001b: stor ps, rs
-ce00      // 0000001c: buc 0
+fe40      // 00000018: lui rs, :timer1_hi
+df78      // 00000019: movi ps, 120
+4f4e      // 0000001a: stor ps, rs
+ce00      // 0000001b: buc 0
 // handler: timer0_irqh
-0ed0      // 0000001d, timer0_irqh: mov rs, r0
-0ed1      // 0000001e: mov rs, r1
-0ed2      // 0000001f: mov rs, r2
-df1d      // 00000020: movi ps, :game_loop_lo
-ff05      // 00000021: lui ps, :game_loop_hi
-4e8f      // 00000022: jal rs, ps
-de04      // 00000023: movi rs, :timer0_lo
-fe10      // 00000024: lui rs, :timer0_hi
-df21      // 00000025: movi ps, 33
-4f4e      // 00000026: stor ps, rs
-02de      // 00000027, timer0_irqh_done: mov r2, rs
-01de      // 00000028: mov r1, rs
-00de      // 00000029: mov r0, rs
-40f0      // 0000002a: clri
-4ece      // 0000002b: juc rs
+0ed0      // 0000001c, timer0_irqh: mov rs, r0
+0ed1      // 0000001d: mov rs, r1
+0ed2      // 0000001e: mov rs, r2
+df3f      // 0000001f: movi ps, :game_loop_lo
+ff05      // 00000020: lui ps, :game_loop_hi
+4e8f      // 00000021: jal rs, ps
+de04      // 00000022: movi rs, :timer0_lo
+fe40      // 00000023: lui rs, :timer0_hi
+df21      // 00000024: movi ps, 33
+4f4e      // 00000025: stor ps, rs
+02de      // 00000026, timer0_irqh_done: mov r2, rs
+01de      // 00000027: mov r1, rs
+00de      // 00000028: mov r0, rs
+40f0      // 00000029: clri
+4ece      // 0000002a: juc rs
 // endhandler: timer0_irqh
 // handler: vsync_irqh
-40f0      // 0000002c, vsync_irqh, vsync_irqh_done: clri
-4ece      // 0000002d: juc rs
+40f0      // 0000002b, vsync_irqh, vsync_irqh_done: clri
+4ece      // 0000002c: juc rs
 // endhandler: vsync_irqh
 // handler: timer1_irqh
-dfa7      // 0000002e, timer1_irqh: movi ps, :handle_input_lo
-ff00      // 0000002f: lui ps, :handle_input_hi
-4e8f      // 00000030: jal rs, ps
-de05      // 00000031: movi rs, :timer1_lo
-fe10      // 00000032: lui rs, :timer1_hi
-dfc8      // 00000033: movi ps, 200
-ff00      // 00000034: lui ps, 0
-4f4e      // 00000035: stor ps, rs
-40f0      // 00000036, timer1_irqh_done: clri
-4ece      // 00000037: juc rs
+dfb7      // 0000002d, timer1_irqh: movi ps, :handle_input_lo
+ff00      // 0000002e: lui ps, :handle_input_hi
+4e8f      // 0000002f: jal rs, ps
+de05      // 00000030: movi rs, :timer1_lo
+fe40      // 00000031: lui rs, :timer1_hi
+df78      // 00000032: movi ps, 120
+4f4e      // 00000033: stor ps, rs
+40f0      // 00000034, timer1_irqh_done: clri
+4ece      // 00000035: juc rs
 // endhandler: timer1_irqh
 // handler: input_irqh
-df1f      // 00000038, input_irqh: movi ps, :fire_lo
-ff04      // 00000039: lui ps, :fire_hi
-4e8f      // 0000003a: jal rs, ps
-40f0      // 0000003b, input_irqh_done: clri
-4ece      // 0000003c: juc rs
+0ed0      // 00000036, input_irqh: mov rs, r0
+d023      // 00000037: movi r0, :snes_lo
+f040      // 00000038: lui r0, :snes_hi
+4000      // 00000039: load r0, r0
+de22      // 0000003a: movi rs, :seg_lo
+fe40      // 0000003b: lui rs, :seg_hi
+404e      // 0000003c: stor r0, rs
+00de      // 0000003d, input_irqh_done: mov r0, rs
+40f0      // 0000003e: clri
+4ece      // 0000003f: juc rs
 // endhandler: input_irqh
 // handler: irq
-40f0      // 0000003d, irq, irq_done: clri
-4ece      // 0000003e: juc rs
+40f0      // 00000040, irq, irq_done: clri
+4ece      // 00000041: juc rs
 // endhandler: irq
 // sub: restart
-0ed0      // 0000003f, restart: mov rs, r0
-0ed1      // 00000040: mov rs, r1
-0ed2      // 00000041: mov rs, r2
-0ed3      // 00000042: mov rs, r3
-0ed4      // 00000043: mov rs, r4
-0ed5      // 00000044: mov rs, r5
-0ed6      // 00000045: mov rs, r6
-0ed7      // 00000046: mov rs, r7
-0ed8      // 00000047: mov rs, r8
-d008      // 00000048: movi r0, :ground_index_lo
-f010      // 00000049: lui r0, :ground_index_hi
-d109      // 0000004a: movi r1, :ground_height_lo
-f110      // 0000004b: lui r1, :ground_height_hi
-d200      // 0000004c: movi r2, 0
-d380      // 0000004d: movi r3, 128
-f300      // 0000004e: lui r3, 0
-d680      // 0000004f: movi r6, 128
-f602      // 00000050: lui r6, 2
-d740      // 00000051: movi r7, 64
-d848      // 00000052: movi r8, 72
-f802      // 00000053: lui r8, 2
-04d7      // 00000054: mov r4, r7
-9408      // 00000055: subi r4, 8
-de0c      // 00000056: movi rs, :tank1_x_lo
-fe10      // 00000057: lui rs, :tank1_x_hi
-444e      // 00000058: stor r4, rs
-04d8      // 00000059: mov r4, r8
-9408      // 0000005a: subi r4, 8
-de0e      // 0000005b: movi rs, :tank2_x_lo
-fe10      // 0000005c: lui rs, :tank2_x_hi
-444e      // 0000005d: stor r4, rs
-4240      // 0000005e, set_ground_height: stor r2, r0
-4341      // 0000005f: stor r3, r1
-5201      // 00000060: addi r2, 1
-d502      // 00000061: movi r5, :rand_lo
-f510      // 00000062: lui r5, :rand_hi
-4505      // 00000063: load r5, r5
-1503      // 00000064: _andi r5, 3
-b501      // 00000065: cmpi r5, 1
-c002      // 00000066: beq :eq_0
-ce07      // 00000067: buc :not_eq_0
-5301      // 00000068, eq_0: addi r3, 1
-d4f4      // 00000069: movi r4, 244
-f401      // 0000006a: lui r4, 1
-03b4      // 0000006b: cmp r3, r4
-cd02      // 0000006c: bge 2
-03d4      // 0000006d: mov r3, r4
-b503      // 0000006e, not_eq_0: cmpi r5, 3
-c002      // 0000006f: beq :eq_1
-ce06      // 00000070: buc :not_eq_1
-9301      // 00000071, eq_1: subi r3, 1
-d400      // 00000072: movi r4, 0
-03b4      // 00000073: cmp r3, r4
-c702      // 00000074: ble 2
-03d4      // 00000075: mov r3, r4
-04d3      // 00000076, not_eq_1: mov r4, r3
-540f      // 00000077: addi r4, 15
-02b7      // 00000078: cmp r2, r7
-c002      // 00000079: beq :eq_2
-ce04      // 0000007a: buc :not_eq_2
-de0d      // 0000007b, eq_2: movi rs, :tank1_y_lo
-fe10      // 0000007c: lui rs, :tank1_y_hi
-444e      // 0000007d: stor r4, rs
-02b8      // 0000007e, not_eq_2: cmp r2, r8
-c002      // 0000007f: beq :eq_3
-ce04      // 00000080: buc :not_eq_3
-de0f      // 00000081, eq_3: movi rs, :tank2_y_lo
-fe10      // 00000082: lui rs, :tank2_y_hi
-444e      // 00000083: stor r4, rs
-02b6      // 00000084, not_eq_3: cmp r2, r6
-c1d9      // 00000085: bne :set_ground_height
-d45f      // 00000086: movi r4, :game_state_lo
-f405      // 00000087: lui r4, :game_state_hi
-4404      // 00000088: load r4, r4
-b404      // 00000089: cmpi r4, 4
-c002      // 0000008a: beq :eq_4
-ce08      // 0000008b: buc :not_eq_4
-de5f      // 0000008c, eq_4: movi rs, :game_state_lo
-fe05      // 0000008d: lui rs, :game_state_hi
-df02      // 0000008e: movi ps, 2
-4f4e      // 0000008f: stor ps, rs
-dfcc      // 00000090: movi ps, :reset_bullet_lo
-ff01      // 00000091: lui ps, :reset_bullet_hi
-4e8f      // 00000092: jal rs, ps
-b405      // 00000093, not_eq_4: cmpi r4, 5
-c002      // 00000094: beq :eq_5
-ce08      // 00000095: buc :not_eq_5
-de5f      // 00000096, eq_5: movi rs, :game_state_lo
-fe05      // 00000097: lui rs, :game_state_hi
-df00      // 00000098: movi ps, 0
-4f4e      // 00000099: stor ps, rs
-dfcc      // 0000009a: movi ps, :reset_bullet_lo
-ff01      // 0000009b: lui ps, :reset_bullet_hi
-4e8f      // 0000009c: jal rs, ps
-08de      // 0000009d, not_eq_5, restart_done: mov r8, rs
-07de      // 0000009e: mov r7, rs
-06de      // 0000009f: mov r6, rs
-05de      // 000000a0: mov r5, rs
-04de      // 000000a1: mov r4, rs
-03de      // 000000a2: mov r3, rs
-02de      // 000000a3: mov r2, rs
-01de      // 000000a4: mov r1, rs
-00de      // 000000a5: mov r0, rs
-4ece      // 000000a6: juc rs
+0ed0      // 00000042, restart: mov rs, r0
+0ed1      // 00000043: mov rs, r1
+0ed2      // 00000044: mov rs, r2
+0ed3      // 00000045: mov rs, r3
+0ed4      // 00000046: mov rs, r4
+0ed5      // 00000047: mov rs, r5
+0ed6      // 00000048: mov rs, r6
+0ed7      // 00000049: mov rs, r7
+0ed8      // 0000004a: mov rs, r8
+0ed9      // 0000004b: mov rs, r9
+0eda      // 0000004c: mov rs, r10
+d9db      // 0000004d: movi r9, :hill_table_lo
+f925      // 0000004e: lui r9, :hill_table_hi
+d008      // 0000004f: movi r0, :ground_index_lo
+f040      // 00000050: lui r0, :ground_index_hi
+d109      // 00000051: movi r1, :ground_height_lo
+f140      // 00000052: lui r1, :ground_height_hi
+d200      // 00000053: movi r2, 0
+d380      // 00000054: movi r3, 128
+f300      // 00000055: lui r3, 0
+d680      // 00000056: movi r6, 128
+f602      // 00000057: lui r6, 2
+d740      // 00000058: movi r7, 64
+d848      // 00000059: movi r8, 72
+f802      // 0000005a: lui r8, 2
+04d7      // 0000005b: mov r4, r7
+5408      // 0000005c: addi r4, 8
+de0c      // 0000005d: movi rs, :tank1_x_lo
+fe40      // 0000005e: lui rs, :tank1_x_hi
+444e      // 0000005f: stor r4, rs
+04d8      // 00000060: mov r4, r8
+5408      // 00000061: addi r4, 8
+de0e      // 00000062: movi rs, :tank2_x_lo
+fe40      // 00000063: lui rs, :tank2_x_hi
+444e      // 00000064: stor r4, rs
+0ad3      // 00000065, set_ground_height: mov r10, r3
+df20      // 00000066: movi ps, :switches_lo
+ff40      // 00000067: lui ps, :switches_hi
+4f0f      // 00000068: load ps, ps
+0fdf      // 00000069: mov ps, ps
+8f16      // 0000006a: lshi ps, -10
+1f01      // 0000006b: _andi ps, 1
+bf01      // 0000006c: cmpi ps, 1
+c002      // 0000006d: beq :eq_0
+ce04      // 0000006e: buc :not_eq_0
+4a09      // 0000006f, eq_0: load r10, r9
+0a53      // 00000070: add r10, r3
+5901      // 00000071: addi r9, 1
+4240      // 00000072, not_eq_0: stor r2, r0
+4a41      // 00000073: stor r10, r1
+5201      // 00000074: addi r2, 1
+d502      // 00000075: movi r5, :rand_lo
+f540      // 00000076: lui r5, :rand_hi
+4505      // 00000077: load r5, r5
+1503      // 00000078: _andi r5, 3
+b501      // 00000079: cmpi r5, 1
+c002      // 0000007a: beq :eq_1
+ce07      // 0000007b: buc :not_eq_1
+5301      // 0000007c, eq_1: addi r3, 1
+d4f4      // 0000007d: movi r4, 244
+f401      // 0000007e: lui r4, 1
+03b4      // 0000007f: cmp r3, r4
+cd02      // 00000080: bge 2
+03d4      // 00000081: mov r3, r4
+b503      // 00000082, not_eq_1: cmpi r5, 3
+c002      // 00000083: beq :eq_2
+ce06      // 00000084: buc :not_eq_2
+9301      // 00000085, eq_2: subi r3, 1
+d400      // 00000086: movi r4, 0
+03b4      // 00000087: cmp r3, r4
+c702      // 00000088: ble 2
+03d4      // 00000089: mov r3, r4
+04da      // 0000008a, not_eq_2: mov r4, r10
+540f      // 0000008b: addi r4, 15
+02b7      // 0000008c: cmp r2, r7
+c002      // 0000008d: beq :eq_3
+ce04      // 0000008e: buc :not_eq_3
+de0d      // 0000008f, eq_3: movi rs, :tank1_y_lo
+fe40      // 00000090: lui rs, :tank1_y_hi
+444e      // 00000091: stor r4, rs
+02b8      // 00000092, not_eq_3: cmp r2, r8
+c002      // 00000093: beq :eq_4
+ce04      // 00000094: buc :not_eq_4
+de0f      // 00000095, eq_4: movi rs, :tank2_y_lo
+fe40      // 00000096: lui rs, :tank2_y_hi
+444e      // 00000097: stor r4, rs
+02b6      // 00000098, not_eq_4: cmp r2, r6
+c1cc      // 00000099: bne :set_ground_height
+d481      // 0000009a: movi r4, :game_state_lo
+f405      // 0000009b: lui r4, :game_state_hi
+4404      // 0000009c: load r4, r4
+b404      // 0000009d: cmpi r4, 4
+c002      // 0000009e: beq :eq_5
+ce05      // 0000009f: buc :not_eq_5
+de81      // 000000a0, eq_5: movi rs, :game_state_lo
+fe05      // 000000a1: lui rs, :game_state_hi
+df02      // 000000a2: movi ps, 2
+4f4e      // 000000a3: stor ps, rs
+b405      // 000000a4, not_eq_5: cmpi r4, 5
+c002      // 000000a5: beq :eq_6
+ce05      // 000000a6: buc :not_eq_6
+de81      // 000000a7, eq_6: movi rs, :game_state_lo
+fe05      // 000000a8: lui rs, :game_state_hi
+df00      // 000000a9: movi ps, 0
+4f4e      // 000000aa: stor ps, rs
+0ade      // 000000ab, not_eq_6, restart_done: mov r10, rs
+09de      // 000000ac: mov r9, rs
+08de      // 000000ad: mov r8, rs
+07de      // 000000ae: mov r7, rs
+06de      // 000000af: mov r6, rs
+05de      // 000000b0: mov r5, rs
+04de      // 000000b1: mov r4, rs
+03de      // 000000b2: mov r3, rs
+02de      // 000000b3: mov r2, rs
+01de      // 000000b4: mov r1, rs
+00de      // 000000b5: mov r0, rs
+4ece      // 000000b6: juc rs
 // endsub: restart
 // sub: handle_input
-0ed0      // 000000a7, handle_input: mov rs, r0
-0ed1      // 000000a8: mov rs, r1
-0ed2      // 000000a9: mov rs, r2
-0ed3      // 000000aa: mov rs, r3
-d020      // 000000ab: movi r0, :switches_lo
-f010      // 000000ac: lui r0, :switches_hi
-4000      // 000000ad: load r0, r0
-d15f      // 000000ae: movi r1, :game_state_lo
-f105      // 000000af: lui r1, :game_state_hi
-4101      // 000000b0: load r1, r1
-0fd0      // 000000b1: mov ps, r0
-8f17      // 000000b2: lshi ps, -9
-1f01      // 000000b3: _andi ps, 1
-bf01      // 000000b4: cmpi ps, 1
-c002      // 000000b5: beq :eq_6
-ce04      // 000000b6: buc :not_eq_6
-df3f      // 000000b7, eq_6: movi ps, :restart_lo
-ff00      // 000000b8: lui ps, :restart_hi
-4e8f      // 000000b9: jal rs, ps
-b100      // 000000ba, not_eq_6: cmpi r1, 0
-c002      // 000000bb: beq :eq_7
-ce4a      // 000000bc: buc :not_eq_7
-d265      // 000000bd, eq_7: movi r2, :tank1_angle_lo
-f205      // 000000be: lui r2, :tank1_angle_hi
-4202      // 000000bf: load r2, r2
-d366      // 000000c0: movi r3, :tank1_power_lo
-f305      // 000000c1: lui r3, :tank1_power_hi
-4303      // 000000c2: load r3, r3
-0fd0      // 000000c3: mov ps, r0
-8f1f      // 000000c4: lshi ps, -1
-1f01      // 000000c5: _andi ps, 1
-bf01      // 000000c6: cmpi ps, 1
-c002      // 000000c7: beq :eq_8
-ce08      // 000000c8: buc :not_eq_8
-5201      // 000000c9, eq_8: addi r2, 1
-b21f      // 000000ca: cmpi r2, 31
-cd02      // 000000cb: bge 2
-d21f      // 000000cc: movi r2, 31
-de65      // 000000cd: movi rs, :tank1_angle_lo
-fe05      // 000000ce: lui rs, :tank1_angle_hi
-424e      // 000000cf: stor r2, rs
-0fd0      // 000000d0, not_eq_8: mov ps, r0
-8f1d      // 000000d1: lshi ps, -3
-1f01      // 000000d2: _andi ps, 1
-bf01      // 000000d3: cmpi ps, 1
-c002      // 000000d4: beq :eq_9
-ce08      // 000000d5: buc :not_eq_9
-9201      // 000000d6, eq_9: subi r2, 1
-b200      // 000000d7: cmpi r2, 0
-c702      // 000000d8: ble 2
-d200      // 000000d9: movi r2, 0
-de65      // 000000da: movi rs, :tank1_angle_lo
-fe05      // 000000db: lui rs, :tank1_angle_hi
-424e      // 000000dc: stor r2, rs
-0fd0      // 000000dd, not_eq_9: mov ps, r0
-8f1e      // 000000de: lshi ps, -2
-1f01      // 000000df: _andi ps, 1
-bf01      // 000000e0: cmpi ps, 1
-c002      // 000000e1: beq :eq_10
-ce08      // 000000e2: buc :not_eq_10
-9301      // 000000e3, eq_10: subi r3, 1
-b300      // 000000e4: cmpi r3, 0
-c702      // 000000e5: ble 2
-d300      // 000000e6: movi r3, 0
-de66      // 000000e7: movi rs, :tank1_power_lo
-fe05      // 000000e8: lui rs, :tank1_power_hi
-434e      // 000000e9: stor r3, rs
-0fd0      // 000000ea, not_eq_10: mov ps, r0
-8f1c      // 000000eb: lshi ps, -4
-1f01      // 000000ec: _andi ps, 1
-bf01      // 000000ed: cmpi ps, 1
-c002      // 000000ee: beq :eq_11
-ce08      // 000000ef: buc :not_eq_11
-5301      // 000000f0, eq_11: addi r3, 1
-b31f      // 000000f1: cmpi r3, 31
-cd02      // 000000f2: bge 2
-d31f      // 000000f3: movi r3, 31
-de66      // 000000f4: movi rs, :tank1_power_lo
-fe05      // 000000f5: lui rs, :tank1_power_hi
-434e      // 000000f6: stor r3, rs
-0fd0      // 000000f7, not_eq_11: mov ps, r0
-8f00      // 000000f8: lshi ps, 0
-1f01      // 000000f9: _andi ps, 1
-bf01      // 000000fa: cmpi ps, 1
-c002      // 000000fb: beq :eq_12
-ce04      // 000000fc: buc :not_eq_12
-df1f      // 000000fd, eq_12: movi ps, :fire_lo
-ff04      // 000000fe: lui ps, :fire_hi
-4e8f      // 000000ff: jal rs, ps
-0fd2      // 00000100, not_eq_12: mov ps, r2
-0fd3      // 00000101: mov ps, r3
-df10      // 00000102: movi ps, :disp_shot_lo
-ff04      // 00000103: lui ps, :disp_shot_hi
-4e8f      // 00000104: jal rs, ps
-ce4d      // 00000105: buc :handle_input_done
-b102      // 00000106, not_eq_7: cmpi r1, 2
-c002      // 00000107: beq :eq_13
-ce4a      // 00000108: buc :not_eq_13
-d267      // 00000109, eq_13: movi r2, :tank2_angle_lo
-f205      // 0000010a: lui r2, :tank2_angle_hi
-4202      // 0000010b: load r2, r2
-d368      // 0000010c: movi r3, :tank2_power_lo
-f305      // 0000010d: lui r3, :tank2_power_hi
-4303      // 0000010e: load r3, r3
-0fd0      // 0000010f: mov ps, r0
-8f1f      // 00000110: lshi ps, -1
-1f01      // 00000111: _andi ps, 1
-bf01      // 00000112: cmpi ps, 1
-c002      // 00000113: beq :eq_14
-ce08      // 00000114: buc :not_eq_14
-5201      // 00000115, eq_14: addi r2, 1
-b21f      // 00000116: cmpi r2, 31
-cd02      // 00000117: bge 2
-d21f      // 00000118: movi r2, 31
-de67      // 00000119: movi rs, :tank2_angle_lo
-fe05      // 0000011a: lui rs, :tank2_angle_hi
-424e      // 0000011b: stor r2, rs
-0fd0      // 0000011c, not_eq_14: mov ps, r0
-8f1d      // 0000011d: lshi ps, -3
-1f01      // 0000011e: _andi ps, 1
-bf01      // 0000011f: cmpi ps, 1
-c002      // 00000120: beq :eq_15
-ce08      // 00000121: buc :not_eq_15
-9201      // 00000122, eq_15: subi r2, 1
-b200      // 00000123: cmpi r2, 0
-c702      // 00000124: ble 2
-d200      // 00000125: movi r2, 0
-de67      // 00000126: movi rs, :tank2_angle_lo
-fe05      // 00000127: lui rs, :tank2_angle_hi
-424e      // 00000128: stor r2, rs
-0fd0      // 00000129, not_eq_15: mov ps, r0
-8f1e      // 0000012a: lshi ps, -2
-1f01      // 0000012b: _andi ps, 1
-bf01      // 0000012c: cmpi ps, 1
-c002      // 0000012d: beq :eq_16
-ce08      // 0000012e: buc :not_eq_16
-5301      // 0000012f, eq_16: addi r3, 1
-b31f      // 00000130: cmpi r3, 31
-cd02      // 00000131: bge 2
-d31f      // 00000132: movi r3, 31
-de68      // 00000133: movi rs, :tank2_power_lo
-fe05      // 00000134: lui rs, :tank2_power_hi
-434e      // 00000135: stor r3, rs
-0fd0      // 00000136, not_eq_16: mov ps, r0
-8f1c      // 00000137: lshi ps, -4
-1f01      // 00000138: _andi ps, 1
-bf01      // 00000139: cmpi ps, 1
-c002      // 0000013a: beq :eq_17
-ce08      // 0000013b: buc :not_eq_17
-9301      // 0000013c, eq_17: subi r3, 1
-b300      // 0000013d: cmpi r3, 0
-c702      // 0000013e: ble 2
-d300      // 0000013f: movi r3, 0
-de68      // 00000140: movi rs, :tank2_power_lo
-fe05      // 00000141: lui rs, :tank2_power_hi
-434e      // 00000142: stor r3, rs
-0fd0      // 00000143, not_eq_17: mov ps, r0
-8f00      // 00000144: lshi ps, 0
-1f01      // 00000145: _andi ps, 1
-bf01      // 00000146: cmpi ps, 1
-c002      // 00000147: beq :eq_18
-ce04      // 00000148: buc :not_eq_18
-df1f      // 00000149, eq_18: movi ps, :fire_lo
-ff04      // 0000014a: lui ps, :fire_hi
-4e8f      // 0000014b: jal rs, ps
-0fd2      // 0000014c, not_eq_18: mov ps, r2
-0fd3      // 0000014d: mov ps, r3
-df10      // 0000014e: movi ps, :disp_shot_lo
-ff04      // 0000014f: lui ps, :disp_shot_hi
-4e8f      // 00000150: jal rs, ps
-ce01      // 00000151: buc :handle_input_done
-03de      // 00000152, not_eq_13, handle_input_done: mov r3, rs
-02de      // 00000153: mov r2, rs
-01de      // 00000154: mov r1, rs
-00de      // 00000155: mov r0, rs
-4ece      // 00000156: juc rs
+0ed0      // 000000b7, handle_input: mov rs, r0
+0ed1      // 000000b8: mov rs, r1
+0ed2      // 000000b9: mov rs, r2
+0ed3      // 000000ba: mov rs, r3
+d020      // 000000bb: movi r0, :switches_lo
+f040      // 000000bc: lui r0, :switches_hi
+4000      // 000000bd: load r0, r0
+d181      // 000000be: movi r1, :game_state_lo
+f105      // 000000bf: lui r1, :game_state_hi
+4101      // 000000c0: load r1, r1
+0fd0      // 000000c1: mov ps, r0
+8f17      // 000000c2: lshi ps, -9
+1f01      // 000000c3: _andi ps, 1
+bf01      // 000000c4: cmpi ps, 1
+c002      // 000000c5: beq :eq_7
+ce04      // 000000c6: buc :not_eq_7
+df42      // 000000c7, eq_7: movi ps, :restart_lo
+ff00      // 000000c8: lui ps, :restart_hi
+4e8f      // 000000c9: jal rs, ps
+b100      // 000000ca, not_eq_7: cmpi r1, 0
+c002      // 000000cb: beq :eq_8
+ce4a      // 000000cc: buc :not_eq_8
+d287      // 000000cd, eq_8: movi r2, :tank1_angle_lo
+f205      // 000000ce: lui r2, :tank1_angle_hi
+4202      // 000000cf: load r2, r2
+d388      // 000000d0: movi r3, :tank1_power_lo
+f305      // 000000d1: lui r3, :tank1_power_hi
+4303      // 000000d2: load r3, r3
+0fd0      // 000000d3: mov ps, r0
+8f1f      // 000000d4: lshi ps, -1
+1f01      // 000000d5: _andi ps, 1
+bf01      // 000000d6: cmpi ps, 1
+c002      // 000000d7: beq :eq_9
+ce08      // 000000d8: buc :not_eq_9
+5201      // 000000d9, eq_9: addi r2, 1
+b23f      // 000000da: cmpi r2, 63
+cd02      // 000000db: bge 2
+d23f      // 000000dc: movi r2, 63
+de87      // 000000dd: movi rs, :tank1_angle_lo
+fe05      // 000000de: lui rs, :tank1_angle_hi
+424e      // 000000df: stor r2, rs
+0fd0      // 000000e0, not_eq_9: mov ps, r0
+8f1d      // 000000e1: lshi ps, -3
+1f01      // 000000e2: _andi ps, 1
+bf01      // 000000e3: cmpi ps, 1
+c002      // 000000e4: beq :eq_10
+ce08      // 000000e5: buc :not_eq_10
+9201      // 000000e6, eq_10: subi r2, 1
+b200      // 000000e7: cmpi r2, 0
+c702      // 000000e8: ble 2
+d200      // 000000e9: movi r2, 0
+de87      // 000000ea: movi rs, :tank1_angle_lo
+fe05      // 000000eb: lui rs, :tank1_angle_hi
+424e      // 000000ec: stor r2, rs
+0fd0      // 000000ed, not_eq_10: mov ps, r0
+8f1e      // 000000ee: lshi ps, -2
+1f01      // 000000ef: _andi ps, 1
+bf01      // 000000f0: cmpi ps, 1
+c002      // 000000f1: beq :eq_11
+ce08      // 000000f2: buc :not_eq_11
+9301      // 000000f3, eq_11: subi r3, 1
+b300      // 000000f4: cmpi r3, 0
+c702      // 000000f5: ble 2
+d300      // 000000f6: movi r3, 0
+de88      // 000000f7: movi rs, :tank1_power_lo
+fe05      // 000000f8: lui rs, :tank1_power_hi
+434e      // 000000f9: stor r3, rs
+0fd0      // 000000fa, not_eq_11: mov ps, r0
+8f1c      // 000000fb: lshi ps, -4
+1f01      // 000000fc: _andi ps, 1
+bf01      // 000000fd: cmpi ps, 1
+c002      // 000000fe: beq :eq_12
+ce08      // 000000ff: buc :not_eq_12
+5301      // 00000100, eq_12: addi r3, 1
+b33f      // 00000101: cmpi r3, 63
+cd02      // 00000102: bge 2
+d33f      // 00000103: movi r3, 63
+de88      // 00000104: movi rs, :tank1_power_lo
+fe05      // 00000105: lui rs, :tank1_power_hi
+434e      // 00000106: stor r3, rs
+0fd0      // 00000107, not_eq_12: mov ps, r0
+8f00      // 00000108: lshi ps, 0
+1f01      // 00000109: _andi ps, 1
+bf01      // 0000010a: cmpi ps, 1
+c002      // 0000010b: beq :eq_13
+ce04      // 0000010c: buc :not_eq_13
+df35      // 0000010d, eq_13: movi ps, :fire_lo
+ff04      // 0000010e: lui ps, :fire_hi
+4e8f      // 0000010f: jal rs, ps
+0fd2      // 00000110, not_eq_13: mov ps, r2
+0fd3      // 00000111: mov ps, r3
+df26      // 00000112: movi ps, :disp_shot_lo
+ff04      // 00000113: lui ps, :disp_shot_hi
+4e8f      // 00000114: jal rs, ps
+ce4d      // 00000115: buc :handle_input_done
+b102      // 00000116, not_eq_8: cmpi r1, 2
+c002      // 00000117: beq :eq_14
+ce4a      // 00000118: buc :not_eq_14
+d289      // 00000119, eq_14: movi r2, :tank2_angle_lo
+f205      // 0000011a: lui r2, :tank2_angle_hi
+4202      // 0000011b: load r2, r2
+d38a      // 0000011c: movi r3, :tank2_power_lo
+f305      // 0000011d: lui r3, :tank2_power_hi
+4303      // 0000011e: load r3, r3
+0fd0      // 0000011f: mov ps, r0
+8f1f      // 00000120: lshi ps, -1
+1f01      // 00000121: _andi ps, 1
+bf01      // 00000122: cmpi ps, 1
+c002      // 00000123: beq :eq_15
+ce08      // 00000124: buc :not_eq_15
+5201      // 00000125, eq_15: addi r2, 1
+b23f      // 00000126: cmpi r2, 63
+cd02      // 00000127: bge 2
+d23f      // 00000128: movi r2, 63
+de89      // 00000129: movi rs, :tank2_angle_lo
+fe05      // 0000012a: lui rs, :tank2_angle_hi
+424e      // 0000012b: stor r2, rs
+0fd0      // 0000012c, not_eq_15: mov ps, r0
+8f1d      // 0000012d: lshi ps, -3
+1f01      // 0000012e: _andi ps, 1
+bf01      // 0000012f: cmpi ps, 1
+c002      // 00000130: beq :eq_16
+ce08      // 00000131: buc :not_eq_16
+9201      // 00000132, eq_16: subi r2, 1
+b200      // 00000133: cmpi r2, 0
+c702      // 00000134: ble 2
+d200      // 00000135: movi r2, 0
+de89      // 00000136: movi rs, :tank2_angle_lo
+fe05      // 00000137: lui rs, :tank2_angle_hi
+424e      // 00000138: stor r2, rs
+0fd0      // 00000139, not_eq_16: mov ps, r0
+8f1e      // 0000013a: lshi ps, -2
+1f01      // 0000013b: _andi ps, 1
+bf01      // 0000013c: cmpi ps, 1
+c002      // 0000013d: beq :eq_17
+ce08      // 0000013e: buc :not_eq_17
+5301      // 0000013f, eq_17: addi r3, 1
+b33f      // 00000140: cmpi r3, 63
+cd02      // 00000141: bge 2
+d33f      // 00000142: movi r3, 63
+de8a      // 00000143: movi rs, :tank2_power_lo
+fe05      // 00000144: lui rs, :tank2_power_hi
+434e      // 00000145: stor r3, rs
+0fd0      // 00000146, not_eq_17: mov ps, r0
+8f1c      // 00000147: lshi ps, -4
+1f01      // 00000148: _andi ps, 1
+bf01      // 00000149: cmpi ps, 1
+c002      // 0000014a: beq :eq_18
+ce08      // 0000014b: buc :not_eq_18
+9301      // 0000014c, eq_18: subi r3, 1
+b300      // 0000014d: cmpi r3, 0
+c702      // 0000014e: ble 2
+d300      // 0000014f: movi r3, 0
+de8a      // 00000150: movi rs, :tank2_power_lo
+fe05      // 00000151: lui rs, :tank2_power_hi
+434e      // 00000152: stor r3, rs
+0fd0      // 00000153, not_eq_18: mov ps, r0
+8f00      // 00000154: lshi ps, 0
+1f01      // 00000155: _andi ps, 1
+bf01      // 00000156: cmpi ps, 1
+c002      // 00000157: beq :eq_19
+ce04      // 00000158: buc :not_eq_19
+df35      // 00000159, eq_19: movi ps, :fire_lo
+ff04      // 0000015a: lui ps, :fire_hi
+4e8f      // 0000015b: jal rs, ps
+0fd2      // 0000015c, not_eq_19: mov ps, r2
+0fd3      // 0000015d: mov ps, r3
+df26      // 0000015e: movi ps, :disp_shot_lo
+ff04      // 0000015f: lui ps, :disp_shot_hi
+4e8f      // 00000160: jal rs, ps
+ce01      // 00000161: buc :handle_input_done
+03de      // 00000162, not_eq_14, handle_input_done: mov r3, rs
+02de      // 00000163: mov r2, rs
+01de      // 00000164: mov r1, rs
+00de      // 00000165: mov r0, rs
+4ece      // 00000166: juc rs
 // endsub: handle_input
 // sub: update_bullet
-0ed0      // 00000157, update_bullet: mov rs, r0
-0ed1      // 00000158: mov rs, r1
-0ed2      // 00000159: mov rs, r2
-0ed3      // 0000015a: mov rs, r3
-df00      // 0000015b: movi ps, 0
-d30a      // 0000015c: movi r3, :bullet_x_lo
-f310      // 0000015d: lui r3, :bullet_x_hi
-4303      // 0000015e: load r3, r3
-d062      // 0000015f: movi r0, :bullet_frac_x_lo
-f005      // 00000160: lui r0, :bullet_frac_x_hi
-4000      // 00000161: load r0, r0
-d160      // 00000162: movi r1, :bullet_dx_lo
-f105      // 00000163: lui r1, :bullet_dx_hi
-4101      // 00000164: load r1, r1
-0051      // 00000165: add r0, r1
-02d0      // 00000166: mov r2, r0
-b07f      // 00000167: cmpi r0, 127
-cc02      // 00000168: blt :lt_0
-ce05      // 00000169: buc :not_lt_0
-107f      // 0000016a, lt_0: _andi r0, 127
-8219      // 0000016b: lshi r2, -7
-0352      // 0000016c: add r3, r2
-ce0d      // 0000016d: buc :bullet_out_of_bounds_check
-b081      // 0000016e, not_lt_0: cmpi r0, -127
-c602      // 0000016f: bgt :gt_0
-ce0a      // 00000170: buc :not_gt_0
-30ff      // 00000171, gt_0: xori r0, 255
-5001      // 00000172: addi r0, 1
-107f      // 00000173: _andi r0, 127
-30ff      // 00000174: xori r0, 255
-5001      // 00000175: addi r0, 1
-32ff      // 00000176: xori r2, 255
-5201      // 00000177: addi r2, 1
-8219      // 00000178: lshi r2, -7
-0392      // 00000179: sub r3, r2
-de62      // 0000017a, not_gt_0, bullet_out_of_bounds_check: movi rs, :bullet_frac_x_lo
-fe05      // 0000017b: lui rs, :bullet_frac_x_hi
-404e      // 0000017c: stor r0, rs
-b300      // 0000017d: cmpi r3, 0
-c644      // 0000017e: bgt :bullet_out_of_bounds
-d280      // 0000017f: movi r2, 128
-f202      // 00000180: lui r2, 2
-03b2      // 00000181: cmp r3, r2
-c740      // 00000182: ble :bullet_out_of_bounds
-de0a      // 00000183: movi rs, :bullet_x_lo
-fe10      // 00000184: lui rs, :bullet_x_hi
-434e      // 00000185: stor r3, rs
-d30b      // 00000186: movi r3, :bullet_y_lo
-f310      // 00000187: lui r3, :bullet_y_hi
-4303      // 00000188: load r3, r3
-d063      // 00000189: movi r0, :bullet_frac_y_lo
-f005      // 0000018a: lui r0, :bullet_frac_y_hi
-4000      // 0000018b: load r0, r0
-d161      // 0000018c: movi r1, :bullet_dy_lo
-f105      // 0000018d: lui r1, :bullet_dy_hi
-4101      // 0000018e: load r1, r1
-0051      // 0000018f: add r0, r1
-02d0      // 00000190: mov r2, r0
-b07f      // 00000191: cmpi r0, 127
-cc02      // 00000192: blt :lt_1
-ce05      // 00000193: buc :not_lt_1
-107f      // 00000194, lt_1: _andi r0, 127
-8219      // 00000195: lshi r2, -7
-0352      // 00000196: add r3, r2
-ce0d      // 00000197: buc :floor_bullet_y
-b081      // 00000198, not_lt_1: cmpi r0, -127
-c602      // 00000199: bgt :gt_1
-ce0a      // 0000019a: buc :not_gt_1
-30ff      // 0000019b, gt_1: xori r0, 255
-5001      // 0000019c: addi r0, 1
-107f      // 0000019d: _andi r0, 127
-30ff      // 0000019e: xori r0, 255
-5001      // 0000019f: addi r0, 1
-32ff      // 000001a0: xori r2, 255
-5201      // 000001a1: addi r2, 1
-8219      // 000001a2: lshi r2, -7
-0392      // 000001a3: sub r3, r2
-de63      // 000001a4, not_gt_1, floor_bullet_y: movi rs, :bullet_frac_y_lo
-fe05      // 000001a5: lui rs, :bullet_frac_y_hi
-404e      // 000001a6: stor r0, rs
-b300      // 000001a7: cmpi r3, 0
-cc09      // 000001a8: blt :cap_bullet_y
-d300      // 000001a9: movi r3, 0
-de63      // 000001aa: movi rs, :bullet_frac_y_lo
-fe05      // 000001ab: lui rs, :bullet_frac_y_hi
-434e      // 000001ac: stor r3, rs
-de0b      // 000001ad: movi rs, :bullet_y_lo
-fe10      // 000001ae: lui rs, :bullet_y_hi
-434e      // 000001af: stor r3, rs
-ce0a      // 000001b0: buc :update_bullet_accel
+0ed0      // 00000167, update_bullet: mov rs, r0
+0ed1      // 00000168: mov rs, r1
+0ed2      // 00000169: mov rs, r2
+0ed3      // 0000016a: mov rs, r3
+df00      // 0000016b: movi ps, 0
+d30a      // 0000016c: movi r3, :bullet_x_lo
+f340      // 0000016d: lui r3, :bullet_x_hi
+4303      // 0000016e: load r3, r3
+d084      // 0000016f: movi r0, :bullet_frac_x_lo
+f005      // 00000170: lui r0, :bullet_frac_x_hi
+4000      // 00000171: load r0, r0
+d182      // 00000172: movi r1, :bullet_dx_lo
+f105      // 00000173: lui r1, :bullet_dx_hi
+4101      // 00000174: load r1, r1
+0051      // 00000175: add r0, r1
+02d0      // 00000176: mov r2, r0
+b07f      // 00000177: cmpi r0, 127
+cc02      // 00000178: blt :lt_0
+ce05      // 00000179: buc :not_lt_0
+107f      // 0000017a, lt_0: _andi r0, 127
+8219      // 0000017b: lshi r2, -7
+0352      // 0000017c: add r3, r2
+ce0d      // 0000017d: buc :bullet_out_of_bounds_check
+b081      // 0000017e, not_lt_0: cmpi r0, -127
+c602      // 0000017f: bgt :gt_0
+ce0a      // 00000180: buc :not_gt_0
+30ff      // 00000181, gt_0: xori r0, 255
+5001      // 00000182: addi r0, 1
+107f      // 00000183: _andi r0, 127
+30ff      // 00000184: xori r0, 255
+5001      // 00000185: addi r0, 1
+32ff      // 00000186: xori r2, 255
+5201      // 00000187: addi r2, 1
+8219      // 00000188: lshi r2, -7
+0392      // 00000189: sub r3, r2
+de84      // 0000018a, not_gt_0, bullet_out_of_bounds_check: movi rs, :bullet_frac_x_lo
+fe05      // 0000018b: lui rs, :bullet_frac_x_hi
+404e      // 0000018c: stor r0, rs
+b300      // 0000018d: cmpi r3, 0
+c644      // 0000018e: bgt :bullet_out_of_bounds
+d280      // 0000018f: movi r2, 128
+f202      // 00000190: lui r2, 2
+03b2      // 00000191: cmp r3, r2
+c740      // 00000192: ble :bullet_out_of_bounds
+de0a      // 00000193: movi rs, :bullet_x_lo
+fe40      // 00000194: lui rs, :bullet_x_hi
+434e      // 00000195: stor r3, rs
+d30b      // 00000196: movi r3, :bullet_y_lo
+f340      // 00000197: lui r3, :bullet_y_hi
+4303      // 00000198: load r3, r3
+d085      // 00000199: movi r0, :bullet_frac_y_lo
+f005      // 0000019a: lui r0, :bullet_frac_y_hi
+4000      // 0000019b: load r0, r0
+d183      // 0000019c: movi r1, :bullet_dy_lo
+f105      // 0000019d: lui r1, :bullet_dy_hi
+4101      // 0000019e: load r1, r1
+0051      // 0000019f: add r0, r1
+02d0      // 000001a0: mov r2, r0
+b07f      // 000001a1: cmpi r0, 127
+cc02      // 000001a2: blt :lt_1
+ce05      // 000001a3: buc :not_lt_1
+107f      // 000001a4, lt_1: _andi r0, 127
+8219      // 000001a5: lshi r2, -7
+0352      // 000001a6: add r3, r2
+ce0d      // 000001a7: buc :floor_bullet_y
+b081      // 000001a8, not_lt_1: cmpi r0, -127
+c602      // 000001a9: bgt :gt_1
+ce0a      // 000001aa: buc :not_gt_1
+30ff      // 000001ab, gt_1: xori r0, 255
+5001      // 000001ac: addi r0, 1
+107f      // 000001ad: _andi r0, 127
+30ff      // 000001ae: xori r0, 255
+5001      // 000001af: addi r0, 1
+32ff      // 000001b0: xori r2, 255
+5201      // 000001b1: addi r2, 1
+8219      // 000001b2: lshi r2, -7
+0392      // 000001b3: sub r3, r2
+de85      // 000001b4, not_gt_1, floor_bullet_y: movi rs, :bullet_frac_y_lo
+fe05      // 000001b5: lui rs, :bullet_frac_y_hi
+404e      // 000001b6: stor r0, rs
+b300      // 000001b7: cmpi r3, 0
+cc09      // 000001b8: blt :cap_bullet_y
+d300      // 000001b9: movi r3, 0
+de85      // 000001ba: movi rs, :bullet_frac_y_lo
+fe05      // 000001bb: lui rs, :bullet_frac_y_hi
+434e      // 000001bc: stor r3, rs
+de0b      // 000001bd: movi rs, :bullet_y_lo
+fe40      // 000001be: lui rs, :bullet_y_hi
+434e      // 000001bf: stor r3, rs
+ce0a      // 000001c0: buc :update_bullet_accel
 // ceil y
-d2df      // 000001b1, cap_bullet_y: movi r2, 223
-f201      // 000001b2: lui r2, 1
-03b2      // 000001b3: cmp r3, r2
-cd02      // 000001b4: bge 2
-03d2      // 000001b5: mov r3, r2
-de0b      // 000001b6: movi rs, :bullet_y_lo
-fe10      // 000001b7: lui rs, :bullet_y_hi
-434e      // 000001b8: stor r3, rs
-ce01      // 000001b9: buc :update_bullet_accel
-d264      // 000001ba, update_bullet_accel: movi r2, :bullet_ddy_lo
-f205      // 000001bb: lui r2, :bullet_ddy_hi
-4202      // 000001bc: load r2, r2
-0152      // 000001bd: add r1, r2
-de61      // 000001be: movi rs, :bullet_dy_lo
-fe05      // 000001bf: lui rs, :bullet_dy_hi
-414e      // 000001c0: stor r1, rs
-ce06      // 000001c1: buc :update_bullet_done
-dfcc      // 000001c2, bullet_out_of_bounds: movi ps, :reset_bullet_lo
-ff01      // 000001c3: lui ps, :reset_bullet_hi
-4e8f      // 000001c4: jal rs, ps
-02df      // 000001c5: mov r2, ps
-df01      // 000001c6: movi ps, 1
-03de      // 000001c7, update_bullet_done: mov r3, rs
-02de      // 000001c8: mov r2, rs
-01de      // 000001c9: mov r1, rs
-00de      // 000001ca: mov r0, rs
-4ece      // 000001cb: juc rs
+d2df      // 000001c1, cap_bullet_y: movi r2, 223
+f201      // 000001c2: lui r2, 1
+03b2      // 000001c3: cmp r3, r2
+cd02      // 000001c4: bge 2
+03d2      // 000001c5: mov r3, r2
+de0b      // 000001c6: movi rs, :bullet_y_lo
+fe40      // 000001c7: lui rs, :bullet_y_hi
+434e      // 000001c8: stor r3, rs
+ce01      // 000001c9: buc :update_bullet_accel
+d286      // 000001ca, update_bullet_accel: movi r2, :bullet_ddy_lo
+f205      // 000001cb: lui r2, :bullet_ddy_hi
+4202      // 000001cc: load r2, r2
+0152      // 000001cd: add r1, r2
+de83      // 000001ce: movi rs, :bullet_dy_lo
+fe05      // 000001cf: lui rs, :bullet_dy_hi
+414e      // 000001d0: stor r1, rs
+ce06      // 000001d1: buc :update_bullet_done
+dfdc      // 000001d2, bullet_out_of_bounds: movi ps, :reset_bullet_lo
+ff01      // 000001d3: lui ps, :reset_bullet_hi
+4e8f      // 000001d4: jal rs, ps
+02df      // 000001d5: mov r2, ps
+df01      // 000001d6: movi ps, 1
+03de      // 000001d7, update_bullet_done: mov r3, rs
+02de      // 000001d8: mov r2, rs
+01de      // 000001d9: mov r1, rs
+00de      // 000001da: mov r0, rs
+4ece      // 000001db: juc rs
 // endsub: update_bullet
 // sub: reset_bullet
-0ed0      // 000001cc, reset_bullet: mov rs, r0
-d000      // 000001cd: movi r0, 0
-de60      // 000001ce: movi rs, :bullet_dx_lo
-fe05      // 000001cf: lui rs, :bullet_dx_hi
-404e      // 000001d0: stor r0, rs
-de62      // 000001d1: movi rs, :bullet_frac_x_lo
-fe05      // 000001d2: lui rs, :bullet_frac_x_hi
-404e      // 000001d3: stor r0, rs
-de0a      // 000001d4: movi rs, :bullet_x_lo
-fe10      // 000001d5: lui rs, :bullet_x_hi
-404e      // 000001d6: stor r0, rs
-de61      // 000001d7: movi rs, :bullet_dy_lo
-fe05      // 000001d8: lui rs, :bullet_dy_hi
-404e      // 000001d9: stor r0, rs
-de63      // 000001da: movi rs, :bullet_frac_y_lo
-fe05      // 000001db: lui rs, :bullet_frac_y_hi
-404e      // 000001dc: stor r0, rs
-de0b      // 000001dd: movi rs, :bullet_y_lo
-fe10      // 000001de: lui rs, :bullet_y_hi
-404e      // 000001df: stor r0, rs
-00de      // 000001e0, reset_bullet_done: mov r0, rs
-4ece      // 000001e1: juc rs
+0ed0      // 000001dc, reset_bullet: mov rs, r0
+d000      // 000001dd: movi r0, 0
+de82      // 000001de: movi rs, :bullet_dx_lo
+fe05      // 000001df: lui rs, :bullet_dx_hi
+404e      // 000001e0: stor r0, rs
+de84      // 000001e1: movi rs, :bullet_frac_x_lo
+fe05      // 000001e2: lui rs, :bullet_frac_x_hi
+404e      // 000001e3: stor r0, rs
+de0a      // 000001e4: movi rs, :bullet_x_lo
+fe40      // 000001e5: lui rs, :bullet_x_hi
+404e      // 000001e6: stor r0, rs
+de83      // 000001e7: movi rs, :bullet_dy_lo
+fe05      // 000001e8: lui rs, :bullet_dy_hi
+404e      // 000001e9: stor r0, rs
+de85      // 000001ea: movi rs, :bullet_frac_y_lo
+fe05      // 000001eb: lui rs, :bullet_frac_y_hi
+404e      // 000001ec: stor r0, rs
+de0b      // 000001ed: movi rs, :bullet_y_lo
+fe40      // 000001ee: lui rs, :bullet_y_hi
+404e      // 000001ef: stor r0, rs
+00de      // 000001f0, reset_bullet_done: mov r0, rs
+4ece      // 000001f1: juc rs
 // endsub: reset_bullet
 // sub: handle_collision
-0ed0      // 000001e2, handle_collision: mov rs, r0
-0ed1      // 000001e3: mov rs, r1
-0ed2      // 000001e4: mov rs, r2
-d00a      // 000001e5: movi r0, :bullet_x_lo
-f010      // 000001e6: lui r0, :bullet_x_hi
-4000      // 000001e7: load r0, r0
-d10b      // 000001e8: movi r1, :bullet_y_lo
-f110      // 000001e9: lui r1, :bullet_y_hi
-4101      // 000001ea: load r1, r1
-de08      // 000001eb: movi rs, :ground_index_lo
-fe10      // 000001ec: lui rs, :ground_index_hi
-404e      // 000001ed: stor r0, rs
-d209      // 000001ee: movi r2, :ground_height_lo
-f210      // 000001ef: lui r2, :ground_height_hi
-4202      // 000001f0: load r2, r2
-01b2      // 000001f1: cmp r1, r2
-c602      // 000001f2: bgt :gt_2
-ce04      // 000001f3: buc :not_gt_2
-df00      // 000001f4, gt_2: movi ps, 0
-df01      // 000001f5: movi ps, 1
-ce24      // 000001f6: buc :handle_collision_done
-d20c      // 000001f7, not_gt_2: movi r2, :tank1_x_lo
-f210      // 000001f8: lui r2, :tank1_x_hi
-4202      // 000001f9: load r2, r2
-0290      // 000001fa: sub r2, r0
-b210      // 000001fb: cmpi r2, 16
-c402      // 000001fc: bhi :hi_0
-ce0b      // 000001fd: buc :not_hi_0
-d20d      // 000001fe, hi_0: movi r2, :tank1_y_lo
-f210      // 000001ff: lui r2, :tank1_y_hi
+0ed0      // 000001f2, handle_collision: mov rs, r0
+0ed1      // 000001f3: mov rs, r1
+0ed2      // 000001f4: mov rs, r2
+d00a      // 000001f5: movi r0, :bullet_x_lo
+f040      // 000001f6: lui r0, :bullet_x_hi
+4000      // 000001f7: load r0, r0
+d10b      // 000001f8: movi r1, :bullet_y_lo
+f140      // 000001f9: lui r1, :bullet_y_hi
+4101      // 000001fa: load r1, r1
+de08      // 000001fb: movi rs, :ground_index_lo
+fe40      // 000001fc: lui rs, :ground_index_hi
+404e      // 000001fd: stor r0, rs
+d209      // 000001fe: movi r2, :ground_height_lo
+f240      // 000001ff: lui r2, :ground_height_hi
 4202      // 00000200: load r2, r2
-0291      // 00000201: sub r2, r1
-b210      // 00000202: cmpi r2, 16
-c402      // 00000203: bhi :hi_1
-ce04      // 00000204: buc :not_hi_1
-df01      // 00000205, hi_1: movi ps, 1
-df01      // 00000206: movi ps, 1
-ce13      // 00000207: buc :handle_collision_done
-d20e      // 00000208, not_hi_1, not_hi_0: movi r2, :tank2_x_lo
-f210      // 00000209: lui r2, :tank2_x_hi
-4202      // 0000020a: load r2, r2
-0290      // 0000020b: sub r2, r0
-b210      // 0000020c: cmpi r2, 16
-c402      // 0000020d: bhi :hi_2
-ce0b      // 0000020e: buc :not_hi_2
-d20f      // 0000020f, hi_2: movi r2, :tank2_y_lo
-f210      // 00000210: lui r2, :tank2_y_hi
-4202      // 00000211: load r2, r2
-0291      // 00000212: sub r2, r1
-b210      // 00000213: cmpi r2, 16
-c402      // 00000214: bhi :hi_3
-ce04      // 00000215: buc :not_hi_3
-df02      // 00000216, hi_3: movi ps, 2
-df01      // 00000217: movi ps, 1
-ce02      // 00000218: buc :handle_collision_done
-df00      // 00000219, not_hi_3, not_hi_2: movi ps, 0
-02de      // 0000021a, handle_collision_done: mov r2, rs
-01de      // 0000021b: mov r1, rs
-00de      // 0000021c: mov r0, rs
-4ece      // 0000021d: juc rs
+01b2      // 00000201: cmp r1, r2
+c602      // 00000202: bgt :gt_2
+ce04      // 00000203: buc :not_gt_2
+df00      // 00000204, gt_2: movi ps, 0
+df01      // 00000205: movi ps, 1
+ce24      // 00000206: buc :handle_collision_done
+d20c      // 00000207, not_gt_2: movi r2, :tank1_x_lo
+f240      // 00000208: lui r2, :tank1_x_hi
+4202      // 00000209: load r2, r2
+0290      // 0000020a: sub r2, r0
+b210      // 0000020b: cmpi r2, 16
+c402      // 0000020c: bhi :hi_0
+ce0b      // 0000020d: buc :not_hi_0
+d20d      // 0000020e, hi_0: movi r2, :tank1_y_lo
+f240      // 0000020f: lui r2, :tank1_y_hi
+4202      // 00000210: load r2, r2
+0291      // 00000211: sub r2, r1
+b210      // 00000212: cmpi r2, 16
+c402      // 00000213: bhi :hi_1
+ce04      // 00000214: buc :not_hi_1
+df01      // 00000215, hi_1: movi ps, 1
+df01      // 00000216: movi ps, 1
+ce13      // 00000217: buc :handle_collision_done
+d20e      // 00000218, not_hi_1, not_hi_0: movi r2, :tank2_x_lo
+f240      // 00000219: lui r2, :tank2_x_hi
+4202      // 0000021a: load r2, r2
+0290      // 0000021b: sub r2, r0
+b210      // 0000021c: cmpi r2, 16
+c402      // 0000021d: bhi :hi_2
+ce0b      // 0000021e: buc :not_hi_2
+d20f      // 0000021f, hi_2: movi r2, :tank2_y_lo
+f240      // 00000220: lui r2, :tank2_y_hi
+4202      // 00000221: load r2, r2
+0291      // 00000222: sub r2, r1
+b210      // 00000223: cmpi r2, 16
+c402      // 00000224: bhi :hi_3
+ce04      // 00000225: buc :not_hi_3
+df02      // 00000226, hi_3: movi ps, 2
+df01      // 00000227: movi ps, 1
+ce02      // 00000228: buc :handle_collision_done
+df00      // 00000229, not_hi_3, not_hi_2: movi ps, 0
+02de      // 0000022a, handle_collision_done: mov r2, rs
+01de      // 0000022b: mov r1, rs
+00de      // 0000022c: mov r0, rs
+4ece      // 0000022d: juc rs
 // endsub: handle_collision
 // sub: bullet_explode
-4ece      // 0000021e, bullet_explode, bullet_explode_done: juc rs
+4ece      // 0000022e, bullet_explode, bullet_explode_done: juc rs
 // endsub: bullet_explode
 // sub: ground_explode
-0ed0      // 0000021f, ground_explode: mov rs, r0
-0ed1      // 00000220: mov rs, r1
-0ed2      // 00000221: mov rs, r2
-0ed3      // 00000222: mov rs, r3
-0ed4      // 00000223: mov rs, r4
-0ed5      // 00000224: mov rs, r5
-0ed6      // 00000225: mov rs, r6
-d189      // 00000226: movi r1, :explosion_table_lo
-f10d      // 00000227: lui r1, :explosion_table_hi
-d00a      // 00000228: movi r0, :bullet_x_lo
-f010      // 00000229: lui r0, :bullet_x_hi
-4000      // 0000022a: load r0, r0
-d30b      // 0000022b: movi r3, :bullet_y_lo
-f310      // 0000022c: lui r3, :bullet_y_hi
-4303      // 0000022d: load r3, r3
-9007      // 0000022e: subi r0, 7
-4401      // 0000022f: load r4, r1
-02d3      // 00000230: mov r2, r3
-0294      // 00000231: sub r2, r4
-de08      // 00000232: movi rs, :ground_index_lo
-fe10      // 00000233: lui rs, :ground_index_hi
-404e      // 00000234: stor r0, rs
-d509      // 00000235: movi r5, :ground_height_lo
-f510      // 00000236: lui r5, :ground_height_hi
-4505      // 00000237: load r5, r5
-06d5      // 00000238: mov r6, r5
-0692      // 00000239: sub r6, r2
-b600      // 0000023a: cmpi r6, 0
-c702      // 0000023b: ble 2
-d600      // 0000023c: movi r6, 0
-0454      // 0000023d: add r4, r4
-06b4      // 0000023e: cmp r6, r4
-cd02      // 0000023f: bge 2
-06d4      // 00000240: mov r6, r4
-0596      // 00000241: sub r5, r6
-b500      // 00000242: cmpi r5, 0
-c702      // 00000243: ble 2
-d500      // 00000244: movi r5, 0
-de09      // 00000245: movi rs, :ground_height_lo
-fe10      // 00000246: lui rs, :ground_height_hi
-454e      // 00000247: stor r5, rs
-5101      // 00000248: addi r1, 1
-5001      // 00000249: addi r0, 1
-4401      // 0000024a: load r4, r1
-02d3      // 0000024b: mov r2, r3
-0294      // 0000024c: sub r2, r4
-de08      // 0000024d: movi rs, :ground_index_lo
-fe10      // 0000024e: lui rs, :ground_index_hi
-404e      // 0000024f: stor r0, rs
-d509      // 00000250: movi r5, :ground_height_lo
-f510      // 00000251: lui r5, :ground_height_hi
-4505      // 00000252: load r5, r5
-06d5      // 00000253: mov r6, r5
-0692      // 00000254: sub r6, r2
-b600      // 00000255: cmpi r6, 0
-c702      // 00000256: ble 2
-d600      // 00000257: movi r6, 0
-0454      // 00000258: add r4, r4
-06b4      // 00000259: cmp r6, r4
-cd02      // 0000025a: bge 2
-06d4      // 0000025b: mov r6, r4
-0596      // 0000025c: sub r5, r6
-b500      // 0000025d: cmpi r5, 0
-c702      // 0000025e: ble 2
-d500      // 0000025f: movi r5, 0
-de09      // 00000260: movi rs, :ground_height_lo
-fe10      // 00000261: lui rs, :ground_height_hi
-454e      // 00000262: stor r5, rs
-5101      // 00000263: addi r1, 1
-5001      // 00000264: addi r0, 1
-4401      // 00000265: load r4, r1
-02d3      // 00000266: mov r2, r3
-0294      // 00000267: sub r2, r4
-de08      // 00000268: movi rs, :ground_index_lo
-fe10      // 00000269: lui rs, :ground_index_hi
-404e      // 0000026a: stor r0, rs
-d509      // 0000026b: movi r5, :ground_height_lo
-f510      // 0000026c: lui r5, :ground_height_hi
-4505      // 0000026d: load r5, r5
-06d5      // 0000026e: mov r6, r5
-0692      // 0000026f: sub r6, r2
-b600      // 00000270: cmpi r6, 0
-c702      // 00000271: ble 2
-d600      // 00000272: movi r6, 0
-0454      // 00000273: add r4, r4
-06b4      // 00000274: cmp r6, r4
-cd02      // 00000275: bge 2
-06d4      // 00000276: mov r6, r4
-0596      // 00000277: sub r5, r6
-b500      // 00000278: cmpi r5, 0
-c702      // 00000279: ble 2
-d500      // 0000027a: movi r5, 0
-de09      // 0000027b: movi rs, :ground_height_lo
-fe10      // 0000027c: lui rs, :ground_height_hi
-454e      // 0000027d: stor r5, rs
-5101      // 0000027e: addi r1, 1
-5001      // 0000027f: addi r0, 1
-4401      // 00000280: load r4, r1
-02d3      // 00000281: mov r2, r3
-0294      // 00000282: sub r2, r4
-de08      // 00000283: movi rs, :ground_index_lo
-fe10      // 00000284: lui rs, :ground_index_hi
-404e      // 00000285: stor r0, rs
-d509      // 00000286: movi r5, :ground_height_lo
-f510      // 00000287: lui r5, :ground_height_hi
-4505      // 00000288: load r5, r5
-06d5      // 00000289: mov r6, r5
-0692      // 0000028a: sub r6, r2
-b600      // 0000028b: cmpi r6, 0
-c702      // 0000028c: ble 2
-d600      // 0000028d: movi r6, 0
-0454      // 0000028e: add r4, r4
-06b4      // 0000028f: cmp r6, r4
-cd02      // 00000290: bge 2
-06d4      // 00000291: mov r6, r4
-0596      // 00000292: sub r5, r6
-b500      // 00000293: cmpi r5, 0
-c702      // 00000294: ble 2
-d500      // 00000295: movi r5, 0
-de09      // 00000296: movi rs, :ground_height_lo
-fe10      // 00000297: lui rs, :ground_height_hi
-454e      // 00000298: stor r5, rs
-5101      // 00000299: addi r1, 1
-5001      // 0000029a: addi r0, 1
-4401      // 0000029b: load r4, r1
-02d3      // 0000029c: mov r2, r3
-0294      // 0000029d: sub r2, r4
-de08      // 0000029e: movi rs, :ground_index_lo
-fe10      // 0000029f: lui rs, :ground_index_hi
-404e      // 000002a0: stor r0, rs
-d509      // 000002a1: movi r5, :ground_height_lo
-f510      // 000002a2: lui r5, :ground_height_hi
-4505      // 000002a3: load r5, r5
-06d5      // 000002a4: mov r6, r5
-0692      // 000002a5: sub r6, r2
-b600      // 000002a6: cmpi r6, 0
-c702      // 000002a7: ble 2
-d600      // 000002a8: movi r6, 0
-0454      // 000002a9: add r4, r4
-06b4      // 000002aa: cmp r6, r4
-cd02      // 000002ab: bge 2
-06d4      // 000002ac: mov r6, r4
-0596      // 000002ad: sub r5, r6
-b500      // 000002ae: cmpi r5, 0
-c702      // 000002af: ble 2
-d500      // 000002b0: movi r5, 0
-de09      // 000002b1: movi rs, :ground_height_lo
-fe10      // 000002b2: lui rs, :ground_height_hi
-454e      // 000002b3: stor r5, rs
-5101      // 000002b4: addi r1, 1
-5001      // 000002b5: addi r0, 1
-4401      // 000002b6: load r4, r1
-02d3      // 000002b7: mov r2, r3
-0294      // 000002b8: sub r2, r4
-de08      // 000002b9: movi rs, :ground_index_lo
-fe10      // 000002ba: lui rs, :ground_index_hi
-404e      // 000002bb: stor r0, rs
-d509      // 000002bc: movi r5, :ground_height_lo
-f510      // 000002bd: lui r5, :ground_height_hi
-4505      // 000002be: load r5, r5
-06d5      // 000002bf: mov r6, r5
-0692      // 000002c0: sub r6, r2
-b600      // 000002c1: cmpi r6, 0
-c702      // 000002c2: ble 2
-d600      // 000002c3: movi r6, 0
-0454      // 000002c4: add r4, r4
-06b4      // 000002c5: cmp r6, r4
-cd02      // 000002c6: bge 2
-06d4      // 000002c7: mov r6, r4
-0596      // 000002c8: sub r5, r6
-b500      // 000002c9: cmpi r5, 0
-c702      // 000002ca: ble 2
-d500      // 000002cb: movi r5, 0
-de09      // 000002cc: movi rs, :ground_height_lo
-fe10      // 000002cd: lui rs, :ground_height_hi
-454e      // 000002ce: stor r5, rs
-5101      // 000002cf: addi r1, 1
-5001      // 000002d0: addi r0, 1
-4401      // 000002d1: load r4, r1
-02d3      // 000002d2: mov r2, r3
-0294      // 000002d3: sub r2, r4
-de08      // 000002d4: movi rs, :ground_index_lo
-fe10      // 000002d5: lui rs, :ground_index_hi
-404e      // 000002d6: stor r0, rs
-d509      // 000002d7: movi r5, :ground_height_lo
-f510      // 000002d8: lui r5, :ground_height_hi
-4505      // 000002d9: load r5, r5
-06d5      // 000002da: mov r6, r5
-0692      // 000002db: sub r6, r2
-b600      // 000002dc: cmpi r6, 0
-c702      // 000002dd: ble 2
-d600      // 000002de: movi r6, 0
-0454      // 000002df: add r4, r4
-06b4      // 000002e0: cmp r6, r4
-cd02      // 000002e1: bge 2
-06d4      // 000002e2: mov r6, r4
-0596      // 000002e3: sub r5, r6
-b500      // 000002e4: cmpi r5, 0
-c702      // 000002e5: ble 2
-d500      // 000002e6: movi r5, 0
-de09      // 000002e7: movi rs, :ground_height_lo
-fe10      // 000002e8: lui rs, :ground_height_hi
-454e      // 000002e9: stor r5, rs
-5101      // 000002ea: addi r1, 1
-5001      // 000002eb: addi r0, 1
-4401      // 000002ec: load r4, r1
-02d3      // 000002ed: mov r2, r3
-0294      // 000002ee: sub r2, r4
-de08      // 000002ef: movi rs, :ground_index_lo
-fe10      // 000002f0: lui rs, :ground_index_hi
-404e      // 000002f1: stor r0, rs
-d509      // 000002f2: movi r5, :ground_height_lo
-f510      // 000002f3: lui r5, :ground_height_hi
-4505      // 000002f4: load r5, r5
-06d5      // 000002f5: mov r6, r5
-0692      // 000002f6: sub r6, r2
-b600      // 000002f7: cmpi r6, 0
-c702      // 000002f8: ble 2
-d600      // 000002f9: movi r6, 0
-0454      // 000002fa: add r4, r4
-06b4      // 000002fb: cmp r6, r4
-cd02      // 000002fc: bge 2
-06d4      // 000002fd: mov r6, r4
-0596      // 000002fe: sub r5, r6
-b500      // 000002ff: cmpi r5, 0
-c702      // 00000300: ble 2
-d500      // 00000301: movi r5, 0
-de09      // 00000302: movi rs, :ground_height_lo
-fe10      // 00000303: lui rs, :ground_height_hi
-454e      // 00000304: stor r5, rs
-5101      // 00000305: addi r1, 1
-5001      // 00000306: addi r0, 1
-4401      // 00000307: load r4, r1
-02d3      // 00000308: mov r2, r3
-0294      // 00000309: sub r2, r4
-de08      // 0000030a: movi rs, :ground_index_lo
-fe10      // 0000030b: lui rs, :ground_index_hi
-404e      // 0000030c: stor r0, rs
-d509      // 0000030d: movi r5, :ground_height_lo
-f510      // 0000030e: lui r5, :ground_height_hi
-4505      // 0000030f: load r5, r5
-06d5      // 00000310: mov r6, r5
-0692      // 00000311: sub r6, r2
-b600      // 00000312: cmpi r6, 0
-c702      // 00000313: ble 2
-d600      // 00000314: movi r6, 0
-0454      // 00000315: add r4, r4
-06b4      // 00000316: cmp r6, r4
-cd02      // 00000317: bge 2
-06d4      // 00000318: mov r6, r4
-0596      // 00000319: sub r5, r6
-b500      // 0000031a: cmpi r5, 0
-c702      // 0000031b: ble 2
-d500      // 0000031c: movi r5, 0
-de09      // 0000031d: movi rs, :ground_height_lo
-fe10      // 0000031e: lui rs, :ground_height_hi
-454e      // 0000031f: stor r5, rs
-5101      // 00000320: addi r1, 1
-5001      // 00000321: addi r0, 1
-4401      // 00000322: load r4, r1
-02d3      // 00000323: mov r2, r3
-0294      // 00000324: sub r2, r4
-de08      // 00000325: movi rs, :ground_index_lo
-fe10      // 00000326: lui rs, :ground_index_hi
-404e      // 00000327: stor r0, rs
-d509      // 00000328: movi r5, :ground_height_lo
-f510      // 00000329: lui r5, :ground_height_hi
-4505      // 0000032a: load r5, r5
-06d5      // 0000032b: mov r6, r5
-0692      // 0000032c: sub r6, r2
-b600      // 0000032d: cmpi r6, 0
-c702      // 0000032e: ble 2
-d600      // 0000032f: movi r6, 0
-0454      // 00000330: add r4, r4
-06b4      // 00000331: cmp r6, r4
-cd02      // 00000332: bge 2
-06d4      // 00000333: mov r6, r4
-0596      // 00000334: sub r5, r6
-b500      // 00000335: cmpi r5, 0
-c702      // 00000336: ble 2
-d500      // 00000337: movi r5, 0
-de09      // 00000338: movi rs, :ground_height_lo
-fe10      // 00000339: lui rs, :ground_height_hi
-454e      // 0000033a: stor r5, rs
-5101      // 0000033b: addi r1, 1
-5001      // 0000033c: addi r0, 1
-4401      // 0000033d: load r4, r1
-02d3      // 0000033e: mov r2, r3
-0294      // 0000033f: sub r2, r4
-de08      // 00000340: movi rs, :ground_index_lo
-fe10      // 00000341: lui rs, :ground_index_hi
-404e      // 00000342: stor r0, rs
-d509      // 00000343: movi r5, :ground_height_lo
-f510      // 00000344: lui r5, :ground_height_hi
-4505      // 00000345: load r5, r5
-06d5      // 00000346: mov r6, r5
-0692      // 00000347: sub r6, r2
-b600      // 00000348: cmpi r6, 0
-c702      // 00000349: ble 2
-d600      // 0000034a: movi r6, 0
-0454      // 0000034b: add r4, r4
-06b4      // 0000034c: cmp r6, r4
-cd02      // 0000034d: bge 2
-06d4      // 0000034e: mov r6, r4
-0596      // 0000034f: sub r5, r6
-b500      // 00000350: cmpi r5, 0
-c702      // 00000351: ble 2
-d500      // 00000352: movi r5, 0
-de09      // 00000353: movi rs, :ground_height_lo
-fe10      // 00000354: lui rs, :ground_height_hi
-454e      // 00000355: stor r5, rs
-5101      // 00000356: addi r1, 1
-5001      // 00000357: addi r0, 1
-4401      // 00000358: load r4, r1
-02d3      // 00000359: mov r2, r3
-0294      // 0000035a: sub r2, r4
-de08      // 0000035b: movi rs, :ground_index_lo
-fe10      // 0000035c: lui rs, :ground_index_hi
-404e      // 0000035d: stor r0, rs
-d509      // 0000035e: movi r5, :ground_height_lo
-f510      // 0000035f: lui r5, :ground_height_hi
-4505      // 00000360: load r5, r5
-06d5      // 00000361: mov r6, r5
-0692      // 00000362: sub r6, r2
-b600      // 00000363: cmpi r6, 0
-c702      // 00000364: ble 2
-d600      // 00000365: movi r6, 0
-0454      // 00000366: add r4, r4
-06b4      // 00000367: cmp r6, r4
-cd02      // 00000368: bge 2
-06d4      // 00000369: mov r6, r4
-0596      // 0000036a: sub r5, r6
-b500      // 0000036b: cmpi r5, 0
-c702      // 0000036c: ble 2
-d500      // 0000036d: movi r5, 0
-de09      // 0000036e: movi rs, :ground_height_lo
-fe10      // 0000036f: lui rs, :ground_height_hi
-454e      // 00000370: stor r5, rs
-5101      // 00000371: addi r1, 1
-5001      // 00000372: addi r0, 1
-4401      // 00000373: load r4, r1
-02d3      // 00000374: mov r2, r3
-0294      // 00000375: sub r2, r4
-de08      // 00000376: movi rs, :ground_index_lo
-fe10      // 00000377: lui rs, :ground_index_hi
-404e      // 00000378: stor r0, rs
-d509      // 00000379: movi r5, :ground_height_lo
-f510      // 0000037a: lui r5, :ground_height_hi
-4505      // 0000037b: load r5, r5
-06d5      // 0000037c: mov r6, r5
-0692      // 0000037d: sub r6, r2
-b600      // 0000037e: cmpi r6, 0
-c702      // 0000037f: ble 2
-d600      // 00000380: movi r6, 0
-0454      // 00000381: add r4, r4
-06b4      // 00000382: cmp r6, r4
-cd02      // 00000383: bge 2
-06d4      // 00000384: mov r6, r4
-0596      // 00000385: sub r5, r6
-b500      // 00000386: cmpi r5, 0
-c702      // 00000387: ble 2
-d500      // 00000388: movi r5, 0
-de09      // 00000389: movi rs, :ground_height_lo
-fe10      // 0000038a: lui rs, :ground_height_hi
-454e      // 0000038b: stor r5, rs
-5101      // 0000038c: addi r1, 1
-5001      // 0000038d: addi r0, 1
-4401      // 0000038e: load r4, r1
-02d3      // 0000038f: mov r2, r3
-0294      // 00000390: sub r2, r4
-de08      // 00000391: movi rs, :ground_index_lo
-fe10      // 00000392: lui rs, :ground_index_hi
-404e      // 00000393: stor r0, rs
-d509      // 00000394: movi r5, :ground_height_lo
-f510      // 00000395: lui r5, :ground_height_hi
-4505      // 00000396: load r5, r5
-06d5      // 00000397: mov r6, r5
-0692      // 00000398: sub r6, r2
-b600      // 00000399: cmpi r6, 0
-c702      // 0000039a: ble 2
-d600      // 0000039b: movi r6, 0
-0454      // 0000039c: add r4, r4
-06b4      // 0000039d: cmp r6, r4
-cd02      // 0000039e: bge 2
-06d4      // 0000039f: mov r6, r4
-0596      // 000003a0: sub r5, r6
-b500      // 000003a1: cmpi r5, 0
-c702      // 000003a2: ble 2
-d500      // 000003a3: movi r5, 0
-de09      // 000003a4: movi rs, :ground_height_lo
-fe10      // 000003a5: lui rs, :ground_height_hi
-454e      // 000003a6: stor r5, rs
-5101      // 000003a7: addi r1, 1
-5001      // 000003a8: addi r0, 1
-4401      // 000003a9: load r4, r1
-02d3      // 000003aa: mov r2, r3
-0294      // 000003ab: sub r2, r4
-de08      // 000003ac: movi rs, :ground_index_lo
-fe10      // 000003ad: lui rs, :ground_index_hi
-404e      // 000003ae: stor r0, rs
-d509      // 000003af: movi r5, :ground_height_lo
-f510      // 000003b0: lui r5, :ground_height_hi
-4505      // 000003b1: load r5, r5
-06d5      // 000003b2: mov r6, r5
-0692      // 000003b3: sub r6, r2
-b600      // 000003b4: cmpi r6, 0
-c702      // 000003b5: ble 2
-d600      // 000003b6: movi r6, 0
-0454      // 000003b7: add r4, r4
-06b4      // 000003b8: cmp r6, r4
-cd02      // 000003b9: bge 2
-06d4      // 000003ba: mov r6, r4
-0596      // 000003bb: sub r5, r6
-b500      // 000003bc: cmpi r5, 0
-c702      // 000003bd: ble 2
-d500      // 000003be: movi r5, 0
-de09      // 000003bf: movi rs, :ground_height_lo
-fe10      // 000003c0: lui rs, :ground_height_hi
-454e      // 000003c1: stor r5, rs
-5101      // 000003c2: addi r1, 1
-5001      // 000003c3: addi r0, 1
-4401      // 000003c4: load r4, r1
-02d3      // 000003c5: mov r2, r3
-0294      // 000003c6: sub r2, r4
-de08      // 000003c7: movi rs, :ground_index_lo
-fe10      // 000003c8: lui rs, :ground_index_hi
-404e      // 000003c9: stor r0, rs
-d509      // 000003ca: movi r5, :ground_height_lo
-f510      // 000003cb: lui r5, :ground_height_hi
-4505      // 000003cc: load r5, r5
-06d5      // 000003cd: mov r6, r5
-0692      // 000003ce: sub r6, r2
-b600      // 000003cf: cmpi r6, 0
-c702      // 000003d0: ble 2
-d600      // 000003d1: movi r6, 0
-0454      // 000003d2: add r4, r4
-06b4      // 000003d3: cmp r6, r4
-cd02      // 000003d4: bge 2
-06d4      // 000003d5: mov r6, r4
-0596      // 000003d6: sub r5, r6
-b500      // 000003d7: cmpi r5, 0
-c702      // 000003d8: ble 2
-d500      // 000003d9: movi r5, 0
-de09      // 000003da: movi rs, :ground_height_lo
-fe10      // 000003db: lui rs, :ground_height_hi
-454e      // 000003dc: stor r5, rs
-5101      // 000003dd: addi r1, 1
-5001      // 000003de: addi r0, 1
-06de      // 000003df, ground_explode_done: mov r6, rs
-05de      // 000003e0: mov r5, rs
-04de      // 000003e1: mov r4, rs
-03de      // 000003e2: mov r3, rs
-02de      // 000003e3: mov r2, rs
-01de      // 000003e4: mov r1, rs
-00de      // 000003e5: mov r0, rs
-4ece      // 000003e6: juc rs
+0ed0      // 0000022f, ground_explode: mov rs, r0
+0ed1      // 00000230: mov rs, r1
+0ed2      // 00000231: mov rs, r2
+0ed3      // 00000232: mov rs, r3
+0ed4      // 00000233: mov rs, r4
+0ed5      // 00000234: mov rs, r5
+0ed6      // 00000235: mov rs, r6
+d1cb      // 00000236: movi r1, :explosion_table_lo
+f125      // 00000237: lui r1, :explosion_table_hi
+d00a      // 00000238: movi r0, :bullet_x_lo
+f040      // 00000239: lui r0, :bullet_x_hi
+4000      // 0000023a: load r0, r0
+d30b      // 0000023b: movi r3, :bullet_y_lo
+f340      // 0000023c: lui r3, :bullet_y_hi
+4303      // 0000023d: load r3, r3
+9007      // 0000023e: subi r0, 7
+4401      // 0000023f: load r4, r1
+02d3      // 00000240: mov r2, r3
+0294      // 00000241: sub r2, r4
+de08      // 00000242: movi rs, :ground_index_lo
+fe40      // 00000243: lui rs, :ground_index_hi
+404e      // 00000244: stor r0, rs
+d509      // 00000245: movi r5, :ground_height_lo
+f540      // 00000246: lui r5, :ground_height_hi
+4505      // 00000247: load r5, r5
+06d5      // 00000248: mov r6, r5
+0692      // 00000249: sub r6, r2
+b600      // 0000024a: cmpi r6, 0
+c702      // 0000024b: ble 2
+d600      // 0000024c: movi r6, 0
+0454      // 0000024d: add r4, r4
+06b4      // 0000024e: cmp r6, r4
+cd02      // 0000024f: bge 2
+06d4      // 00000250: mov r6, r4
+0596      // 00000251: sub r5, r6
+b500      // 00000252: cmpi r5, 0
+c702      // 00000253: ble 2
+d500      // 00000254: movi r5, 0
+de09      // 00000255: movi rs, :ground_height_lo
+fe40      // 00000256: lui rs, :ground_height_hi
+454e      // 00000257: stor r5, rs
+5101      // 00000258: addi r1, 1
+5001      // 00000259: addi r0, 1
+4401      // 0000025a: load r4, r1
+02d3      // 0000025b: mov r2, r3
+0294      // 0000025c: sub r2, r4
+de08      // 0000025d: movi rs, :ground_index_lo
+fe40      // 0000025e: lui rs, :ground_index_hi
+404e      // 0000025f: stor r0, rs
+d509      // 00000260: movi r5, :ground_height_lo
+f540      // 00000261: lui r5, :ground_height_hi
+4505      // 00000262: load r5, r5
+06d5      // 00000263: mov r6, r5
+0692      // 00000264: sub r6, r2
+b600      // 00000265: cmpi r6, 0
+c702      // 00000266: ble 2
+d600      // 00000267: movi r6, 0
+0454      // 00000268: add r4, r4
+06b4      // 00000269: cmp r6, r4
+cd02      // 0000026a: bge 2
+06d4      // 0000026b: mov r6, r4
+0596      // 0000026c: sub r5, r6
+b500      // 0000026d: cmpi r5, 0
+c702      // 0000026e: ble 2
+d500      // 0000026f: movi r5, 0
+de09      // 00000270: movi rs, :ground_height_lo
+fe40      // 00000271: lui rs, :ground_height_hi
+454e      // 00000272: stor r5, rs
+5101      // 00000273: addi r1, 1
+5001      // 00000274: addi r0, 1
+4401      // 00000275: load r4, r1
+02d3      // 00000276: mov r2, r3
+0294      // 00000277: sub r2, r4
+de08      // 00000278: movi rs, :ground_index_lo
+fe40      // 00000279: lui rs, :ground_index_hi
+404e      // 0000027a: stor r0, rs
+d509      // 0000027b: movi r5, :ground_height_lo
+f540      // 0000027c: lui r5, :ground_height_hi
+4505      // 0000027d: load r5, r5
+06d5      // 0000027e: mov r6, r5
+0692      // 0000027f: sub r6, r2
+b600      // 00000280: cmpi r6, 0
+c702      // 00000281: ble 2
+d600      // 00000282: movi r6, 0
+0454      // 00000283: add r4, r4
+06b4      // 00000284: cmp r6, r4
+cd02      // 00000285: bge 2
+06d4      // 00000286: mov r6, r4
+0596      // 00000287: sub r5, r6
+b500      // 00000288: cmpi r5, 0
+c702      // 00000289: ble 2
+d500      // 0000028a: movi r5, 0
+de09      // 0000028b: movi rs, :ground_height_lo
+fe40      // 0000028c: lui rs, :ground_height_hi
+454e      // 0000028d: stor r5, rs
+5101      // 0000028e: addi r1, 1
+5001      // 0000028f: addi r0, 1
+4401      // 00000290: load r4, r1
+02d3      // 00000291: mov r2, r3
+0294      // 00000292: sub r2, r4
+de08      // 00000293: movi rs, :ground_index_lo
+fe40      // 00000294: lui rs, :ground_index_hi
+404e      // 00000295: stor r0, rs
+d509      // 00000296: movi r5, :ground_height_lo
+f540      // 00000297: lui r5, :ground_height_hi
+4505      // 00000298: load r5, r5
+06d5      // 00000299: mov r6, r5
+0692      // 0000029a: sub r6, r2
+b600      // 0000029b: cmpi r6, 0
+c702      // 0000029c: ble 2
+d600      // 0000029d: movi r6, 0
+0454      // 0000029e: add r4, r4
+06b4      // 0000029f: cmp r6, r4
+cd02      // 000002a0: bge 2
+06d4      // 000002a1: mov r6, r4
+0596      // 000002a2: sub r5, r6
+b500      // 000002a3: cmpi r5, 0
+c702      // 000002a4: ble 2
+d500      // 000002a5: movi r5, 0
+de09      // 000002a6: movi rs, :ground_height_lo
+fe40      // 000002a7: lui rs, :ground_height_hi
+454e      // 000002a8: stor r5, rs
+5101      // 000002a9: addi r1, 1
+5001      // 000002aa: addi r0, 1
+4401      // 000002ab: load r4, r1
+02d3      // 000002ac: mov r2, r3
+0294      // 000002ad: sub r2, r4
+de08      // 000002ae: movi rs, :ground_index_lo
+fe40      // 000002af: lui rs, :ground_index_hi
+404e      // 000002b0: stor r0, rs
+d509      // 000002b1: movi r5, :ground_height_lo
+f540      // 000002b2: lui r5, :ground_height_hi
+4505      // 000002b3: load r5, r5
+06d5      // 000002b4: mov r6, r5
+0692      // 000002b5: sub r6, r2
+b600      // 000002b6: cmpi r6, 0
+c702      // 000002b7: ble 2
+d600      // 000002b8: movi r6, 0
+0454      // 000002b9: add r4, r4
+06b4      // 000002ba: cmp r6, r4
+cd02      // 000002bb: bge 2
+06d4      // 000002bc: mov r6, r4
+0596      // 000002bd: sub r5, r6
+b500      // 000002be: cmpi r5, 0
+c702      // 000002bf: ble 2
+d500      // 000002c0: movi r5, 0
+de09      // 000002c1: movi rs, :ground_height_lo
+fe40      // 000002c2: lui rs, :ground_height_hi
+454e      // 000002c3: stor r5, rs
+5101      // 000002c4: addi r1, 1
+5001      // 000002c5: addi r0, 1
+4401      // 000002c6: load r4, r1
+02d3      // 000002c7: mov r2, r3
+0294      // 000002c8: sub r2, r4
+de08      // 000002c9: movi rs, :ground_index_lo
+fe40      // 000002ca: lui rs, :ground_index_hi
+404e      // 000002cb: stor r0, rs
+d509      // 000002cc: movi r5, :ground_height_lo
+f540      // 000002cd: lui r5, :ground_height_hi
+4505      // 000002ce: load r5, r5
+06d5      // 000002cf: mov r6, r5
+0692      // 000002d0: sub r6, r2
+b600      // 000002d1: cmpi r6, 0
+c702      // 000002d2: ble 2
+d600      // 000002d3: movi r6, 0
+0454      // 000002d4: add r4, r4
+06b4      // 000002d5: cmp r6, r4
+cd02      // 000002d6: bge 2
+06d4      // 000002d7: mov r6, r4
+0596      // 000002d8: sub r5, r6
+b500      // 000002d9: cmpi r5, 0
+c702      // 000002da: ble 2
+d500      // 000002db: movi r5, 0
+de09      // 000002dc: movi rs, :ground_height_lo
+fe40      // 000002dd: lui rs, :ground_height_hi
+454e      // 000002de: stor r5, rs
+5101      // 000002df: addi r1, 1
+5001      // 000002e0: addi r0, 1
+4401      // 000002e1: load r4, r1
+02d3      // 000002e2: mov r2, r3
+0294      // 000002e3: sub r2, r4
+de08      // 000002e4: movi rs, :ground_index_lo
+fe40      // 000002e5: lui rs, :ground_index_hi
+404e      // 000002e6: stor r0, rs
+d509      // 000002e7: movi r5, :ground_height_lo
+f540      // 000002e8: lui r5, :ground_height_hi
+4505      // 000002e9: load r5, r5
+06d5      // 000002ea: mov r6, r5
+0692      // 000002eb: sub r6, r2
+b600      // 000002ec: cmpi r6, 0
+c702      // 000002ed: ble 2
+d600      // 000002ee: movi r6, 0
+0454      // 000002ef: add r4, r4
+06b4      // 000002f0: cmp r6, r4
+cd02      // 000002f1: bge 2
+06d4      // 000002f2: mov r6, r4
+0596      // 000002f3: sub r5, r6
+b500      // 000002f4: cmpi r5, 0
+c702      // 000002f5: ble 2
+d500      // 000002f6: movi r5, 0
+de09      // 000002f7: movi rs, :ground_height_lo
+fe40      // 000002f8: lui rs, :ground_height_hi
+454e      // 000002f9: stor r5, rs
+5101      // 000002fa: addi r1, 1
+5001      // 000002fb: addi r0, 1
+4401      // 000002fc: load r4, r1
+02d3      // 000002fd: mov r2, r3
+0294      // 000002fe: sub r2, r4
+de08      // 000002ff: movi rs, :ground_index_lo
+fe40      // 00000300: lui rs, :ground_index_hi
+404e      // 00000301: stor r0, rs
+d509      // 00000302: movi r5, :ground_height_lo
+f540      // 00000303: lui r5, :ground_height_hi
+4505      // 00000304: load r5, r5
+06d5      // 00000305: mov r6, r5
+0692      // 00000306: sub r6, r2
+b600      // 00000307: cmpi r6, 0
+c702      // 00000308: ble 2
+d600      // 00000309: movi r6, 0
+0454      // 0000030a: add r4, r4
+06b4      // 0000030b: cmp r6, r4
+cd02      // 0000030c: bge 2
+06d4      // 0000030d: mov r6, r4
+0596      // 0000030e: sub r5, r6
+b500      // 0000030f: cmpi r5, 0
+c702      // 00000310: ble 2
+d500      // 00000311: movi r5, 0
+de09      // 00000312: movi rs, :ground_height_lo
+fe40      // 00000313: lui rs, :ground_height_hi
+454e      // 00000314: stor r5, rs
+5101      // 00000315: addi r1, 1
+5001      // 00000316: addi r0, 1
+4401      // 00000317: load r4, r1
+02d3      // 00000318: mov r2, r3
+0294      // 00000319: sub r2, r4
+de08      // 0000031a: movi rs, :ground_index_lo
+fe40      // 0000031b: lui rs, :ground_index_hi
+404e      // 0000031c: stor r0, rs
+d509      // 0000031d: movi r5, :ground_height_lo
+f540      // 0000031e: lui r5, :ground_height_hi
+4505      // 0000031f: load r5, r5
+06d5      // 00000320: mov r6, r5
+0692      // 00000321: sub r6, r2
+b600      // 00000322: cmpi r6, 0
+c702      // 00000323: ble 2
+d600      // 00000324: movi r6, 0
+0454      // 00000325: add r4, r4
+06b4      // 00000326: cmp r6, r4
+cd02      // 00000327: bge 2
+06d4      // 00000328: mov r6, r4
+0596      // 00000329: sub r5, r6
+b500      // 0000032a: cmpi r5, 0
+c702      // 0000032b: ble 2
+d500      // 0000032c: movi r5, 0
+de09      // 0000032d: movi rs, :ground_height_lo
+fe40      // 0000032e: lui rs, :ground_height_hi
+454e      // 0000032f: stor r5, rs
+5101      // 00000330: addi r1, 1
+5001      // 00000331: addi r0, 1
+4401      // 00000332: load r4, r1
+02d3      // 00000333: mov r2, r3
+0294      // 00000334: sub r2, r4
+de08      // 00000335: movi rs, :ground_index_lo
+fe40      // 00000336: lui rs, :ground_index_hi
+404e      // 00000337: stor r0, rs
+d509      // 00000338: movi r5, :ground_height_lo
+f540      // 00000339: lui r5, :ground_height_hi
+4505      // 0000033a: load r5, r5
+06d5      // 0000033b: mov r6, r5
+0692      // 0000033c: sub r6, r2
+b600      // 0000033d: cmpi r6, 0
+c702      // 0000033e: ble 2
+d600      // 0000033f: movi r6, 0
+0454      // 00000340: add r4, r4
+06b4      // 00000341: cmp r6, r4
+cd02      // 00000342: bge 2
+06d4      // 00000343: mov r6, r4
+0596      // 00000344: sub r5, r6
+b500      // 00000345: cmpi r5, 0
+c702      // 00000346: ble 2
+d500      // 00000347: movi r5, 0
+de09      // 00000348: movi rs, :ground_height_lo
+fe40      // 00000349: lui rs, :ground_height_hi
+454e      // 0000034a: stor r5, rs
+5101      // 0000034b: addi r1, 1
+5001      // 0000034c: addi r0, 1
+4401      // 0000034d: load r4, r1
+02d3      // 0000034e: mov r2, r3
+0294      // 0000034f: sub r2, r4
+de08      // 00000350: movi rs, :ground_index_lo
+fe40      // 00000351: lui rs, :ground_index_hi
+404e      // 00000352: stor r0, rs
+d509      // 00000353: movi r5, :ground_height_lo
+f540      // 00000354: lui r5, :ground_height_hi
+4505      // 00000355: load r5, r5
+06d5      // 00000356: mov r6, r5
+0692      // 00000357: sub r6, r2
+b600      // 00000358: cmpi r6, 0
+c702      // 00000359: ble 2
+d600      // 0000035a: movi r6, 0
+0454      // 0000035b: add r4, r4
+06b4      // 0000035c: cmp r6, r4
+cd02      // 0000035d: bge 2
+06d4      // 0000035e: mov r6, r4
+0596      // 0000035f: sub r5, r6
+b500      // 00000360: cmpi r5, 0
+c702      // 00000361: ble 2
+d500      // 00000362: movi r5, 0
+de09      // 00000363: movi rs, :ground_height_lo
+fe40      // 00000364: lui rs, :ground_height_hi
+454e      // 00000365: stor r5, rs
+5101      // 00000366: addi r1, 1
+5001      // 00000367: addi r0, 1
+4401      // 00000368: load r4, r1
+02d3      // 00000369: mov r2, r3
+0294      // 0000036a: sub r2, r4
+de08      // 0000036b: movi rs, :ground_index_lo
+fe40      // 0000036c: lui rs, :ground_index_hi
+404e      // 0000036d: stor r0, rs
+d509      // 0000036e: movi r5, :ground_height_lo
+f540      // 0000036f: lui r5, :ground_height_hi
+4505      // 00000370: load r5, r5
+06d5      // 00000371: mov r6, r5
+0692      // 00000372: sub r6, r2
+b600      // 00000373: cmpi r6, 0
+c702      // 00000374: ble 2
+d600      // 00000375: movi r6, 0
+0454      // 00000376: add r4, r4
+06b4      // 00000377: cmp r6, r4
+cd02      // 00000378: bge 2
+06d4      // 00000379: mov r6, r4
+0596      // 0000037a: sub r5, r6
+b500      // 0000037b: cmpi r5, 0
+c702      // 0000037c: ble 2
+d500      // 0000037d: movi r5, 0
+de09      // 0000037e: movi rs, :ground_height_lo
+fe40      // 0000037f: lui rs, :ground_height_hi
+454e      // 00000380: stor r5, rs
+5101      // 00000381: addi r1, 1
+5001      // 00000382: addi r0, 1
+4401      // 00000383: load r4, r1
+02d3      // 00000384: mov r2, r3
+0294      // 00000385: sub r2, r4
+de08      // 00000386: movi rs, :ground_index_lo
+fe40      // 00000387: lui rs, :ground_index_hi
+404e      // 00000388: stor r0, rs
+d509      // 00000389: movi r5, :ground_height_lo
+f540      // 0000038a: lui r5, :ground_height_hi
+4505      // 0000038b: load r5, r5
+06d5      // 0000038c: mov r6, r5
+0692      // 0000038d: sub r6, r2
+b600      // 0000038e: cmpi r6, 0
+c702      // 0000038f: ble 2
+d600      // 00000390: movi r6, 0
+0454      // 00000391: add r4, r4
+06b4      // 00000392: cmp r6, r4
+cd02      // 00000393: bge 2
+06d4      // 00000394: mov r6, r4
+0596      // 00000395: sub r5, r6
+b500      // 00000396: cmpi r5, 0
+c702      // 00000397: ble 2
+d500      // 00000398: movi r5, 0
+de09      // 00000399: movi rs, :ground_height_lo
+fe40      // 0000039a: lui rs, :ground_height_hi
+454e      // 0000039b: stor r5, rs
+5101      // 0000039c: addi r1, 1
+5001      // 0000039d: addi r0, 1
+4401      // 0000039e: load r4, r1
+02d3      // 0000039f: mov r2, r3
+0294      // 000003a0: sub r2, r4
+de08      // 000003a1: movi rs, :ground_index_lo
+fe40      // 000003a2: lui rs, :ground_index_hi
+404e      // 000003a3: stor r0, rs
+d509      // 000003a4: movi r5, :ground_height_lo
+f540      // 000003a5: lui r5, :ground_height_hi
+4505      // 000003a6: load r5, r5
+06d5      // 000003a7: mov r6, r5
+0692      // 000003a8: sub r6, r2
+b600      // 000003a9: cmpi r6, 0
+c702      // 000003aa: ble 2
+d600      // 000003ab: movi r6, 0
+0454      // 000003ac: add r4, r4
+06b4      // 000003ad: cmp r6, r4
+cd02      // 000003ae: bge 2
+06d4      // 000003af: mov r6, r4
+0596      // 000003b0: sub r5, r6
+b500      // 000003b1: cmpi r5, 0
+c702      // 000003b2: ble 2
+d500      // 000003b3: movi r5, 0
+de09      // 000003b4: movi rs, :ground_height_lo
+fe40      // 000003b5: lui rs, :ground_height_hi
+454e      // 000003b6: stor r5, rs
+5101      // 000003b7: addi r1, 1
+5001      // 000003b8: addi r0, 1
+4401      // 000003b9: load r4, r1
+02d3      // 000003ba: mov r2, r3
+0294      // 000003bb: sub r2, r4
+de08      // 000003bc: movi rs, :ground_index_lo
+fe40      // 000003bd: lui rs, :ground_index_hi
+404e      // 000003be: stor r0, rs
+d509      // 000003bf: movi r5, :ground_height_lo
+f540      // 000003c0: lui r5, :ground_height_hi
+4505      // 000003c1: load r5, r5
+06d5      // 000003c2: mov r6, r5
+0692      // 000003c3: sub r6, r2
+b600      // 000003c4: cmpi r6, 0
+c702      // 000003c5: ble 2
+d600      // 000003c6: movi r6, 0
+0454      // 000003c7: add r4, r4
+06b4      // 000003c8: cmp r6, r4
+cd02      // 000003c9: bge 2
+06d4      // 000003ca: mov r6, r4
+0596      // 000003cb: sub r5, r6
+b500      // 000003cc: cmpi r5, 0
+c702      // 000003cd: ble 2
+d500      // 000003ce: movi r5, 0
+de09      // 000003cf: movi rs, :ground_height_lo
+fe40      // 000003d0: lui rs, :ground_height_hi
+454e      // 000003d1: stor r5, rs
+5101      // 000003d2: addi r1, 1
+5001      // 000003d3: addi r0, 1
+4401      // 000003d4: load r4, r1
+02d3      // 000003d5: mov r2, r3
+0294      // 000003d6: sub r2, r4
+de08      // 000003d7: movi rs, :ground_index_lo
+fe40      // 000003d8: lui rs, :ground_index_hi
+404e      // 000003d9: stor r0, rs
+d509      // 000003da: movi r5, :ground_height_lo
+f540      // 000003db: lui r5, :ground_height_hi
+4505      // 000003dc: load r5, r5
+06d5      // 000003dd: mov r6, r5
+0692      // 000003de: sub r6, r2
+b600      // 000003df: cmpi r6, 0
+c702      // 000003e0: ble 2
+d600      // 000003e1: movi r6, 0
+0454      // 000003e2: add r4, r4
+06b4      // 000003e3: cmp r6, r4
+cd02      // 000003e4: bge 2
+06d4      // 000003e5: mov r6, r4
+0596      // 000003e6: sub r5, r6
+b500      // 000003e7: cmpi r5, 0
+c702      // 000003e8: ble 2
+d500      // 000003e9: movi r5, 0
+de09      // 000003ea: movi rs, :ground_height_lo
+fe40      // 000003eb: lui rs, :ground_height_hi
+454e      // 000003ec: stor r5, rs
+5101      // 000003ed: addi r1, 1
+5001      // 000003ee: addi r0, 1
+06de      // 000003ef, ground_explode_done: mov r6, rs
+05de      // 000003f0: mov r5, rs
+04de      // 000003f1: mov r4, rs
+03de      // 000003f2: mov r3, rs
+02de      // 000003f3: mov r2, rs
+01de      // 000003f4: mov r1, rs
+00de      // 000003f5: mov r0, rs
+4ece      // 000003f6: juc rs
 // endsub: ground_explode
 // sub: tank1_explode
-df0d      // 000003e7, tank1_explode: movi ps, :tank1_y_lo
-ff10      // 000003e8: lui ps, :tank1_y_hi
-4f0f      // 000003e9: load ps, ps
-de01      // 000003ea: movi rs, 1
-8e0f      // 000003eb: lshi rs, 15
-0f2e      // 000003ec: _or ps, rs
-de0d      // 000003ed: movi rs, :tank1_y_lo
-fe10      // 000003ee: lui rs, :tank1_y_hi
-4f4e      // 000003ef: stor ps, rs
-4ece      // 000003f0, tank1_explode_done: juc rs
+df0d      // 000003f7, tank1_explode: movi ps, :tank1_y_lo
+ff40      // 000003f8: lui ps, :tank1_y_hi
+4f0f      // 000003f9: load ps, ps
+de01      // 000003fa: movi rs, 1
+8e0f      // 000003fb: lshi rs, 15
+0f2e      // 000003fc: _or ps, rs
+de0d      // 000003fd: movi rs, :tank1_y_lo
+fe40      // 000003fe: lui rs, :tank1_y_hi
+4f4e      // 000003ff: stor ps, rs
+4ece      // 00000400, tank1_explode_done: juc rs
 // endsub: tank1_explode
 // sub: tank2_explode
-df0f      // 000003f1, tank2_explode: movi ps, :tank2_y_lo
-ff10      // 000003f2: lui ps, :tank2_y_hi
-4f0f      // 000003f3: load ps, ps
-de01      // 000003f4: movi rs, 1
-8e0f      // 000003f5: lshi rs, 15
-0f2e      // 000003f6: _or ps, rs
-de0f      // 000003f7: movi rs, :tank2_y_lo
-fe10      // 000003f8: lui rs, :tank2_y_hi
-4f4e      // 000003f9: stor ps, rs
-4ece      // 000003fa, tank2_explode_done: juc rs
+df0f      // 00000401, tank2_explode: movi ps, :tank2_y_lo
+ff40      // 00000402: lui ps, :tank2_y_hi
+4f0f      // 00000403: load ps, ps
+de01      // 00000404: movi rs, 1
+8e0f      // 00000405: lshi rs, 15
+0f2e      // 00000406: _or ps, rs
+de0f      // 00000407: movi rs, :tank2_y_lo
+fe40      // 00000408: lui rs, :tank2_y_hi
+4f4e      // 00000409: stor ps, rs
+4ece      // 0000040a, tank2_explode_done: juc rs
 // endsub: tank2_explode
 // sub: random_shot
-df02      // 000003fb, random_shot: movi ps, :rand_lo
-ff10      // 000003fc: lui ps, :rand_hi
-4f0f      // 000003fd: load ps, ps
-1f1f      // 000003fe: _andi ps, 31
-df02      // 000003ff: movi ps, :rand_lo
-ff10      // 00000400: lui ps, :rand_hi
-4f0f      // 00000401: load ps, ps
-1f1f      // 00000402: _andi ps, 31
-4ece      // 00000403, random_shot_done: juc rs
+0ed0      // 0000040b, random_shot: mov rs, r0
+df02      // 0000040c: movi ps, :rand_lo
+ff40      // 0000040d: lui ps, :rand_hi
+4f0f      // 0000040e: load ps, ps
+1f3f      // 0000040f: _andi ps, 63
+d002      // 00000410: movi r0, :rand_lo
+f040      // 00000411: lui r0, :rand_hi
+4000      // 00000412: load r0, r0
+103f      // 00000413: _andi r0, 63
+b00c      // 00000414: cmpi r0, 12
+c702      // 00000415: ble 2
+d00c      // 00000416: movi r0, 12
+0fd0      // 00000417: mov ps, r0
+00de      // 00000418, random_shot_done: mov r0, rs
+4ece      // 00000419: juc rs
 // endsub: random_shot
 // sub: deltas
-0ed0      // 00000404, deltas: mov rs, r0
-d069      // 00000405: movi r0, :d_table_lo
-f005      // 00000406: lui r0, :d_table_hi
-8f06      // 00000407: lshi ps, 6
-005f      // 00000408: add r0, ps
-8f01      // 00000409: lshi ps, 1
-005f      // 0000040a: add r0, ps
-4f00      // 0000040b: load ps, r0
-5001      // 0000040c: addi r0, 1
-4f00      // 0000040d: load ps, r0
-00de      // 0000040e, deltas_done: mov r0, rs
-4ece      // 0000040f: juc rs
+0ed0      // 0000041a, deltas: mov rs, r0
+d08b      // 0000041b: movi r0, :d_table_lo
+f005      // 0000041c: lui r0, :d_table_hi
+8f07      // 0000041d: lshi ps, 7
+005f      // 0000041e: add r0, ps
+8f01      // 0000041f: lshi ps, 1
+005f      // 00000420: add r0, ps
+4f00      // 00000421: load ps, r0
+5001      // 00000422: addi r0, 1
+4f00      // 00000423: load ps, r0
+00de      // 00000424, deltas_done: mov r0, rs
+4ece      // 00000425: juc rs
 // endsub: deltas
 // sub: disp_shot
-0ed0      // 00000410, disp_shot: mov rs, r0
-0ed1      // 00000411: mov rs, r1
-d069      // 00000412: movi r0, :disp_table_lo
-f00d      // 00000413: lui r0, :disp_table_hi
-0f50      // 00000414: add ps, r0
-410f      // 00000415: load r1, ps
-0f50      // 00000416: add ps, r0
-4f0f      // 00000417: load ps, ps
-01ff      // 00000418: lu r1, ps
-de22      // 00000419: movi rs, :seg_lo
-fe10      // 0000041a: lui rs, :seg_hi
-414e      // 0000041b: stor r1, rs
-01de      // 0000041c, disp_shot_done: mov r1, rs
-00de      // 0000041d: mov r0, rs
-4ece      // 0000041e: juc rs
+0ed0      // 00000426, disp_shot: mov rs, r0
+0ed1      // 00000427: mov rs, r1
+d08b      // 00000428: movi r0, :disp_table_lo
+f025      // 00000429: lui r0, :disp_table_hi
+0f50      // 0000042a: add ps, r0
+410f      // 0000042b: load r1, ps
+0f50      // 0000042c: add ps, r0
+4f0f      // 0000042d: load ps, ps
+01ff      // 0000042e: lu r1, ps
+de22      // 0000042f: movi rs, :seg_lo
+fe40      // 00000430: lui rs, :seg_hi
+414e      // 00000431: stor r1, rs
+01de      // 00000432, disp_shot_done: mov r1, rs
+00de      // 00000433: mov r0, rs
+4ece      // 00000434: juc rs
 // endsub: disp_shot
 // sub: fire
-0ed0      // 0000041f, fire: mov rs, r0
-d05f      // 00000420: movi r0, :game_state_lo
-f005      // 00000421: lui r0, :game_state_hi
-4000      // 00000422: load r0, r0
-b000      // 00000423: cmpi r0, 0
-c002      // 00000424: beq :eq_19
-ce35      // 00000425: buc :not_eq_19
-df20      // 00000426, eq_19: movi ps, :switches_lo
-ff10      // 00000427: lui ps, :switches_hi
-4f0f      // 00000428: load ps, ps
-0fdf      // 00000429: mov ps, ps
-8f11      // 0000042a: lshi ps, -15
-1f01      // 0000042b: _andi ps, 1
-bf01      // 0000042c: cmpi ps, 1
-c002      // 0000042d: beq :eq_20
-ce0a      // 0000042e: buc :not_eq_20
-dffb      // 0000042f, eq_20: movi ps, :random_shot_lo
-ff03      // 00000430: lui ps, :random_shot_hi
-4e8f      // 00000431: jal rs, ps
-de66      // 00000432: movi rs, :tank1_power_lo
-fe05      // 00000433: lui rs, :tank1_power_hi
-4f4e      // 00000434: stor ps, rs
-de65      // 00000435: movi rs, :tank1_angle_lo
-fe05      // 00000436: lui rs, :tank1_angle_hi
-4f4e      // 00000437: stor ps, rs
-d00c      // 00000438, not_eq_20: movi r0, :tank1_x_lo
-f010      // 00000439: lui r0, :tank1_x_hi
-4000      // 0000043a: load r0, r0
-9002      // 0000043b: subi r0, 2
-de0a      // 0000043c: movi rs, :bullet_x_lo
-fe10      // 0000043d: lui rs, :bullet_x_hi
-404e      // 0000043e: stor r0, rs
-d00d      // 0000043f: movi r0, :tank1_y_lo
-f010      // 00000440: lui r0, :tank1_y_hi
-4000      // 00000441: load r0, r0
-5001      // 00000442: addi r0, 1
-de0b      // 00000443: movi rs, :bullet_y_lo
-fe10      // 00000444: lui rs, :bullet_y_hi
-404e      // 00000445: stor r0, rs
-df65      // 00000446: movi ps, :tank1_angle_lo
-ff05      // 00000447: lui ps, :tank1_angle_hi
-4f0f      // 00000448: load ps, ps
-df66      // 00000449: movi ps, :tank1_power_lo
-ff05      // 0000044a: lui ps, :tank1_power_hi
-4f0f      // 0000044b: load ps, ps
-df04      // 0000044c: movi ps, :deltas_lo
-ff04      // 0000044d: lui ps, :deltas_hi
-4e8f      // 0000044e: jal rs, ps
-de61      // 0000044f: movi rs, :bullet_dy_lo
-fe05      // 00000450: lui rs, :bullet_dy_hi
-4f4e      // 00000451: stor ps, rs
-de60      // 00000452: movi rs, :bullet_dx_lo
-fe05      // 00000453: lui rs, :bullet_dx_hi
-4f4e      // 00000454: stor ps, rs
-de5f      // 00000455: movi rs, :game_state_lo
-fe05      // 00000456: lui rs, :game_state_hi
-df01      // 00000457: movi ps, 1
-4f4e      // 00000458: stor ps, rs
-ce3a      // 00000459: buc :fire_done
-b002      // 0000045a, not_eq_19: cmpi r0, 2
-c002      // 0000045b: beq :eq_21
-ce37      // 0000045c: buc :not_eq_21
-df20      // 0000045d, eq_21: movi ps, :switches_lo
-ff10      // 0000045e: lui ps, :switches_hi
-4f0f      // 0000045f: load ps, ps
-0fdf      // 00000460: mov ps, ps
-8f18      // 00000461: lshi ps, -8
-1f01      // 00000462: _andi ps, 1
-bf01      // 00000463: cmpi ps, 1
-c002      // 00000464: beq :eq_22
-ce0a      // 00000465: buc :not_eq_22
-dffb      // 00000466, eq_22: movi ps, :random_shot_lo
-ff03      // 00000467: lui ps, :random_shot_hi
-4e8f      // 00000468: jal rs, ps
-de68      // 00000469: movi rs, :tank2_power_lo
-fe05      // 0000046a: lui rs, :tank2_power_hi
-4f4e      // 0000046b: stor ps, rs
-de67      // 0000046c: movi rs, :tank2_angle_lo
-fe05      // 0000046d: lui rs, :tank2_angle_hi
+0ed0      // 00000435, fire: mov rs, r0
+d081      // 00000436: movi r0, :game_state_lo
+f005      // 00000437: lui r0, :game_state_hi
+4000      // 00000438: load r0, r0
+b000      // 00000439: cmpi r0, 0
+c002      // 0000043a: beq :eq_20
+ce35      // 0000043b: buc :not_eq_20
+df20      // 0000043c, eq_20: movi ps, :switches_lo
+ff40      // 0000043d: lui ps, :switches_hi
+4f0f      // 0000043e: load ps, ps
+0fdf      // 0000043f: mov ps, ps
+8f11      // 00000440: lshi ps, -15
+1f01      // 00000441: _andi ps, 1
+bf01      // 00000442: cmpi ps, 1
+c002      // 00000443: beq :eq_21
+ce0a      // 00000444: buc :not_eq_21
+df0b      // 00000445, eq_21: movi ps, :random_shot_lo
+ff04      // 00000446: lui ps, :random_shot_hi
+4e8f      // 00000447: jal rs, ps
+de88      // 00000448: movi rs, :tank1_power_lo
+fe05      // 00000449: lui rs, :tank1_power_hi
+4f4e      // 0000044a: stor ps, rs
+de87      // 0000044b: movi rs, :tank1_angle_lo
+fe05      // 0000044c: lui rs, :tank1_angle_hi
+4f4e      // 0000044d: stor ps, rs
+d00c      // 0000044e, not_eq_21: movi r0, :tank1_x_lo
+f040      // 0000044f: lui r0, :tank1_x_hi
+4000      // 00000450: load r0, r0
+9002      // 00000451: subi r0, 2
+de0a      // 00000452: movi rs, :bullet_x_lo
+fe40      // 00000453: lui rs, :bullet_x_hi
+404e      // 00000454: stor r0, rs
+d00d      // 00000455: movi r0, :tank1_y_lo
+f040      // 00000456: lui r0, :tank1_y_hi
+4000      // 00000457: load r0, r0
+5001      // 00000458: addi r0, 1
+de0b      // 00000459: movi rs, :bullet_y_lo
+fe40      // 0000045a: lui rs, :bullet_y_hi
+404e      // 0000045b: stor r0, rs
+df87      // 0000045c: movi ps, :tank1_angle_lo
+ff05      // 0000045d: lui ps, :tank1_angle_hi
+4f0f      // 0000045e: load ps, ps
+df88      // 0000045f: movi ps, :tank1_power_lo
+ff05      // 00000460: lui ps, :tank1_power_hi
+4f0f      // 00000461: load ps, ps
+df1a      // 00000462: movi ps, :deltas_lo
+ff04      // 00000463: lui ps, :deltas_hi
+4e8f      // 00000464: jal rs, ps
+de83      // 00000465: movi rs, :bullet_dy_lo
+fe05      // 00000466: lui rs, :bullet_dy_hi
+4f4e      // 00000467: stor ps, rs
+de82      // 00000468: movi rs, :bullet_dx_lo
+fe05      // 00000469: lui rs, :bullet_dx_hi
+4f4e      // 0000046a: stor ps, rs
+de81      // 0000046b: movi rs, :game_state_lo
+fe05      // 0000046c: lui rs, :game_state_hi
+df01      // 0000046d: movi ps, 1
 4f4e      // 0000046e: stor ps, rs
-d00e      // 0000046f, not_eq_22: movi r0, :tank2_x_lo
-f010      // 00000470: lui r0, :tank2_x_hi
-4000      // 00000471: load r0, r0
-900e      // 00000472: subi r0, 14
-de0a      // 00000473: movi rs, :bullet_x_lo
-fe10      // 00000474: lui rs, :bullet_x_hi
-404e      // 00000475: stor r0, rs
-d00f      // 00000476: movi r0, :tank2_y_lo
-f010      // 00000477: lui r0, :tank2_y_hi
-4000      // 00000478: load r0, r0
-5001      // 00000479: addi r0, 1
-de0b      // 0000047a: movi rs, :bullet_y_lo
-fe10      // 0000047b: lui rs, :bullet_y_hi
-404e      // 0000047c: stor r0, rs
-df67      // 0000047d: movi ps, :tank2_angle_lo
-ff05      // 0000047e: lui ps, :tank2_angle_hi
-4f0f      // 0000047f: load ps, ps
-df68      // 00000480: movi ps, :tank2_power_lo
-ff05      // 00000481: lui ps, :tank2_power_hi
-4f0f      // 00000482: load ps, ps
-df04      // 00000483: movi ps, :deltas_lo
-ff04      // 00000484: lui ps, :deltas_hi
-4e8f      // 00000485: jal rs, ps
-de61      // 00000486: movi rs, :bullet_dy_lo
-fe05      // 00000487: lui rs, :bullet_dy_hi
-4f4e      // 00000488: stor ps, rs
-3fff      // 00000489: xori ps, 255
-5f01      // 0000048a: addi ps, 1
-de60      // 0000048b: movi rs, :bullet_dx_lo
-fe05      // 0000048c: lui rs, :bullet_dx_hi
-4f4e      // 0000048d: stor ps, rs
-de5f      // 0000048e: movi rs, :game_state_lo
-fe05      // 0000048f: lui rs, :game_state_hi
-df03      // 00000490: movi ps, 3
-4f4e      // 00000491: stor ps, rs
-ce01      // 00000492: buc :fire_done
-00de      // 00000493, not_eq_21, fire_done: mov r0, rs
-4ece      // 00000494: juc rs
+ce3a      // 0000046f: buc :fire_done
+b002      // 00000470, not_eq_20: cmpi r0, 2
+c002      // 00000471: beq :eq_22
+ce37      // 00000472: buc :not_eq_22
+df20      // 00000473, eq_22: movi ps, :switches_lo
+ff40      // 00000474: lui ps, :switches_hi
+4f0f      // 00000475: load ps, ps
+0fdf      // 00000476: mov ps, ps
+8f18      // 00000477: lshi ps, -8
+1f01      // 00000478: _andi ps, 1
+bf01      // 00000479: cmpi ps, 1
+c002      // 0000047a: beq :eq_23
+ce0a      // 0000047b: buc :not_eq_23
+df0b      // 0000047c, eq_23: movi ps, :random_shot_lo
+ff04      // 0000047d: lui ps, :random_shot_hi
+4e8f      // 0000047e: jal rs, ps
+de8a      // 0000047f: movi rs, :tank2_power_lo
+fe05      // 00000480: lui rs, :tank2_power_hi
+4f4e      // 00000481: stor ps, rs
+de89      // 00000482: movi rs, :tank2_angle_lo
+fe05      // 00000483: lui rs, :tank2_angle_hi
+4f4e      // 00000484: stor ps, rs
+d00e      // 00000485, not_eq_23: movi r0, :tank2_x_lo
+f040      // 00000486: lui r0, :tank2_x_hi
+4000      // 00000487: load r0, r0
+900e      // 00000488: subi r0, 14
+de0a      // 00000489: movi rs, :bullet_x_lo
+fe40      // 0000048a: lui rs, :bullet_x_hi
+404e      // 0000048b: stor r0, rs
+d00f      // 0000048c: movi r0, :tank2_y_lo
+f040      // 0000048d: lui r0, :tank2_y_hi
+4000      // 0000048e: load r0, r0
+5001      // 0000048f: addi r0, 1
+de0b      // 00000490: movi rs, :bullet_y_lo
+fe40      // 00000491: lui rs, :bullet_y_hi
+404e      // 00000492: stor r0, rs
+df89      // 00000493: movi ps, :tank2_angle_lo
+ff05      // 00000494: lui ps, :tank2_angle_hi
+4f0f      // 00000495: load ps, ps
+df8a      // 00000496: movi ps, :tank2_power_lo
+ff05      // 00000497: lui ps, :tank2_power_hi
+4f0f      // 00000498: load ps, ps
+df1a      // 00000499: movi ps, :deltas_lo
+ff04      // 0000049a: lui ps, :deltas_hi
+4e8f      // 0000049b: jal rs, ps
+de83      // 0000049c: movi rs, :bullet_dy_lo
+fe05      // 0000049d: lui rs, :bullet_dy_hi
+4f4e      // 0000049e: stor ps, rs
+3fff      // 0000049f: xori ps, 255
+5f01      // 000004a0: addi ps, 1
+de82      // 000004a1: movi rs, :bullet_dx_lo
+fe05      // 000004a2: lui rs, :bullet_dx_hi
+4f4e      // 000004a3: stor ps, rs
+de81      // 000004a4: movi rs, :game_state_lo
+fe05      // 000004a5: lui rs, :game_state_hi
+df03      // 000004a6: movi ps, 3
+4f4e      // 000004a7: stor ps, rs
+ce01      // 000004a8: buc :fire_done
+00de      // 000004a9, not_eq_22, fire_done: mov r0, rs
+4ece      // 000004aa: juc rs
 // endsub: fire
 // sub: tank1_firing
-0ed0      // 00000495, tank1_firing: mov rs, r0
-df65      // 00000496: movi ps, :tank1_angle_lo
-ff05      // 00000497: lui ps, :tank1_angle_hi
-4f0f      // 00000498: load ps, ps
-df66      // 00000499: movi ps, :tank1_power_lo
-ff05      // 0000049a: lui ps, :tank1_power_hi
-4f0f      // 0000049b: load ps, ps
-df10      // 0000049c: movi ps, :disp_shot_lo
-ff04      // 0000049d: lui ps, :disp_shot_hi
-4e8f      // 0000049e: jal rs, ps
-df57      // 0000049f: movi ps, :update_bullet_lo
-ff01      // 000004a0: lui ps, :update_bullet_hi
-4e8f      // 000004a1: jal rs, ps
-bf00      // 000004a2: cmpi ps, 0
-c102      // 000004a3: bne :ne_0
-ce06      // 000004a4: buc :not_ne_0
-de5f      // 000004a5, ne_0: movi rs, :game_state_lo
-fe05      // 000004a6: lui rs, :game_state_hi
-df02      // 000004a7: movi ps, 2
-4f4e      // 000004a8: stor ps, rs
-ce2e      // 000004a9: buc :tank1_firing_done
-dfe2      // 000004aa, not_ne_0: movi ps, :handle_collision_lo
-ff01      // 000004ab: lui ps, :handle_collision_hi
-4e8f      // 000004ac: jal rs, ps
-bf00      // 000004ad: cmpi ps, 0
-c102      // 000004ae: bne :ne_1
-ce28      // 000004af: buc :not_ne_1
-00df      // 000004b0, ne_1: mov r0, ps
-df1e      // 000004b1: movi ps, :bullet_explode_lo
-ff02      // 000004b2: lui ps, :bullet_explode_hi
-4e8f      // 000004b3: jal rs, ps
-b000      // 000004b4: cmpi r0, 0
-c002      // 000004b5: beq :eq_23
-ce04      // 000004b6: buc :not_eq_23
-df1f      // 000004b7, eq_23: movi ps, :ground_explode_lo
-ff02      // 000004b8: lui ps, :ground_explode_hi
-4e8f      // 000004b9: jal rs, ps
-b001      // 000004ba, not_eq_23: cmpi r0, 1
-c002      // 000004bb: beq :eq_24
-ce09      // 000004bc: buc :not_eq_24
-dfe7      // 000004bd, eq_24: movi ps, :tank1_explode_lo
-ff03      // 000004be: lui ps, :tank1_explode_hi
-4e8f      // 000004bf: jal rs, ps
-de5f      // 000004c0: movi rs, :game_state_lo
-fe05      // 000004c1: lui rs, :game_state_hi
-df05      // 000004c2: movi ps, 5
-4f4e      // 000004c3: stor ps, rs
-ce13      // 000004c4: buc :tank1_firing_done
-b002      // 000004c5, not_eq_24: cmpi r0, 2
-c002      // 000004c6: beq :eq_25
-ce09      // 000004c7: buc :not_eq_25
-dff1      // 000004c8, eq_25: movi ps, :tank2_explode_lo
-ff03      // 000004c9: lui ps, :tank2_explode_hi
-4e8f      // 000004ca: jal rs, ps
-de5f      // 000004cb: movi rs, :game_state_lo
-fe05      // 000004cc: lui rs, :game_state_hi
-df04      // 000004cd: movi ps, 4
-4f4e      // 000004ce: stor ps, rs
-ce08      // 000004cf: buc :tank1_firing_done
-de5f      // 000004d0, not_eq_25: movi rs, :game_state_lo
-fe05      // 000004d1: lui rs, :game_state_hi
-df02      // 000004d2: movi ps, 2
-4f4e      // 000004d3: stor ps, rs
-dfcc      // 000004d4: movi ps, :reset_bullet_lo
-ff01      // 000004d5: lui ps, :reset_bullet_hi
-4e8f      // 000004d6: jal rs, ps
-00de      // 000004d7, not_ne_1, tank1_firing_done: mov r0, rs
-4ece      // 000004d8: juc rs
+0ed0      // 000004ab, tank1_firing: mov rs, r0
+df87      // 000004ac: movi ps, :tank1_angle_lo
+ff05      // 000004ad: lui ps, :tank1_angle_hi
+4f0f      // 000004ae: load ps, ps
+df88      // 000004af: movi ps, :tank1_power_lo
+ff05      // 000004b0: lui ps, :tank1_power_hi
+4f0f      // 000004b1: load ps, ps
+df26      // 000004b2: movi ps, :disp_shot_lo
+ff04      // 000004b3: lui ps, :disp_shot_hi
+4e8f      // 000004b4: jal rs, ps
+df67      // 000004b5: movi ps, :update_bullet_lo
+ff01      // 000004b6: lui ps, :update_bullet_hi
+4e8f      // 000004b7: jal rs, ps
+bf00      // 000004b8: cmpi ps, 0
+c102      // 000004b9: bne :ne_0
+ce06      // 000004ba: buc :not_ne_0
+de81      // 000004bb, ne_0: movi rs, :game_state_lo
+fe05      // 000004bc: lui rs, :game_state_hi
+df02      // 000004bd: movi ps, 2
+4f4e      // 000004be: stor ps, rs
+ce34      // 000004bf: buc :tank1_firing_done
+dff2      // 000004c0, not_ne_0: movi ps, :handle_collision_lo
+ff01      // 000004c1: lui ps, :handle_collision_hi
+4e8f      // 000004c2: jal rs, ps
+bf00      // 000004c3: cmpi ps, 0
+c102      // 000004c4: bne :ne_1
+ce2e      // 000004c5: buc :not_ne_1
+00df      // 000004c6, ne_1: mov r0, ps
+df2e      // 000004c7: movi ps, :bullet_explode_lo
+ff02      // 000004c8: lui ps, :bullet_explode_hi
+4e8f      // 000004c9: jal rs, ps
+b000      // 000004ca: cmpi r0, 0
+c002      // 000004cb: beq :eq_24
+ce04      // 000004cc: buc :not_eq_24
+df2f      // 000004cd, eq_24: movi ps, :ground_explode_lo
+ff02      // 000004ce: lui ps, :ground_explode_hi
+4e8f      // 000004cf: jal rs, ps
+b001      // 000004d0, not_eq_24: cmpi r0, 1
+c002      // 000004d1: beq :eq_25
+ce0c      // 000004d2: buc :not_eq_25
+dff7      // 000004d3, eq_25: movi ps, :tank1_explode_lo
+ff03      // 000004d4: lui ps, :tank1_explode_hi
+4e8f      // 000004d5: jal rs, ps
+de81      // 000004d6: movi rs, :game_state_lo
+fe05      // 000004d7: lui rs, :game_state_hi
+df05      // 000004d8: movi ps, 5
+4f4e      // 000004d9: stor ps, rs
+dfdc      // 000004da: movi ps, :reset_bullet_lo
+ff01      // 000004db: lui ps, :reset_bullet_hi
+4e8f      // 000004dc: jal rs, ps
+ce16      // 000004dd: buc :tank1_firing_done
+b002      // 000004de, not_eq_25: cmpi r0, 2
+c002      // 000004df: beq :eq_26
+ce0c      // 000004e0: buc :not_eq_26
+df01      // 000004e1, eq_26: movi ps, :tank2_explode_lo
+ff04      // 000004e2: lui ps, :tank2_explode_hi
+4e8f      // 000004e3: jal rs, ps
+de81      // 000004e4: movi rs, :game_state_lo
+fe05      // 000004e5: lui rs, :game_state_hi
+df04      // 000004e6: movi ps, 4
+4f4e      // 000004e7: stor ps, rs
+dfdc      // 000004e8: movi ps, :reset_bullet_lo
+ff01      // 000004e9: lui ps, :reset_bullet_hi
+4e8f      // 000004ea: jal rs, ps
+ce08      // 000004eb: buc :tank1_firing_done
+de81      // 000004ec, not_eq_26: movi rs, :game_state_lo
+fe05      // 000004ed: lui rs, :game_state_hi
+df02      // 000004ee: movi ps, 2
+4f4e      // 000004ef: stor ps, rs
+dfdc      // 000004f0: movi ps, :reset_bullet_lo
+ff01      // 000004f1: lui ps, :reset_bullet_hi
+4e8f      // 000004f2: jal rs, ps
+00de      // 000004f3, not_ne_1, tank1_firing_done: mov r0, rs
+4ece      // 000004f4: juc rs
 // endsub: tank1_firing
 // sub: tank2_firing
-0ed0      // 000004d9, tank2_firing: mov rs, r0
-df67      // 000004da: movi ps, :tank2_angle_lo
-ff05      // 000004db: lui ps, :tank2_angle_hi
-4f0f      // 000004dc: load ps, ps
-df68      // 000004dd: movi ps, :tank2_power_lo
-ff05      // 000004de: lui ps, :tank2_power_hi
-4f0f      // 000004df: load ps, ps
-df10      // 000004e0: movi ps, :disp_shot_lo
-ff04      // 000004e1: lui ps, :disp_shot_hi
-4e8f      // 000004e2: jal rs, ps
-df57      // 000004e3: movi ps, :update_bullet_lo
-ff01      // 000004e4: lui ps, :update_bullet_hi
-4e8f      // 000004e5: jal rs, ps
-bf00      // 000004e6: cmpi ps, 0
-c102      // 000004e7: bne :ne_2
-ce06      // 000004e8: buc :not_ne_2
-de5f      // 000004e9, ne_2: movi rs, :game_state_lo
-fe05      // 000004ea: lui rs, :game_state_hi
-df00      // 000004eb: movi ps, 0
-4f4e      // 000004ec: stor ps, rs
-ce2e      // 000004ed: buc :tank2_firing_done
-dfe2      // 000004ee, not_ne_2: movi ps, :handle_collision_lo
-ff01      // 000004ef: lui ps, :handle_collision_hi
-4e8f      // 000004f0: jal rs, ps
-bf00      // 000004f1: cmpi ps, 0
-c102      // 000004f2: bne :ne_3
-ce28      // 000004f3: buc :not_ne_3
-00df      // 000004f4, ne_3: mov r0, ps
-df1e      // 000004f5: movi ps, :bullet_explode_lo
-ff02      // 000004f6: lui ps, :bullet_explode_hi
-4e8f      // 000004f7: jal rs, ps
-b000      // 000004f8: cmpi r0, 0
-c002      // 000004f9: beq :eq_26
-ce04      // 000004fa: buc :not_eq_26
-df1f      // 000004fb, eq_26: movi ps, :ground_explode_lo
-ff02      // 000004fc: lui ps, :ground_explode_hi
-4e8f      // 000004fd: jal rs, ps
-b001      // 000004fe, not_eq_26: cmpi r0, 1
-c002      // 000004ff: beq :eq_27
-ce09      // 00000500: buc :not_eq_27
-dfe7      // 00000501, eq_27: movi ps, :tank1_explode_lo
-ff03      // 00000502: lui ps, :tank1_explode_hi
-4e8f      // 00000503: jal rs, ps
-de5f      // 00000504: movi rs, :game_state_lo
-fe05      // 00000505: lui rs, :game_state_hi
-df05      // 00000506: movi ps, 5
-4f4e      // 00000507: stor ps, rs
-ce13      // 00000508: buc :tank2_firing_done
-b002      // 00000509, not_eq_27: cmpi r0, 2
-c002      // 0000050a: beq :eq_28
-ce09      // 0000050b: buc :not_eq_28
-dff1      // 0000050c, eq_28: movi ps, :tank2_explode_lo
-ff03      // 0000050d: lui ps, :tank2_explode_hi
-4e8f      // 0000050e: jal rs, ps
-de5f      // 0000050f: movi rs, :game_state_lo
-fe05      // 00000510: lui rs, :game_state_hi
-df04      // 00000511: movi ps, 4
-4f4e      // 00000512: stor ps, rs
-ce08      // 00000513: buc :tank2_firing_done
-de5f      // 00000514, not_eq_28: movi rs, :game_state_lo
-fe05      // 00000515: lui rs, :game_state_hi
-df00      // 00000516: movi ps, 0
-4f4e      // 00000517: stor ps, rs
-dfcc      // 00000518: movi ps, :reset_bullet_lo
-ff01      // 00000519: lui ps, :reset_bullet_hi
-4e8f      // 0000051a: jal rs, ps
-00de      // 0000051b, not_ne_3, tank2_firing_done: mov r0, rs
-4ece      // 0000051c: juc rs
+0ed0      // 000004f5, tank2_firing: mov rs, r0
+df89      // 000004f6: movi ps, :tank2_angle_lo
+ff05      // 000004f7: lui ps, :tank2_angle_hi
+4f0f      // 000004f8: load ps, ps
+df8a      // 000004f9: movi ps, :tank2_power_lo
+ff05      // 000004fa: lui ps, :tank2_power_hi
+4f0f      // 000004fb: load ps, ps
+df26      // 000004fc: movi ps, :disp_shot_lo
+ff04      // 000004fd: lui ps, :disp_shot_hi
+4e8f      // 000004fe: jal rs, ps
+df67      // 000004ff: movi ps, :update_bullet_lo
+ff01      // 00000500: lui ps, :update_bullet_hi
+4e8f      // 00000501: jal rs, ps
+bf00      // 00000502: cmpi ps, 0
+c102      // 00000503: bne :ne_2
+ce06      // 00000504: buc :not_ne_2
+de81      // 00000505, ne_2: movi rs, :game_state_lo
+fe05      // 00000506: lui rs, :game_state_hi
+df00      // 00000507: movi ps, 0
+4f4e      // 00000508: stor ps, rs
+ce34      // 00000509: buc :tank2_firing_done
+dff2      // 0000050a, not_ne_2: movi ps, :handle_collision_lo
+ff01      // 0000050b: lui ps, :handle_collision_hi
+4e8f      // 0000050c: jal rs, ps
+bf00      // 0000050d: cmpi ps, 0
+c102      // 0000050e: bne :ne_3
+ce2e      // 0000050f: buc :not_ne_3
+00df      // 00000510, ne_3: mov r0, ps
+df2e      // 00000511: movi ps, :bullet_explode_lo
+ff02      // 00000512: lui ps, :bullet_explode_hi
+4e8f      // 00000513: jal rs, ps
+b000      // 00000514: cmpi r0, 0
+c002      // 00000515: beq :eq_27
+ce04      // 00000516: buc :not_eq_27
+df2f      // 00000517, eq_27: movi ps, :ground_explode_lo
+ff02      // 00000518: lui ps, :ground_explode_hi
+4e8f      // 00000519: jal rs, ps
+b001      // 0000051a, not_eq_27: cmpi r0, 1
+c002      // 0000051b: beq :eq_28
+ce0c      // 0000051c: buc :not_eq_28
+dff7      // 0000051d, eq_28: movi ps, :tank1_explode_lo
+ff03      // 0000051e: lui ps, :tank1_explode_hi
+4e8f      // 0000051f: jal rs, ps
+de81      // 00000520: movi rs, :game_state_lo
+fe05      // 00000521: lui rs, :game_state_hi
+df05      // 00000522: movi ps, 5
+4f4e      // 00000523: stor ps, rs
+dfdc      // 00000524: movi ps, :reset_bullet_lo
+ff01      // 00000525: lui ps, :reset_bullet_hi
+4e8f      // 00000526: jal rs, ps
+ce16      // 00000527: buc :tank2_firing_done
+b002      // 00000528, not_eq_28: cmpi r0, 2
+c002      // 00000529: beq :eq_29
+ce0c      // 0000052a: buc :not_eq_29
+df01      // 0000052b, eq_29: movi ps, :tank2_explode_lo
+ff04      // 0000052c: lui ps, :tank2_explode_hi
+4e8f      // 0000052d: jal rs, ps
+de81      // 0000052e: movi rs, :game_state_lo
+fe05      // 0000052f: lui rs, :game_state_hi
+df04      // 00000530: movi ps, 4
+4f4e      // 00000531: stor ps, rs
+dfdc      // 00000532: movi ps, :reset_bullet_lo
+ff01      // 00000533: lui ps, :reset_bullet_hi
+4e8f      // 00000534: jal rs, ps
+ce08      // 00000535: buc :tank2_firing_done
+de81      // 00000536, not_eq_29: movi rs, :game_state_lo
+fe05      // 00000537: lui rs, :game_state_hi
+df00      // 00000538: movi ps, 0
+4f4e      // 00000539: stor ps, rs
+dfdc      // 0000053a: movi ps, :reset_bullet_lo
+ff01      // 0000053b: lui ps, :reset_bullet_hi
+4e8f      // 0000053c: jal rs, ps
+00de      // 0000053d, not_ne_3, tank2_firing_done: mov r0, rs
+4ece      // 0000053e: juc rs
 // endsub: tank2_firing
 // sub: game_loop
-0ed0      // 0000051d, game_loop: mov rs, r0
-0ed1      // 0000051e: mov rs, r1
-d05f      // 0000051f: movi r0, :game_state_lo
-f005      // 00000520: lui r0, :game_state_hi
-4000      // 00000521: load r0, r0
-b000      // 00000522: cmpi r0, 0
-c002      // 00000523: beq :eq_29
-ce13      // 00000524: buc :not_eq_29
-de21      // 00000525, eq_29: movi rs, :leds_lo
-fe10      // 00000526: lui rs, :leds_hi
-df80      // 00000527: movi ps, 128
-ff00      // 00000528: lui ps, 0
-4f4e      // 00000529: stor ps, rs
-df20      // 0000052a: movi ps, :switches_lo
-ff10      // 0000052b: lui ps, :switches_hi
-4f0f      // 0000052c: load ps, ps
-0fdf      // 0000052d: mov ps, ps
-8f11      // 0000052e: lshi ps, -15
-1f01      // 0000052f: _andi ps, 1
-bf01      // 00000530: cmpi ps, 1
-c002      // 00000531: beq :eq_30
-ce04      // 00000532: buc :not_eq_30
-df1f      // 00000533, eq_30: movi ps, :fire_lo
-ff04      // 00000534: lui ps, :fire_hi
-4e8f      // 00000535: jal rs, ps
-ce25      // 00000536, not_eq_30: buc :game_loop_done
-b002      // 00000537, not_eq_29: cmpi r0, 2
-c002      // 00000538: beq :eq_31
-ce12      // 00000539: buc :not_eq_31
-de21      // 0000053a, eq_31: movi rs, :leds_lo
-fe10      // 0000053b: lui rs, :leds_hi
-df01      // 0000053c: movi ps, 1
-4f4e      // 0000053d: stor ps, rs
-df20      // 0000053e: movi ps, :switches_lo
-ff10      // 0000053f: lui ps, :switches_hi
-4f0f      // 00000540: load ps, ps
-0fdf      // 00000541: mov ps, ps
-8f18      // 00000542: lshi ps, -8
-1f01      // 00000543: _andi ps, 1
-bf01      // 00000544: cmpi ps, 1
-c002      // 00000545: beq :eq_32
-ce04      // 00000546: buc :not_eq_32
-df1f      // 00000547, eq_32: movi ps, :fire_lo
-ff04      // 00000548: lui ps, :fire_hi
-4e8f      // 00000549: jal rs, ps
-ce11      // 0000054a, not_eq_32: buc :game_loop_done
-b001      // 0000054b, not_eq_31: cmpi r0, 1
-c002      // 0000054c: beq :eq_33
-ce06      // 0000054d: buc :not_eq_33
-de5b      // 0000054e, eq_33: movi rs, :game_loop_done_lo
-fe05      // 0000054f: lui rs, :game_loop_done_hi
-df95      // 00000550: movi ps, :tank1_firing_lo
-ff04      // 00000551: lui ps, :tank1_firing_hi
-4ecf      // 00000552: juc ps
-b003      // 00000553, not_eq_33: cmpi r0, 3
-c002      // 00000554: beq :eq_34
-ce06      // 00000555: buc :not_eq_34
-de5b      // 00000556, eq_34: movi rs, :game_loop_done_lo
-fe05      // 00000557: lui rs, :game_loop_done_hi
-dfd9      // 00000558: movi ps, :tank2_firing_lo
-ff04      // 00000559: lui ps, :tank2_firing_hi
-4ecf      // 0000055a: juc ps
-01de      // 0000055b, not_eq_34, game_loop_done: mov r1, rs
-00de      // 0000055c: mov r0, rs
-4ece      // 0000055d: juc rs
+0ed0      // 0000053f, game_loop: mov rs, r0
+0ed1      // 00000540: mov rs, r1
+d081      // 00000541: movi r0, :game_state_lo
+f005      // 00000542: lui r0, :game_state_hi
+4000      // 00000543: load r0, r0
+b000      // 00000544: cmpi r0, 0
+c002      // 00000545: beq :eq_30
+ce13      // 00000546: buc :not_eq_30
+de21      // 00000547, eq_30: movi rs, :leds_lo
+fe40      // 00000548: lui rs, :leds_hi
+df80      // 00000549: movi ps, 128
+ff00      // 0000054a: lui ps, 0
+4f4e      // 0000054b: stor ps, rs
+df20      // 0000054c: movi ps, :switches_lo
+ff40      // 0000054d: lui ps, :switches_hi
+4f0f      // 0000054e: load ps, ps
+0fdf      // 0000054f: mov ps, ps
+8f11      // 00000550: lshi ps, -15
+1f01      // 00000551: _andi ps, 1
+bf01      // 00000552: cmpi ps, 1
+c002      // 00000553: beq :eq_31
+ce04      // 00000554: buc :not_eq_31
+df35      // 00000555, eq_31: movi ps, :fire_lo
+ff04      // 00000556: lui ps, :fire_hi
+4e8f      // 00000557: jal rs, ps
+ce25      // 00000558, not_eq_31: buc :game_loop_done
+b002      // 00000559, not_eq_30: cmpi r0, 2
+c002      // 0000055a: beq :eq_32
+ce12      // 0000055b: buc :not_eq_32
+de21      // 0000055c, eq_32: movi rs, :leds_lo
+fe40      // 0000055d: lui rs, :leds_hi
+df01      // 0000055e: movi ps, 1
+4f4e      // 0000055f: stor ps, rs
+df20      // 00000560: movi ps, :switches_lo
+ff40      // 00000561: lui ps, :switches_hi
+4f0f      // 00000562: load ps, ps
+0fdf      // 00000563: mov ps, ps
+8f18      // 00000564: lshi ps, -8
+1f01      // 00000565: _andi ps, 1
+bf01      // 00000566: cmpi ps, 1
+c002      // 00000567: beq :eq_33
+ce04      // 00000568: buc :not_eq_33
+df35      // 00000569, eq_33: movi ps, :fire_lo
+ff04      // 0000056a: lui ps, :fire_hi
+4e8f      // 0000056b: jal rs, ps
+ce11      // 0000056c, not_eq_33: buc :game_loop_done
+b001      // 0000056d, not_eq_32: cmpi r0, 1
+c002      // 0000056e: beq :eq_34
+ce06      // 0000056f: buc :not_eq_34
+de7d      // 00000570, eq_34: movi rs, :game_loop_done_lo
+fe05      // 00000571: lui rs, :game_loop_done_hi
+dfab      // 00000572: movi ps, :tank1_firing_lo
+ff04      // 00000573: lui ps, :tank1_firing_hi
+4ecf      // 00000574: juc ps
+b003      // 00000575, not_eq_34: cmpi r0, 3
+c002      // 00000576: beq :eq_35
+ce06      // 00000577: buc :not_eq_35
+de7d      // 00000578, eq_35: movi rs, :game_loop_done_lo
+fe05      // 00000579: lui rs, :game_loop_done_hi
+dff5      // 0000057a: movi ps, :tank2_firing_lo
+ff04      // 0000057b: lui ps, :tank2_firing_hi
+4ecf      // 0000057c: juc ps
+01de      // 0000057d, not_eq_35, game_loop_done: mov r1, rs
+00de      // 0000057e: mov r0, rs
+4ece      // 0000057f: juc rs
 // endsub: game_loop
 // data_mem, g: 
 ffff
@@ -1470,1030 +1504,4134 @@ fffe
 0000 0000
 0000 0000
 0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0000 0000
+0008 0000
+0007 0000
+0007 0000
+0007 0000
+0007 0000
+0007 0000
+0007 0001
+0007 0001
+0007 0001
+0007 0001
+0007 0001
+0007 0002
+0007 0002
+0007 0002
+0007 0002
+0007 0002
+0007 0003
+0007 0003
+0007 0003
+0007 0003
+0007 0003
+0006 0004
+0006 0004
+0006 0004
+0006 0004
+0006 0004
+0006 0004
+0006 0004
+0006 0005
+0005 0005
+0005 0005
+0005 0005
+0005 0005
+0005 0005
+0005 0005
+0005 0006
+0004 0006
+0004 0006
+0004 0006
+0004 0006
+0004 0006
+0004 0006
+0003 0006
+0003 0007
+0003 0007
+0003 0007
+0003 0007
+0003 0007
+0002 0007
+0002 0007
+0002 0007
+0002 0007
+0002 0007
+0001 0007
+0001 0007
+0001 0007
+0001 0007
+0001 0007
+0000 0007
+0000 0007
+0000 0007
+0000 0007
+0000 0007
+0000 0008
 0010 0000
 000f 0000
+000f 0000
+000f 0001
+000f 0001
 000f 0001
 000f 0002
+000f 0002
+000f 0003
+000f 0003
 000f 0003
 000f 0004
 000f 0004
 000f 0005
+000f 0005
+000e 0005
+000e 0006
+000e 0006
 000e 0006
 000e 0007
-000d 0007
+000e 0007
+000d 0008
+000d 0008
 000d 0008
 000d 0009
 000c 0009
+000c 0009
+000c 0009
 000c 000a
+000b 000a
+000b 000a
 000b 000b
 000b 000b
+000a 000b
+000a 000b
 000a 000c
+0009 000c
+0009 000c
 0009 000c
 0009 000d
 0008 000d
+0008 000d
 0007 000d
 0007 000e
+0007 000e
 0006 000e
+0006 000e
+0006 000e
+0005 000e
+0005 000f
 0005 000f
 0004 000f
 0004 000f
 0003 000f
+0003 000f
+0003 000f
+0002 000f
 0002 000f
 0001 000f
+0001 000f
+0001 000f
+0000 000f
 0000 000f
 0000 0010
+0018 0000
+0017 0000
+0017 0001
+0017 0001
+0017 0002
+0017 0002
+0017 0003
+0017 0004
+0017 0004
+0017 0005
+0017 0005
+0017 0006
+0016 0007
+0016 0007
+0016 0008
+0016 0008
+0016 0009
+0015 0009
+0015 000a
+0015 000a
+0015 000b
+0014 000c
+0014 000c
+0014 000d
+0013 000d
+0013 000e
+0013 000e
+0012 000e
+0012 000f
+0011 000f
+0011 0010
+0011 0010
+0010 0011
+0010 0011
+000f 0011
+000f 0012
+000e 0012
+000e 0013
+000e 0013
+000d 0013
+000d 0014
+000c 0014
+000b 0014
+000b 0015
+000a 0015
+000a 0015
+0009 0015
+0009 0016
+0008 0016
+0008 0016
+0007 0016
+0007 0016
+0006 0017
+0005 0017
+0005 0017
+0004 0017
+0004 0017
+0003 0017
+0002 0017
+0002 0017
+0001 0017
+0001 0017
+0000 0017
+0000 0018
 0020 0000
+001f 0000
 001f 0001
+001f 0002
+001f 0003
 001f 0003
 001f 0004
+001f 0005
 001f 0006
+001f 0007
+001f 0007
 001e 0008
 001e 0009
-001e 000b
+001e 000a
+001e 000a
+001d 000b
 001d 000c
+001d 000d
+001c 000d
 001c 000e
-001b 000f
+001c 000f
 001b 0010
+001b 0010
+001a 0011
 001a 0012
+0019 0012
+0019 0013
 0019 0013
 0018 0014
-0017 0016
-0016 0017
+0017 0015
+0017 0015
+0016 0016
+0016 0016
+0015 0017
+0015 0017
 0014 0018
 0013 0019
+0013 0019
+0012 0019
 0012 001a
+0011 001a
 0010 001b
 000f 001b
+000f 001c
 000e 001c
+000d 001c
+000d 001d
 000c 001d
-000b 001e
+000b 001d
+000a 001e
+000a 001e
 0009 001e
 0008 001e
+0007 001f
+0007 001f
 0006 001f
+0005 001f
 0004 001f
 0003 001f
+0003 001f
+0002 001f
 0001 001f
+0000 001f
 0000 0020
+0028 0000
+0027 0000
+0027 0001
+0027 0002
+0027 0003
+0027 0004
+0027 0005
+0027 0006
+0027 0007
+0026 0008
+0026 0009
+0026 000a
+0026 000b
+0025 000c
+0025 000d
+0025 000e
+0024 000f
+0024 0010
+0024 0011
+0023 0012
+0023 0013
+0022 0014
+0022 0014
+0021 0015
+0021 0016
+0020 0017
+001f 0018
+001f 0018
+001e 0019
+001d 001a
+001d 001b
+001c 001b
+001b 001c
+001b 001d
+001a 001d
+0019 001e
+0018 001f
+0018 001f
+0017 0020
+0016 0021
+0015 0021
+0014 0022
+0013 0022
+0013 0023
+0012 0023
+0011 0024
+0010 0024
+000f 0024
+000e 0025
+000d 0025
+000c 0025
+000b 0026
+000a 0026
+0009 0026
+0008 0026
+0007 0027
+0006 0027
+0005 0027
+0004 0027
+0003 0027
+0002 0027
+0001 0027
+0000 0027
+0000 0028
 0030 0000
+002f 0001
 002f 0002
+002f 0003
 002f 0004
+002f 0005
 002f 0007
+002f 0008
 002f 0009
-002e 000c
+002e 000a
+002e 000b
+002e 000d
 002d 000e
+002d 000f
 002d 0010
+002c 0011
 002c 0012
-002b 0015
-0029 0017
+002b 0013
+002b 0014
+002a 0015
+002a 0016
+0029 0018
 0028 0019
+0028 001a
 0027 001b
+0026 001c
+0026 001c
 0025 001d
-0024 001f
+0024 001e
+0023 001f
+0023 0020
 0022 0021
 0021 0022
-001f 0024
+0020 0023
+001f 0023
+001e 0024
 001d 0025
+001c 0026
+001c 0026
 001b 0027
+001a 0028
 0019 0028
 0017 0029
-0015 002b
+0016 002a
+0015 002a
+0014 002b
+0013 002b
 0012 002c
+0011 002c
 0010 002d
+000f 002d
 000e 002d
-000c 002e
+000d 002e
+000b 002e
+000a 002e
 0009 002f
+0008 002f
 0007 002f
+0005 002f
 0004 002f
+0003 002f
 0002 002f
+0001 002f
 0000 0030
+0038 0000
+0037 0001
+0037 0002
+0037 0004
+0037 0005
+0037 0006
+0037 0008
+0037 0009
+0036 000b
+0036 000c
+0036 000d
+0035 000f
+0035 0010
+0035 0011
+0034 0013
+0034 0014
+0033 0015
+0033 0017
+0032 0018
+0031 0019
+0031 001a
+0030 001c
+002f 001d
+002f 001e
+002e 001f
+002d 0020
+002c 0021
+002b 0022
+002a 0023
+0029 0025
+0029 0026
+0028 0027
+0027 0028
+0026 0029
+0025 0029
+0023 002a
+0022 002b
+0021 002c
+0020 002d
+001f 002e
+001e 002f
+001d 002f
+001b 0030
+001a 0031
+0019 0031
+0018 0032
+0017 0033
+0015 0033
+0014 0034
+0013 0034
+0011 0035
+0010 0035
+000f 0035
+000d 0036
+000c 0036
+000b 0036
+0009 0037
+0008 0037
+0006 0037
+0005 0037
+0004 0037
+0002 0037
+0001 0037
+0000 0038
 0040 0000
+003f 0001
 003f 0003
+003f 0004
 003f 0006
+003f 0007
 003f 0009
+003f 000b
 003e 000c
-003d 0010
-003d 0013
-003c 0016
-003a 0019
-0039 001c
-0037 001f
+003e 000e
+003e 000f
+003d 0011
+003d 0012
+003c 0014
+003c 0015
+003b 0017
+003a 0018
+003a 001a
+0039 001b
+0038 001d
+0038 001e
+0037 0020
 0036 0021
+0035 0022
 0034 0024
+0033 0025
+0033 0026
 0032 0027
-0030 0029
-002e 002c
-002c 002e
-0029 0030
+0031 0029
+002f 002a
+002e 002b
+002d 002c
+002c 002d
+002b 002e
+002a 002f
+0029 0031
 0027 0032
+0026 0033
+0025 0033
 0024 0034
+0022 0035
 0021 0036
 001f 0037
-001c 0039
-0019 003a
-0016 003c
-0013 003d
-0010 003d
+001e 0038
+001d 0038
+001b 0039
+001a 003a
+0018 003a
+0017 003b
+0015 003c
+0014 003c
+0012 003d
+0011 003d
+000f 003e
+000e 003e
 000c 003e
+000b 003f
 0009 003f
+0007 003f
 0006 003f
+0004 003f
 0003 003f
+0001 003f
 0000 0040
+0048 0000
+0047 0001
+0047 0003
+0047 0005
+0047 0007
+0047 0008
+0047 000a
+0046 000c
+0046 000e
+0046 0010
+0045 0011
+0045 0013
+0044 0015
+0044 0016
+0043 0018
+0043 001a
+0042 001b
+0041 001d
+0040 001f
+0040 0020
+003f 0022
+003e 0024
+003d 0025
+003c 0027
+003b 0028
+003a 002a
+0039 002b
+0038 002c
+0037 002e
+0035 002f
+0034 0030
+0033 0032
+0032 0033
+0030 0034
+002f 0035
+002e 0037
+002c 0038
+002b 0039
+002a 003a
+0028 003b
+0027 003c
+0025 003d
+0023 003e
+0022 003f
+0020 0040
+001f 0040
+001d 0041
+001b 0042
+001a 0043
+0018 0043
+0016 0044
+0015 0044
+0013 0045
+0011 0045
+0010 0046
+000e 0046
+000c 0046
+000a 0047
+0008 0047
+0007 0047
+0005 0047
+0003 0047
+0001 0047
+0000 0048
 0050 0000
-004f 0004
-004f 0008
-004f 000c
-004e 0010
-004d 0014
+004f 0001
+004f 0003
+004f 0005
+004f 0007
+004f 0009
+004f 000b
+004e 000d
+004e 000f
+004d 0011
+004d 0013
+004d 0015
 004c 0017
+004b 0019
 004b 001b
+004a 001d
 0049 001f
-0047 0023
-0045 0026
-0043 002a
-0041 002d
+0048 0020
+0048 0022
+0047 0024
+0046 0026
+0045 0028
+0044 0029
+0043 002b
+0042 002d
+0040 002e
 003f 0030
-003c 0034
+003e 0031
+003d 0033
+003b 0034
+003a 0036
 0039 0037
 0037 0039
-0034 003c
+0036 003a
+0034 003b
+0033 003d
+0031 003e
 0030 003f
-002d 0041
-002a 0043
-0026 0045
-0023 0047
+002e 0040
+002d 0042
+002b 0043
+0029 0044
+0027 0045
+0026 0046
+0024 0047
+0022 0048
+0020 0048
 001f 0049
+001d 004a
 001b 004b
+0019 004b
 0017 004c
-0014 004d
-0010 004e
-000c 004f
-0008 004f
-0004 004f
+0015 004d
+0013 004d
+0011 004d
+000f 004e
+000d 004e
+000b 004f
+0009 004f
+0007 004f
+0005 004f
+0003 004f
+0001 004f
 0000 0050
+0058 0000
+0057 0002
+0057 0004
+0057 0006
+0057 0008
+0057 000a
+0057 000d
+0056 000f
+0056 0011
+0055 0013
+0055 0015
+0054 0017
+0054 0019
+0053 001c
+0052 001e
+0051 0020
+0051 0022
+0050 0024
+004f 0026
+004e 0028
+004d 002a
+004c 002c
+004b 002d
+0049 002f
+0048 0031
+0047 0033
+0046 0035
+0044 0036
+0043 0038
+0041 003a
+0040 003b
+003e 003d
+003d 003e
+003b 0040
+003a 0041
+0038 0043
+0036 0044
+0035 0046
+0033 0047
+0031 0048
+002f 0049
+002d 004b
+002b 004c
+002a 004d
+0028 004e
+0026 004f
+0024 0050
+0022 0051
+0020 0051
+001e 0052
+001c 0053
+0019 0054
+0017 0054
+0015 0055
+0013 0055
+0011 0056
+000f 0056
+000d 0057
+000a 0057
+0008 0057
+0006 0057
+0004 0057
+0002 0057
+0000 0058
 0060 0000
+005f 0002
 005f 0004
+005f 0007
 005f 0009
+005f 000b
 005e 000e
+005e 0010
 005e 0013
-005c 0018
+005d 0015
+005d 0017
+005c 001a
 005b 001c
-005a 0021
+005b 001e
+005a 0020
+0059 0023
 0058 0025
-0056 002a
-0053 002e
+0057 0027
+0056 0029
+0055 002b
+0054 002d
+0053 0030
 0051 0032
-004e 0036
-004b 003a
-0048 003e
-0045 0042
-0042 0045
-003e 0048
-003a 004b
-0036 004e
+0050 0034
+004f 0036
+004d 0038
+004c 0039
+004b 003b
+0049 003d
+0047 003f
+0046 0041
+0044 0043
+0043 0044
+0041 0046
+003f 0047
+003d 0049
+003b 004b
+0039 004c
+0038 004d
+0036 004f
+0034 0050
 0032 0051
-002e 0053
-002a 0056
+002f 0053
+002d 0054
+002b 0055
+0029 0056
+0027 0057
 0025 0058
-0021 005a
+0023 0059
+0020 005a
+001e 005b
 001c 005b
-0018 005c
+001a 005c
+0017 005d
+0015 005d
 0013 005e
+0010 005e
 000e 005e
+000b 005f
 0009 005f
+0007 005f
 0004 005f
+0002 005f
 0000 0060
+0068 0000
+0067 0002
+0067 0005
+0067 0007
+0067 000a
+0067 000c
+0066 000f
+0066 0012
+0065 0014
+0065 0017
+0064 0019
+0064 001c
+0063 001e
+0062 0021
+0061 0023
+0060 0025
+005f 0028
+005e 002a
+005d 002d
+005c 002f
+005b 0031
+005a 0034
+0058 0036
+0057 0038
+0055 003a
+0054 003c
+0052 003e
+0051 0040
+004f 0042
+004d 0044
+004c 0046
+004a 0048
+0048 004a
+0046 004c
+0044 004d
+0042 004f
+0040 0051
+003e 0052
+003c 0054
+003a 0055
+0038 0057
+0036 0058
+0033 005a
+0031 005b
+002f 005c
+002d 005d
+002a 005e
+0028 005f
+0025 0060
+0023 0061
+0021 0062
+001e 0063
+001c 0064
+0019 0064
+0017 0065
+0014 0065
+0012 0066
+000f 0066
+000c 0067
+000a 0067
+0007 0067
+0005 0067
+0002 0067
+0000 0068
 0070 0000
+006f 0002
 006f 0005
+006f 0008
 006f 000b
+006f 000d
 006e 0010
+006e 0013
 006d 0016
-006c 001c
-006a 0021
+006d 0018
+006c 001b
+006b 001e
+006b 0021
+006a 0023
 0069 0026
-0066 002c
-0064 0031
-0061 0036
-005f 003b
-005b 003f
-0058 0044
-0054 0048
-0051 004d
-004d 0051
-0048 0054
-0044 0058
-003f 005b
-003b 005f
-0036 0061
-0031 0064
-002c 0066
+0068 0028
+0067 002b
+0066 002e
+0064 0030
+0063 0033
+0062 0035
+0060 0038
+005f 003a
+005e 003c
+005c 003f
+005a 0041
+0059 0043
+0057 0045
+0055 0047
+0053 004a
+0052 004c
+0050 004e
+004e 0050
+004c 0052
+004a 0053
+0047 0055
+0045 0057
+0043 0059
+0041 005a
+003f 005c
+003c 005e
+003a 005f
+0037 0060
+0035 0062
+0033 0063
+0030 0064
+002e 0066
+002b 0067
+0028 0068
 0026 0069
-0021 006a
-001c 006c
+0023 006a
+0021 006b
+001e 006b
+001b 006c
+0018 006d
 0016 006d
+0013 006e
 0010 006e
+000d 006f
 000b 006f
+0008 006f
 0005 006f
+0002 006f
 0000 0070
+0078 0000
+0077 0002
+0077 0005
+0077 0008
+0077 000b
+0077 000e
+0076 0011
+0076 0014
+0075 0017
+0074 001a
+0074 001d
+0073 0020
+0072 0023
+0071 0026
+0070 0029
+006f 002b
+006e 002e
+006d 0031
+006c 0034
+006a 0036
+0069 0039
+0067 003c
+0066 003e
+0064 0041
+0063 0043
+0061 0046
+005f 0048
+005d 004a
+005b 004d
+0059 004f
+0057 0051
+0055 0053
+0053 0055
+0051 0057
+004f 0059
+004d 005b
+004a 005d
+0048 005f
+0046 0061
+0043 0063
+0041 0064
+003e 0066
+003b 0067
+0039 0069
+0036 006a
+0034 006c
+0031 006d
+002e 006e
+002b 006f
+0029 0070
+0026 0071
+0023 0072
+0020 0073
+001d 0074
+001a 0074
+0017 0075
+0014 0076
+0011 0076
+000e 0077
+000b 0077
+0008 0077
+0005 0077
+0002 0077
+0000 0078
 0080 0000
+007f 0003
 007f 0006
+007f 0009
 007f 000c
+007f 000f
 007e 0013
+007e 0016
 007d 0019
-007b 0020
-007a 0026
-0078 002c
-0075 0032
-0072 0038
-006f 003e
-006c 0043
-0069 0049
-0065 004e
-0061 0053
-005c 0058
-0058 005c
-0053 0061
-004e 0065
-0049 0069
-0043 006c
-003e 006f
-0038 0072
-0032 0075
-002c 0078
-0026 007a
-0020 007b
+007c 001c
+007c 001f
+007b 0022
+007a 0025
+0079 0028
+0078 002b
+0077 002e
+0075 0031
+0074 0034
+0073 0037
+0071 003a
+0070 003d
+006e 0040
+006d 0042
+006b 0045
+0069 0048
+0067 004a
+0066 004d
+0064 004f
+0062 0052
+005f 0054
+005d 0057
+005b 0059
+0059 005b
+0057 005d
+0054 005f
+0052 0062
+004f 0064
+004d 0066
+004a 0067
+0048 0069
+0045 006b
+0042 006d
+003f 006e
+003d 0070
+003a 0071
+0037 0073
+0034 0074
+0031 0075
+002e 0077
+002b 0078
+0028 0079
+0025 007a
+0022 007b
+001f 007c
+001c 007c
 0019 007d
+0016 007e
 0013 007e
+000f 007f
 000c 007f
+0009 007f
 0006 007f
+0003 007f
 0000 0080
+0088 0000
+0087 0003
+0087 0006
+0087 000a
+0087 000d
+0086 0010
+0086 0014
+0085 0017
+0085 001a
+0084 001e
+0083 0021
+0082 0024
+0081 0028
+0080 002b
+007f 002e
+007e 0031
+007d 0034
+007b 0037
+007a 003b
+0079 003e
+0077 0041
+0075 0044
+0074 0046
+0072 0049
+0070 004c
+006e 004f
+006c 0052
+006a 0054
+0068 0057
+0065 0059
+0063 005c
+0061 005e
+005e 0061
+005c 0063
+0059 0065
+0057 0068
+0054 006a
+0052 006c
+004f 006e
+004c 0070
+0049 0072
+0046 0074
+0043 0075
+0041 0077
+003e 0079
+003b 007a
+0037 007b
+0034 007d
+0031 007e
+002e 007f
+002b 0080
+0028 0081
+0024 0082
+0021 0083
+001e 0084
+001a 0085
+0017 0085
+0014 0086
+0010 0086
+000d 0087
+000a 0087
+0006 0087
+0003 0087
+0000 0088
 0090 0000
+008f 0003
 008f 0007
+008f 000a
 008f 000e
+008e 0011
 008e 0015
+008d 0019
 008d 001c
-008b 0024
-0089 002b
-0087 0032
-0084 0038
-0081 003f
-007d 0045
-007a 004c
-0076 0052
-0071 0058
-006d 005d
-0068 0063
-0063 0068
-005d 006d
-0058 0071
-0052 0076
-004c 007a
-0045 007d
-003f 0081
-0038 0084
-0032 0087
-002b 0089
-0024 008b
+008c 0020
+008b 0023
+008a 0027
+0089 002a
+0088 002d
+0087 0031
+0086 0034
+0084 0037
+0083 003b
+0081 003e
+0080 0041
+007e 0044
+007c 0048
+007a 004b
+0078 004e
+0076 0051
+0074 0054
+0072 0056
+0070 0059
+006e 005c
+006b 005f
+0069 0061
+0067 0064
+0064 0067
+0061 0069
+005f 006b
+005c 006e
+0059 0070
+0056 0072
+0054 0074
+0051 0076
+004e 0078
+004b 007a
+0047 007c
+0044 007e
+0041 0080
+003e 0081
+003b 0083
+0037 0084
+0034 0086
+0031 0087
+002d 0088
+002a 0089
+0027 008a
+0023 008b
+0020 008c
 001c 008d
+0019 008d
 0015 008e
+0011 008e
 000e 008f
+000a 008f
 0007 008f
+0003 008f
 0000 0090
+0098 0000
+0097 0003
+0097 0007
+0097 000b
+0097 000f
+0096 0012
+0096 0016
+0095 001a
+0094 001e
+0094 0021
+0093 0025
+0092 0029
+0091 002c
+0090 0030
+008e 0033
+008d 0037
+008c 003b
+008a 003e
+0088 0041
+0087 0045
+0085 0048
+0083 004c
+0081 004f
+007f 0052
+007d 0055
+007b 0058
+0079 005b
+0076 005e
+0074 0061
+0071 0064
+006f 0067
+006c 006a
+006a 006c
+0067 006f
+0064 0071
+0061 0074
+005e 0076
+005b 0079
+0058 007b
+0055 007d
+0052 007f
+004f 0081
+004b 0083
+0048 0085
+0045 0087
+0041 0088
+003e 008a
+003b 008c
+0037 008d
+0033 008e
+0030 0090
+002c 0091
+0029 0092
+0025 0093
+0021 0094
+001e 0094
+001a 0095
+0016 0096
+0012 0096
+000f 0097
+000b 0097
+0007 0097
+0003 0097
+0000 0098
 00a0 0000
-009f 0008
-009f 0010
-009e 0018
-009c 0020
-009a 0028
+009f 0003
+009f 0007
+009f 000b
+009f 000f
+009e 0013
+009e 0017
+009d 001b
+009c 001f
+009b 0023
+009b 0027
+009a 002b
 0098 002f
-0096 0037
-0093 003f
-008f 0046
-008b 004d
-0087 0054
-0083 005b
-007e 0061
-0079 0068
-0073 006e
-006e 0073
-0068 0079
-0061 007e
-005b 0083
-0054 0087
-004d 008b
-0046 008f
-003f 0093
-0037 0096
+0097 0032
+0096 0036
+0094 003a
+0093 003e
+0091 0041
+0090 0045
+008e 0048
+008c 004c
+008a 0050
+0088 0053
+0086 0056
+0084 005a
+0081 005d
+007f 0060
+007d 0063
+007a 0066
+0077 0069
+0075 006c
+0072 006f
+006f 0072
+006c 0075
+0069 0077
+0066 007a
+0063 007d
+0060 007f
+005d 0081
+005a 0084
+0056 0086
+0053 0088
+004f 008a
+004c 008c
+0048 008e
+0045 0090
+0041 0091
+003e 0093
+003a 0094
+0036 0096
+0032 0097
 002f 0098
-0028 009a
-0020 009c
-0018 009e
-0010 009f
-0008 009f
+002b 009a
+0027 009b
+0023 009b
+001f 009c
+001b 009d
+0017 009e
+0013 009e
+000f 009f
+000b 009f
+0007 009f
+0003 009f
 0000 00a0
+00a8 0000
+00a7 0004
+00a7 0008
+00a7 000c
+00a7 0010
+00a6 0014
+00a6 0019
+00a5 001d
+00a4 0021
+00a3 0025
+00a2 0029
+00a1 002d
+00a0 0031
+009f 0035
+009d 0039
+009c 003d
+009a 0041
+0099 0045
+0097 0048
+0095 004c
+0093 0050
+0091 0054
+008f 0057
+008d 005b
+008a 005e
+0088 0062
+0085 0065
+0083 0068
+0080 006b
+007d 006f
+007b 0072
+0078 0075
+0075 0078
+0072 007b
+006f 007d
+006b 0080
+0068 0083
+0065 0085
+0062 0088
+005e 008a
+005b 008d
+0057 008f
+0053 0091
+0050 0093
+004c 0095
+0048 0097
+0045 0099
+0041 009a
+003d 009c
+0039 009d
+0035 009f
+0031 00a0
+002d 00a1
+0029 00a2
+0025 00a3
+0021 00a4
+001d 00a5
+0019 00a6
+0014 00a6
+0010 00a7
+000c 00a7
+0008 00a7
+0004 00a7
+0000 00a8
 00b0 0000
+00af 0004
 00af 0008
+00af 000d
 00af 0011
-00ad 001a
-00ac 0023
-00aa 002c
-00a7 0034
-00a5 003d
-00a1 0045
-009e 004d
-0099 0055
-0095 005d
-0090 0064
-008b 006b
-0085 0072
-007f 0079
-0079 007f
-0072 0085
-006b 008b
-0064 0090
-005d 0095
-0055 0099
-004d 009e
-0045 00a1
-003d 00a5
-0034 00a7
-002c 00aa
-0023 00ac
-001a 00ad
+00ae 0015
+00ae 001a
+00ad 001e
+00ac 0022
+00ab 0027
+00aa 002b
+00a9 002f
+00a8 0033
+00a6 0038
+00a5 003c
+00a3 0040
+00a2 0044
+00a0 0048
+009e 004c
+009c 0050
+009a 0054
+0098 0058
+0096 005b
+0093 005f
+0091 0063
+008e 0066
+008c 006a
+0089 006d
+0086 0071
+0083 0074
+0081 0077
+007d 007a
+007a 007d
+0077 0081
+0074 0083
+0071 0086
+006d 0089
+006a 008c
+0066 008e
+0063 0091
+005f 0093
+005b 0096
+0057 0098
+0054 009a
+0050 009c
+004c 009e
+0048 00a0
+0044 00a2
+0040 00a3
+003c 00a5
+0038 00a6
+0033 00a8
+002f 00a9
+002b 00aa
+0027 00ab
+0022 00ac
+001e 00ad
+001a 00ae
+0015 00ae
 0011 00af
+000d 00af
 0008 00af
+0004 00af
 0000 00b0
+00b8 0000
+00b7 0004
+00b7 0009
+00b7 000d
+00b7 0012
+00b6 0016
+00b5 001b
+00b5 001f
+00b4 0024
+00b3 0028
+00b2 002d
+00b1 0031
+00af 0036
+00ae 003a
+00ac 003e
+00ab 0043
+00a9 0047
+00a7 004b
+00a5 004f
+00a3 0053
+00a1 0057
+009f 005c
+009d 005f
+009a 0063
+0098 0067
+0095 006b
+0092 006f
+008f 0072
+008c 0076
+0089 0079
+0086 007d
+0083 0080
+0080 0083
+007d 0086
+0079 0089
+0076 008c
+0072 008f
+006f 0092
+006b 0095
+0067 0098
+0063 009a
+005f 009d
+005b 009f
+0057 00a1
+0053 00a3
+004f 00a5
+004b 00a7
+0047 00a9
+0043 00ab
+003e 00ac
+003a 00ae
+0036 00af
+0031 00b1
+002d 00b2
+0028 00b3
+0024 00b4
+001f 00b5
+001b 00b5
+0016 00b6
+0012 00b7
+000d 00b7
+0009 00b7
+0004 00b7
+0000 00b8
 00c0 0000
+00bf 0004
 00bf 0009
+00bf 000e
 00bf 0013
-00bd 001d
+00be 0017
+00bd 001c
+00bd 0021
 00bc 0026
-00b9 0030
-00b7 0039
-00b4 0042
-00b0 004b
-00ac 0054
-00a7 005d
-00a2 0065
-009d 006d
-0097 0075
-0091 007d
-008b 0084
-0084 008b
-007d 0091
-0075 0097
-006d 009d
-0065 00a2
-005d 00a7
-0054 00ac
-004b 00b0
-0042 00b4
-0039 00b7
-0030 00b9
+00bb 002a
+00ba 002f
+00b8 0034
+00b7 0038
+00b6 003d
+00b4 0041
+00b2 0046
+00b0 004a
+00af 004e
+00ac 0053
+00aa 0057
+00a8 005b
+00a6 0060
+00a3 0064
+00a1 0068
+009e 006c
+009b 0070
+0099 0073
+0096 0077
+0093 007b
+008f 007f
+008c 0082
+0089 0086
+0086 0089
+0082 008c
+007f 008f
+007b 0093
+0077 0096
+0073 0099
+0070 009b
+006c 009e
+0068 00a1
+0064 00a3
+005f 00a6
+005b 00a8
+0057 00aa
+0053 00ac
+004e 00af
+004a 00b0
+0046 00b2
+0041 00b4
+003d 00b6
+0038 00b7
+0034 00b8
+002f 00ba
+002a 00bb
 0026 00bc
-001d 00bd
+0021 00bd
+001c 00bd
+0017 00be
 0013 00bf
+000e 00bf
 0009 00bf
+0004 00bf
 0000 00c0
+00c8 0000
+00c7 0004
+00c7 0009
+00c7 000e
+00c7 0013
+00c6 0018
+00c5 001d
+00c4 0022
+00c4 0027
+00c2 002c
+00c1 0031
+00c0 0036
+00bf 003a
+00bd 003f
+00bb 0044
+00ba 0049
+00b8 004d
+00b6 0052
+00b4 0056
+00b1 005b
+00af 005f
+00ad 0064
+00aa 0068
+00a8 006c
+00a5 0070
+00a2 0074
+009f 0078
+009c 007c
+0099 0080
+0095 0084
+0092 0088
+008f 008b
+008b 008f
+0088 0092
+0084 0095
+0080 0099
+007c 009c
+0078 009f
+0074 00a2
+0070 00a5
+006c 00a8
+0068 00aa
+0063 00ad
+005f 00af
+005b 00b1
+0056 00b4
+0052 00b6
+004d 00b8
+0049 00ba
+0044 00bb
+003f 00bd
+003a 00bf
+0036 00c0
+0031 00c1
+002c 00c2
+0027 00c4
+0022 00c4
+001d 00c5
+0018 00c6
+0013 00c7
+000e 00c7
+0009 00c7
+0004 00c7
+0000 00c8
 00d0 0000
+00cf 0005
 00cf 000a
-00ce 0015
+00cf 000f
+00ce 0014
+00ce 0019
 00cd 001f
+00cc 0024
 00cb 0029
-00c9 0034
-00c6 003e
-00c3 0048
-00bf 0052
-00ba 005b
-00b5 0064
-00b0 006e
-00aa 0076
-00a4 007f
-009d 0087
-0096 008f
-008f 0096
-0087 009d
-007f 00a4
-0076 00aa
-006e 00b0
-0064 00b5
-005b 00ba
-0052 00bf
-0048 00c3
-003e 00c6
-0034 00c9
+00ca 002e
+00c9 0033
+00c8 0038
+00c6 003d
+00c5 0042
+00c3 0047
+00c1 004b
+00bf 0050
+00bd 0055
+00bb 005a
+00b9 005e
+00b6 0063
+00b4 0068
+00b1 006c
+00ae 0070
+00ab 0075
+00a8 0079
+00a5 007d
+00a2 0081
+009f 0085
+009b 0089
+0098 008d
+0094 0091
+0091 0094
+008d 0098
+0089 009b
+0085 009f
+0081 00a2
+007d 00a5
+0079 00a8
+0075 00ab
+0070 00ae
+006c 00b1
+0067 00b4
+0063 00b6
+005e 00b9
+005a 00bb
+0055 00bd
+0050 00bf
+004b 00c1
+0047 00c3
+0042 00c5
+003d 00c6
+0038 00c8
+0033 00c9
+002e 00ca
 0029 00cb
+0024 00cc
 001f 00cd
-0015 00ce
+0019 00ce
+0014 00ce
+000f 00cf
 000a 00cf
+0005 00cf
 0000 00d0
+00d8 0000
+00d7 0005
+00d7 000a
+00d7 0010
+00d6 0015
+00d6 001a
+00d5 0020
+00d4 0025
+00d3 002a
+00d2 0030
+00d1 0035
+00cf 003a
+00ce 003f
+00cc 0044
+00ca 0049
+00c9 004e
+00c7 0053
+00c4 0058
+00c2 005d
+00c0 0062
+00bd 0067
+00bb 006c
+00b8 0070
+00b5 0075
+00b2 0079
+00af 007e
+00ac 0082
+00a8 0086
+00a5 008a
+00a1 008e
+009e 0092
+009a 0096
+0096 009a
+0092 009e
+008e 00a1
+008a 00a5
+0086 00a8
+0082 00ac
+007e 00af
+0079 00b2
+0075 00b5
+0070 00b8
+006b 00bb
+0067 00bd
+0062 00c0
+005d 00c2
+0058 00c4
+0053 00c7
+004e 00c9
+0049 00ca
+0044 00cc
+003f 00ce
+003a 00cf
+0035 00d1
+0030 00d2
+002a 00d3
+0025 00d4
+0020 00d5
+001a 00d6
+0015 00d6
+0010 00d7
+000a 00d7
+0005 00d7
+0000 00d8
 00e0 0000
+00df 0005
 00df 000b
+00df 0010
 00de 0016
+00de 001b
 00dd 0021
-00db 002d
-00d8 0038
-00d5 0043
-00d2 004d
-00cd 0058
-00c9 0062
-00c3 006c
-00be 0076
-00b7 007f
-00b1 0089
-00a9 0091
-00a2 009a
-009a 00a2
-0091 00a9
-0089 00b1
-007f 00b7
-0076 00be
-006c 00c3
-0062 00c9
-0058 00cd
-004d 00d2
-0043 00d5
-0038 00d8
-002d 00db
+00dc 0026
+00db 002c
+00da 0031
+00d9 0037
+00d7 003c
+00d6 0042
+00d4 0047
+00d2 004c
+00d0 0051
+00ce 0057
+00cc 005c
+00c9 0061
+00c7 0066
+00c4 006b
+00c1 0070
+00bf 0074
+00bc 0079
+00b9 007e
+00b5 0082
+00b2 0087
+00af 008b
+00ab 008f
+00a7 0094
+00a4 0098
+00a0 009c
+009c 00a0
+0098 00a4
+0094 00a7
+008f 00ab
+008b 00af
+0087 00b2
+0082 00b5
+007e 00b9
+0079 00bc
+0074 00bf
+006f 00c1
+006b 00c4
+0066 00c7
+0061 00c9
+005c 00cc
+0057 00ce
+0051 00d0
+004c 00d2
+0047 00d4
+0042 00d6
+003c 00d7
+0037 00d9
+0031 00da
+002c 00db
+0026 00dc
 0021 00dd
+001b 00de
 0016 00de
+0010 00df
 000b 00df
+0005 00df
 0000 00e0
+00e8 0000
+00e7 0005
+00e7 000b
+00e7 0011
+00e6 0017
+00e6 001c
+00e5 0022
+00e4 0028
+00e3 002d
+00e2 0033
+00e0 0039
+00df 003e
+00dd 0044
+00db 0049
+00da 004f
+00d7 0054
+00d5 005a
+00d3 005f
+00d1 0064
+00ce 0069
+00cb 006e
+00c8 0074
+00c5 0078
+00c2 007d
+00bf 0082
+00bc 0087
+00b8 008c
+00b5 0090
+00b1 0095
+00ad 0099
+00aa 009d
+00a6 00a1
+00a1 00a6
+009d 00aa
+0099 00ad
+0095 00b1
+0090 00b5
+008c 00b8
+0087 00bc
+0082 00bf
+007d 00c2
+0078 00c5
+0073 00c8
+006e 00cb
+0069 00ce
+0064 00d1
+005f 00d3
+005a 00d5
+0054 00d7
+004f 00da
+0049 00db
+0044 00dd
+003e 00df
+0039 00e0
+0033 00e2
+002d 00e3
+0028 00e4
+0022 00e5
+001c 00e6
+0017 00e6
+0011 00e7
+000b 00e7
+0005 00e7
+0000 00e8
 00f0 0000
-00ef 000c
-00ee 0018
-00ed 0024
-00eb 0030
-00e8 003c
-00e4 0047
-00e1 0053
-00dc 005e
-00d7 0069
-00d1 0074
-00cb 007e
-00c4 0089
-00bd 0092
-00b6 009c
-00ad 00a5
-00a5 00ad
-009c 00b6
-0092 00bd
-0089 00c4
-007e 00cb
-0074 00d1
-0069 00d7
-005e 00dc
-0053 00e1
-0047 00e4
-003c 00e8
-0030 00eb
-0024 00ed
-0018 00ee
-000c 00ef
+00ef 0005
+00ef 000b
+00ef 0011
+00ee 0017
+00ee 001d
+00ed 0023
+00ec 0029
+00eb 002f
+00e9 0035
+00e8 003b
+00e7 0041
+00e5 0046
+00e3 004c
+00e1 0052
+00df 0057
+00dd 005d
+00da 0062
+00d8 0068
+00d5 006d
+00d2 0072
+00cf 0078
+00cc 007d
+00c9 0082
+00c6 0087
+00c2 008c
+00bf 0090
+00bb 0095
+00b7 009a
+00b3 009e
+00af 00a3
+00ab 00a7
+00a7 00ab
+00a3 00af
+009e 00b3
+009a 00b7
+0095 00bb
+0090 00bf
+008c 00c2
+0087 00c6
+0082 00c9
+007d 00cc
+0077 00cf
+0072 00d2
+006d 00d5
+0068 00d8
+0062 00da
+005d 00dd
+0057 00df
+0052 00e1
+004c 00e3
+0046 00e5
+0041 00e7
+003b 00e8
+0035 00e9
+002f 00eb
+0029 00ec
+0023 00ed
+001d 00ee
+0017 00ee
+0011 00ef
+000b 00ef
+0005 00ef
 0000 00f0
+00f8 0000
+00f7 0006
+00f7 000c
+00f7 0012
+00f6 0018
+00f6 001e
+00f5 0024
+00f4 002b
+00f3 0031
+00f1 0037
+00f0 003d
+00ee 0043
+00ec 0049
+00eb 004e
+00e9 0054
+00e6 005a
+00e4 0060
+00e2 0065
+00df 006b
+00dc 0071
+00d9 0076
+00d6 007c
+00d3 0081
+00d0 0086
+00cc 008b
+00c9 0090
+00c5 0095
+00c1 009a
+00bd 009f
+00b9 00a4
+00b5 00a8
+00b1 00ad
+00ad 00b1
+00a8 00b5
+00a4 00b9
+009f 00bd
+009a 00c1
+0095 00c5
+0090 00c9
+008b 00cc
+0086 00d0
+0081 00d3
+007b 00d6
+0076 00d9
+0071 00dc
+006b 00df
+0065 00e2
+0060 00e4
+005a 00e6
+0054 00e9
+004e 00eb
+0049 00ec
+0043 00ee
+003d 00f0
+0037 00f1
+0031 00f3
+002b 00f4
+0024 00f5
+001e 00f6
+0018 00f6
+0012 00f7
+000c 00f7
+0006 00f7
+0000 00f8
 0100 0000
+00ff 0006
 00ff 000c
+00ff 0013
 00fe 0019
+00fe 001f
 00fd 0026
-00fa 0033
-00f7 0040
-00f4 004c
-00f0 0058
-00eb 0064
-00e5 0070
-00df 007c
-00d9 0087
-00d2 0092
-00ca 009c
-00c2 00a6
-00b9 00b0
-00b0 00b9
-00a6 00c2
-009c 00ca
-0092 00d2
-0087 00d9
-007c 00df
-0070 00e5
-0064 00eb
-0058 00f0
-004c 00f4
-0040 00f7
-0033 00fa
+00fc 002c
+00fa 0032
+00f9 0038
+00f8 003f
+00f6 0045
+00f4 004b
+00f2 0051
+00f0 0057
+00ee 005d
+00eb 0063
+00e9 0069
+00e6 006f
+00e3 0074
+00e0 007a
+00dd 0080
+00da 0085
+00d7 008a
+00d3 0090
+00cf 0095
+00cc 009a
+00c8 009f
+00c4 00a4
+00bf 00a9
+00bb 00ae
+00b7 00b2
+00b2 00b7
+00ae 00bb
+00a9 00bf
+00a4 00c4
+009f 00c8
+009a 00cc
+0095 00cf
+0090 00d3
+008a 00d7
+0085 00da
+007f 00dd
+007a 00e0
+0074 00e3
+006f 00e6
+0069 00e9
+0063 00eb
+005d 00ee
+0057 00f0
+0051 00f2
+004b 00f4
+0045 00f6
+003f 00f8
+0038 00f9
+0032 00fa
+002c 00fc
 0026 00fd
+001f 00fe
 0019 00fe
+0013 00ff
 000c 00ff
+0006 00ff
 0000 0100
+0108 0000
+0107 0006
+0107 000d
+0107 0013
+0106 001a
+0105 0020
+0105 0027
+0103 002d
+0102 0034
+0101 003a
+00ff 0041
+00fe 0047
+00fc 004d
+00fa 0054
+00f8 005a
+00f5 0060
+00f3 0066
+00f0 006c
+00ed 0072
+00ea 0078
+00e7 007e
+00e4 0084
+00e1 0089
+00dd 008f
+00da 0094
+00d6 009a
+00d2 009f
+00ce 00a4
+00ca 00a9
+00c5 00ae
+00c1 00b3
+00bc 00b8
+00b8 00bc
+00b3 00c1
+00ae 00c5
+00a9 00ca
+00a4 00ce
+009f 00d2
+009a 00d6
+0094 00da
+008f 00dd
+0089 00e1
+0083 00e4
+007e 00e7
+0078 00ea
+0072 00ed
+006c 00f0
+0066 00f3
+0060 00f5
+005a 00f8
+0054 00fa
+004d 00fc
+0047 00fe
+0041 00ff
+003a 0101
+0034 0102
+002d 0103
+0027 0105
+0020 0105
+001a 0106
+0013 0107
+000d 0107
+0006 0107
+0000 0108
 0110 0000
+010f 0006
 010f 000d
+010f 0014
 010e 001b
-010c 0029
-010a 0036
-0107 0044
-0103 0051
-00ff 005e
-00f9 006b
-00f4 0077
-00ed 0084
-00e6 008f
-00df 009b
-00d7 00a6
-00ce 00b1
-00c5 00bb
-00bb 00c5
-00b1 00ce
-00a6 00d7
-009b 00df
-008f 00e6
-0084 00ed
-0077 00f4
-006b 00f9
-005e 00ff
-0051 0103
-0044 0107
-0036 010a
-0029 010c
+010d 0021
+010c 0028
+010b 002f
+010a 0035
+0109 003c
+0107 0043
+0105 0049
+0103 0050
+0101 0056
+00ff 005d
+00fd 0063
+00fa 0069
+00f7 006f
+00f5 0076
+00f2 007c
+00ee 0082
+00eb 0088
+00e8 008d
+00e4 0093
+00e0 0099
+00dc 009e
+00d8 00a4
+00d4 00a9
+00d0 00ae
+00cb 00b3
+00c7 00b9
+00c2 00bd
+00bd 00c2
+00b9 00c7
+00b3 00cb
+00ae 00d0
+00a9 00d4
+00a4 00d8
+009e 00dc
+0099 00e0
+0093 00e4
+008d 00e8
+0087 00eb
+0082 00ee
+007c 00f2
+0076 00f5
+006f 00f7
+0069 00fa
+0063 00fd
+005d 00ff
+0056 0101
+0050 0103
+0049 0105
+0043 0107
+003c 0109
+0035 010a
+002f 010b
+0028 010c
+0021 010d
 001b 010e
+0014 010f
 000d 010f
+0006 010f
 0000 0110
+0118 0000
+0117 0006
+0117 000d
+0117 0014
+0116 001b
+0115 0022
+0114 0029
+0113 0030
+0112 0037
+0110 003e
+010f 0045
+010d 004b
+010b 0052
+0109 0059
+0107 005f
+0104 0066
+0102 006c
+00ff 0073
+00fc 0079
+00f9 007f
+00f5 0085
+00f2 008c
+00ee 0092
+00eb 0097
+00e7 009d
+00e3 00a3
+00df 00a9
+00da 00ae
+00d6 00b3
+00d1 00b9
+00cd 00be
+00c8 00c3
+00c3 00c8
+00be 00cd
+00b9 00d1
+00b3 00d6
+00ae 00da
+00a9 00df
+00a3 00e3
+009d 00e7
+0097 00eb
+0092 00ee
+008b 00f2
+0085 00f5
+007f 00f9
+0079 00fc
+0073 00ff
+006c 0102
+0066 0104
+005f 0107
+0059 0109
+0052 010b
+004b 010d
+0045 010f
+003e 0110
+0037 0112
+0030 0113
+0029 0114
+0022 0115
+001b 0116
+0014 0117
+000d 0117
+0006 0117
+0000 0118
 0120 0000
+011f 0007
 011f 000e
-011e 001d
-011c 002b
+011f 0015
+011e 001c
+011d 0023
+011c 002a
+011b 0032
 011a 0039
-0116 0048
-0112 0056
-010e 0064
-0108 0071
-0102 007e
-00fb 008b
-00f4 0098
-00ec 00a4
-00e3 00b0
-00da 00bb
-00d0 00c6
-00c6 00d0
-00bb 00da
-00b0 00e3
-00a4 00ec
-0098 00f4
-008b 00fb
-007e 0102
-0071 0108
-0064 010e
-0056 0112
-0048 0116
+0118 0040
+0117 0047
+0115 004e
+0113 0054
+0111 005b
+010e 0062
+010c 0069
+0109 006f
+0106 0076
+0103 007c
+0100 0083
+00fc 0089
+00f9 0090
+00f5 0096
+00f1 009c
+00ed 00a2
+00e9 00a8
+00e5 00ad
+00e1 00b3
+00dc 00b9
+00d7 00be
+00d3 00c3
+00ce 00c9
+00c9 00ce
+00c3 00d3
+00be 00d7
+00b9 00dc
+00b3 00e1
+00ad 00e5
+00a8 00e9
+00a2 00ed
+009c 00f1
+0096 00f5
+008f 00f9
+0089 00fc
+0083 0100
+007c 0103
+0076 0106
+006f 0109
+0069 010c
+0062 010e
+005b 0111
+0054 0113
+004e 0115
+0047 0117
+0040 0118
 0039 011a
-002b 011c
-001d 011e
+0032 011b
+002a 011c
+0023 011d
+001c 011e
+0015 011f
 000e 011f
+0007 011f
 0000 0120
+0128 0000
+0127 0007
+0127 000e
+0127 0016
+0126 001d
+0125 0024
+0124 002c
+0123 0033
+0122 003a
+0120 0041
+011e 0049
+011c 0050
+011a 0057
+0118 005e
+0116 0065
+0113 006c
+0110 0072
+010d 0079
+010a 0080
+0107 0087
+0103 008d
+0100 0094
+00fc 009a
+00f8 00a0
+00f4 00a6
+00f0 00ac
+00eb 00b2
+00e7 00b8
+00e2 00be
+00dd 00c3
+00d8 00c9
+00d3 00ce
+00ce 00d3
+00c9 00d8
+00c3 00dd
+00be 00e2
+00b8 00e7
+00b2 00eb
+00ac 00f0
+00a6 00f4
+00a0 00f8
+009a 00fc
+0093 0100
+008d 0103
+0087 0107
+0080 010a
+0079 010d
+0072 0110
+006c 0113
+0065 0116
+005e 0118
+0057 011a
+0050 011c
+0049 011e
+0041 0120
+003a 0122
+0033 0123
+002c 0124
+0024 0125
+001d 0126
+0016 0127
+000e 0127
+0007 0127
+0000 0128
 0130 0000
+012f 0007
 012f 000f
+012f 0016
 012e 001e
-012c 002e
-0129 003d
-0126 004c
-0122 005b
-011d 0069
-0117 0077
-0110 0085
-0109 0093
-0101 00a0
-00f9 00ad
-00f0 00ba
-00e6 00c6
-00dc 00d1
-00d1 00dc
-00c6 00e6
-00ba 00f0
-00ad 00f9
-00a0 0101
-0093 0109
-0085 0110
-0077 0117
-0069 011d
-005b 0122
-004c 0126
-003d 0129
-002e 012c
+012d 0025
+012c 002d
+012b 0034
+0129 003c
+0128 0043
+0126 004b
+0124 0052
+0122 0059
+0120 0060
+011d 0067
+011a 006f
+0118 0076
+0115 007d
+0111 0083
+010e 008a
+010a 0091
+0107 0098
+0103 009e
+00ff 00a4
+00fb 00ab
+00f6 00b1
+00f2 00b7
+00ed 00bd
+00e8 00c3
+00e3 00c9
+00de 00ce
+00d9 00d4
+00d4 00d9
+00ce 00de
+00c9 00e3
+00c3 00e8
+00bd 00ed
+00b7 00f2
+00b1 00f6
+00ab 00fb
+00a4 00ff
+009e 0103
+0097 0107
+0091 010a
+008a 010e
+0083 0111
+007d 0115
+0076 0118
+006f 011a
+0067 011d
+0060 0120
+0059 0122
+0052 0124
+004b 0126
+0043 0128
+003c 0129
+0034 012b
+002d 012c
+0025 012d
 001e 012e
+0016 012f
 000f 012f
+0007 012f
 0000 0130
+0138 0000
+0137 0007
+0137 000f
+0137 0017
+0136 001f
+0135 0026
+0134 002e
+0133 0036
+0131 003d
+0130 0045
+012e 004c
+012c 0054
+012a 005b
+0127 0063
+0125 006a
+0122 0071
+011f 0079
+011c 0080
+0119 0087
+0115 008e
+0112 0095
+010e 009c
+010a 00a2
+0106 00a9
+0101 00af
+00fd 00b6
+00f8 00bc
+00f3 00c2
+00ef 00c8
+00e9 00ce
+00e4 00d4
+00df 00d9
+00d9 00df
+00d4 00e4
+00ce 00e9
+00c8 00ef
+00c2 00f3
+00bc 00f8
+00b6 00fd
+00af 0101
+00a9 0106
+00a2 010a
+009b 010e
+0095 0112
+008e 0115
+0087 0119
+0080 011c
+0079 011f
+0071 0122
+006a 0125
+0063 0127
+005b 012a
+0054 012c
+004c 012e
+0045 0130
+003d 0131
+0036 0133
+002e 0134
+0026 0135
+001f 0136
+0017 0137
+000f 0137
+0007 0137
+0000 0138
 0140 0000
-013f 0010
-013e 0020
-013c 0030
-0139 0040
-0135 0050
-0131 005f
-012c 006f
-0126 007e
-011f 008c
-0117 009b
-010f 00a9
-0106 00b6
-00fd 00c3
-00f2 00d0
-00e7 00dc
-00dc 00e7
-00d0 00f2
-00c3 00fd
-00b6 0106
-00a9 010f
-009b 0117
-008c 011f
-007e 0126
-006f 012c
-005f 0131
-0050 0135
-0040 0139
-0030 013c
-0020 013e
-0010 013f
+013f 0007
+013f 000f
+013f 0017
+013e 001f
+013d 0027
+013c 002f
+013b 0037
+0139 003f
+0137 0047
+0136 004e
+0134 0056
+0131 005e
+012f 0065
+012c 006d
+0129 0074
+0126 007c
+0123 0083
+0120 008a
+011c 0091
+0119 0099
+0115 00a0
+0111 00a6
+010c 00ad
+0108 00b4
+0103 00ba
+00ff 00c1
+00fa 00c7
+00f5 00cd
+00ef 00d3
+00ea 00d9
+00e5 00df
+00df 00e5
+00d9 00ea
+00d3 00ef
+00cd 00f5
+00c7 00fa
+00c1 00ff
+00ba 0103
+00b4 0108
+00ad 010c
+00a6 0111
+009f 0115
+0099 0119
+0091 011c
+008a 0120
+0083 0123
+007c 0126
+0074 0129
+006d 012c
+0065 012f
+005e 0131
+0056 0134
+004e 0136
+0047 0137
+003f 0139
+0037 013b
+002f 013c
+0027 013d
+001f 013e
+0017 013f
+000f 013f
+0007 013f
 0000 0140
+0148 0000
+0147 0008
+0147 0010
+0147 0018
+0146 0020
+0145 0028
+0144 0030
+0143 0038
+0141 0040
+013f 0048
+013d 0050
+013b 0058
+0139 0060
+0136 0068
+0134 0070
+0131 0077
+012e 007f
+012a 0086
+0127 008e
+0123 0095
+0120 009c
+011c 00a4
+0117 00ab
+0113 00b1
+010f 00b8
+010a 00bf
+0105 00c6
+0100 00cc
+00fb 00d2
+00f5 00d9
+00f0 00df
+00ea 00e5
+00e5 00ea
+00df 00f0
+00d9 00f5
+00d2 00fb
+00cc 0100
+00c6 0105
+00bf 010a
+00b8 010f
+00b1 0113
+00ab 0117
+00a3 011c
+009c 0120
+0095 0123
+008e 0127
+0086 012a
+007f 012e
+0077 0131
+0070 0134
+0068 0136
+0060 0139
+0058 013b
+0050 013d
+0048 013f
+0040 0141
+0038 0143
+0030 0144
+0028 0145
+0020 0146
+0018 0147
+0010 0147
+0008 0147
+0000 0148
 0150 0000
-014f 0011
+014f 0008
+014f 0010
+014f 0019
 014e 0021
+014d 0029
 014c 0032
-0149 0043
-0145 0054
-0140 0064
-013b 0074
-0134 0084
-012d 0093
-0125 00a3
-011d 00b1
-0113 00bf
-0109 00cd
-00fe 00da
-00f3 00e7
-00e7 00f3
-00da 00fe
-00cd 0109
-00bf 0113
-00b1 011d
-00a3 0125
-0093 012d
-0084 0134
-0074 013b
-0064 0140
-0054 0145
-0043 0149
+014a 003a
+0149 0042
+0147 004a
+0145 0052
+0143 005b
+0141 0063
+013e 006b
+013b 0072
+0138 007a
+0135 0082
+0132 008a
+012e 0091
+012a 0099
+0127 00a0
+0122 00a8
+011e 00af
+011a 00b6
+0115 00bd
+0110 00c4
+010b 00ca
+0106 00d1
+0101 00d7
+00fb 00de
+00f6 00e4
+00f0 00ea
+00ea 00f0
+00e4 00f6
+00de 00fb
+00d7 0101
+00d1 0106
+00ca 010b
+00c4 0110
+00bd 0115
+00b6 011a
+00af 011e
+00a7 0122
+00a0 0127
+0099 012a
+0091 012e
+008a 0132
+0082 0135
+007a 0138
+0072 013b
+006b 013e
+0063 0141
+005b 0143
+0052 0145
+004a 0147
+0042 0149
+003a 014a
 0032 014c
+0029 014d
 0021 014e
-0011 014f
+0019 014f
+0010 014f
+0008 014f
 0000 0150
+0158 0000
+0157 0008
+0157 0011
+0157 0019
+0156 0022
+0155 002a
+0154 0033
+0152 003b
+0151 0044
+014f 004c
+014d 0054
+014b 005d
+0148 0065
+0146 006d
+0143 0075
+0140 007d
+013c 0085
+0139 008d
+0135 0095
+0132 009c
+012e 00a4
+0129 00ac
+0125 00b3
+0120 00ba
+011c 00c1
+0117 00c8
+0112 00cf
+010c 00d6
+0107 00dd
+0101 00e3
+00fc 00e9
+00f6 00f0
+00f0 00f6
+00e9 00fc
+00e3 0101
+00dd 0107
+00d6 010c
+00cf 0112
+00c8 0117
+00c1 011c
+00ba 0120
+00b3 0125
+00ab 0129
+00a4 012e
+009c 0132
+0095 0135
+008d 0139
+0085 013c
+007d 0140
+0075 0143
+006d 0146
+0065 0148
+005d 014b
+0054 014d
+004c 014f
+0044 0151
+003b 0152
+0033 0154
+002a 0155
+0022 0156
+0019 0157
+0011 0157
+0008 0157
+0000 0158
 0160 0000
+015f 0008
 015f 0011
+015f 001a
 015e 0023
-015b 0035
-0158 0046
-0154 0058
-014f 0069
-014a 007a
-0143 008a
-013c 009b
-0133 00aa
-012a 00ba
-0120 00c9
-0116 00d7
-010b 00e5
-00ff 00f2
-00f2 00ff
-00e5 010b
-00d7 0116
-00c9 0120
-00ba 012a
-00aa 0133
-009b 013c
-008a 0143
-007a 014a
-0069 014f
-0058 0154
-0046 0158
-0035 015b
+015d 002b
+015c 0034
+015a 003d
+0159 0045
+0157 004e
+0155 0056
+0152 005f
+0150 0067
+014d 0070
+014a 0078
+0147 0080
+0144 0088
+0140 0090
+013d 0098
+0139 00a0
+0135 00a8
+0130 00b0
+012c 00b7
+0127 00be
+0122 00c6
+011d 00cd
+0118 00d4
+0113 00db
+010d 00e2
+0107 00e8
+0102 00ef
+00fb 00f5
+00f5 00fb
+00ef 0102
+00e8 0107
+00e2 010d
+00db 0113
+00d4 0118
+00cd 011d
+00c6 0122
+00be 0127
+00b7 012c
+00af 0130
+00a8 0135
+00a0 0139
+0098 013d
+0090 0140
+0088 0144
+0080 0147
+0078 014a
+0070 014d
+0067 0150
+005f 0152
+0056 0155
+004e 0157
+0045 0159
+003d 015a
+0034 015c
+002b 015d
 0023 015e
+001a 015f
 0011 015f
+0008 015f
 0000 0160
+0168 0000
+0167 0008
+0167 0011
+0166 001a
+0166 0023
+0165 002c
+0163 0035
+0162 003e
+0160 0047
+015e 0050
+015c 0058
+015a 0061
+0158 006a
+0155 0072
+0152 007b
+014f 0083
+014b 008b
+0148 0094
+0144 009c
+0140 00a4
+013c 00ac
+0137 00b4
+0133 00bb
+012e 00c3
+0129 00ca
+0124 00d2
+011e 00d9
+0119 00e0
+0113 00e7
+010d 00ee
+0107 00f4
+0101 00fb
+00fb 0101
+00f4 0107
+00ee 010d
+00e7 0113
+00e0 0119
+00d9 011e
+00d2 0124
+00ca 0129
+00c3 012e
+00bb 0133
+00b3 0137
+00ac 013c
+00a4 0140
+009c 0144
+0094 0148
+008b 014b
+0083 014f
+007b 0152
+0072 0155
+006a 0158
+0061 015a
+0058 015c
+0050 015e
+0047 0160
+003e 0162
+0035 0163
+002c 0165
+0023 0166
+001a 0166
+0011 0167
+0008 0167
+0000 0168
 0170 0000
+016f 0009
 016f 0012
-016e 0025
-016b 0037
-0168 004a
-0164 005c
-015f 006e
-0159 007f
-0152 0091
-014a 00a2
-0141 00b2
-0138 00c2
-012e 00d2
-0123 00e1
-0117 00ef
-010a 00fd
-00fd 010a
-00ef 0117
-00e1 0123
-00d2 012e
-00c2 0138
-00b2 0141
-00a2 014a
-0091 0152
-007f 0159
-006e 015f
-005c 0164
-004a 0168
-0037 016b
-0025 016e
+016e 001b
+016e 0024
+016d 002d
+016b 0036
+016a 003f
+0168 0048
+0166 0051
+0164 005a
+0162 0063
+015f 006c
+015c 0075
+0159 007d
+0156 0086
+0153 008e
+014f 0097
+014b 009f
+0147 00a7
+0143 00af
+013e 00b8
+013a 00bf
+0135 00c7
+0130 00cf
+012a 00d6
+0125 00de
+011f 00e5
+0119 00ec
+0113 00f3
+010d 00fa
+0107 0100
+0100 0107
+00fa 010d
+00f3 0113
+00ec 0119
+00e5 011f
+00de 0125
+00d6 012a
+00cf 0130
+00c7 0135
+00bf 013a
+00b7 013e
+00af 0143
+00a7 0147
+009f 014b
+0097 014f
+008e 0153
+0086 0156
+007d 0159
+0075 015c
+006c 015f
+0063 0162
+005a 0164
+0051 0166
+0048 0168
+003f 016a
+0036 016b
+002d 016d
+0024 016e
+001b 016e
 0012 016f
+0009 016f
 0000 0170
+0178 0000
+0177 0009
+0177 0012
+0176 001c
+0176 0025
+0175 002e
+0173 0038
+0172 0041
+0170 004a
+016e 0053
+016c 005c
+0169 0065
+0167 006e
+0164 0077
+0161 0080
+015e 0089
+015a 0092
+0156 009a
+0152 00a3
+014e 00ab
+014a 00b3
+0145 00bc
+0140 00c4
+013b 00cb
+0136 00d3
+0131 00db
+012b 00e3
+0125 00ea
+0120 00f1
+0119 00f8
+0113 00ff
+010d 0106
+0106 010d
+00ff 0113
+00f8 0119
+00f1 0120
+00ea 0125
+00e3 012b
+00db 0131
+00d3 0136
+00cb 013b
+00c4 0140
+00bb 0145
+00b3 014a
+00ab 014e
+00a3 0152
+009a 0156
+0092 015a
+0089 015e
+0080 0161
+0077 0164
+006e 0167
+0065 0169
+005c 016c
+0053 016e
+004a 0170
+0041 0172
+0038 0173
+002e 0175
+0025 0176
+001c 0176
+0012 0177
+0009 0177
+0000 0178
 0180 0000
+017f 0009
 017f 0013
+017e 001c
 017e 0026
-017b 003a
-0178 004d
-0173 0060
-016e 0072
-0168 0085
-0160 0097
-0158 00a9
-014f 00ba
-0145 00cb
-013b 00db
-012f 00eb
-0123 00fa
-0116 0108
-0108 0116
-00fa 0123
-00eb 012f
-00db 013b
-00cb 0145
-00ba 014f
-00a9 0158
-0097 0160
-0085 0168
-0072 016e
-0060 0173
-004d 0178
-003a 017b
+017d 002f
+017b 0039
+017a 0042
+0178 004c
+0176 0055
+0174 005e
+0171 0068
+016e 0071
+016c 007a
+0168 0083
+0165 008c
+0161 0095
+015e 009d
+0159 00a6
+0155 00af
+0151 00b7
+014c 00c0
+0147 00c8
+0142 00d0
+013d 00d8
+0137 00e0
+0132 00e7
+012c 00ef
+0126 00f6
+011f 00fe
+0119 0105
+0112 010c
+010c 0112
+0105 0119
+00fe 011f
+00f6 0126
+00ef 012c
+00e7 0132
+00e0 0137
+00d8 013d
+00d0 0142
+00c8 0147
+00bf 014c
+00b7 0151
+00af 0155
+00a6 0159
+009d 015e
+0095 0161
+008c 0165
+0083 0168
+007a 016c
+0071 016e
+0068 0171
+005e 0174
+0055 0176
+004c 0178
+0042 017a
+0039 017b
+002f 017d
 0026 017e
+001c 017e
 0013 017f
+0009 017f
 0000 0180
+0188 0000
+0187 0009
+0187 0013
+0186 001d
+0186 0027
+0184 0030
+0183 003a
+0182 0044
+0180 004d
+017e 0057
+017b 0060
+0179 006a
+0176 0073
+0173 007c
+0170 0086
+016c 008f
+0169 0098
+0165 00a1
+0161 00aa
+015c 00b2
+0158 00bb
+0153 00c4
+014e 00cc
+0149 00d4
+0143 00dc
+013e 00e4
+0138 00ec
+0132 00f4
+012c 00fb
+0125 0103
+011f 010a
+0118 0111
+0111 0118
+010a 011f
+0103 0125
+00fb 012c
+00f4 0132
+00ec 0138
+00e4 013e
+00dc 0143
+00d4 0149
+00cc 014e
+00c3 0153
+00bb 0158
+00b2 015c
+00aa 0161
+00a1 0165
+0098 0169
+008f 016c
+0086 0170
+007c 0173
+0073 0176
+006a 0179
+0060 017b
+0057 017e
+004d 0180
+0044 0182
+003a 0183
+0030 0184
+0027 0186
+001d 0186
+0013 0187
+0009 0187
+0000 0188
 0190 0000
-018f 0014
-018d 0028
-018b 003c
-0187 0050
-0183 0064
-017d 0077
-0177 008a
-016f 009d
-0167 00b0
-015d 00c2
-0153 00d3
-0148 00e4
-013c 00f4
-012f 0104
-0121 0113
-0113 0121
-0104 012f
-00f4 013c
-00e4 0148
-00d3 0153
-00c2 015d
-00b0 0167
-009d 016f
-008a 0177
-0077 017d
-0064 0183
-0050 0187
-003c 018b
-0028 018d
-0014 018f
+018f 0009
+018f 0013
+018e 001d
+018e 0027
+018c 0031
+018b 003b
+0189 0045
+0188 004f
+0185 0059
+0183 0062
+0181 006c
+017e 0075
+017b 007f
+0177 0088
+0174 0092
+0170 009b
+016c 00a4
+0168 00ad
+0163 00b6
+015f 00bf
+015a 00c8
+0155 00d0
+0150 00d9
+014a 00e1
+0144 00e9
+013e 00f1
+0138 00f9
+0132 0101
+012b 0108
+0125 0110
+011e 0117
+0117 011e
+0110 0125
+0108 012b
+0101 0132
+00f9 0138
+00f1 013e
+00e9 0144
+00e1 014a
+00d9 0150
+00d0 0155
+00c7 015a
+00bf 015f
+00b6 0163
+00ad 0168
+00a4 016c
+009b 0170
+0092 0174
+0088 0177
+007f 017b
+0075 017e
+006c 0181
+0062 0183
+0059 0185
+004f 0188
+0045 0189
+003b 018b
+0031 018c
+0027 018e
+001d 018e
+0013 018f
+0009 018f
 0000 0190
+0198 0000
+0197 000a
+0197 0014
+0196 001e
+0195 0028
+0194 0032
+0193 003c
+0191 0046
+018f 0050
+018d 005a
+018b 0064
+0188 006e
+0185 0078
+0182 0081
+017f 008b
+017b 0095
+0177 009e
+0173 00a7
+016f 00b1
+016b 00ba
+0166 00c3
+0161 00cc
+015c 00d4
+0156 00dd
+0151 00e5
+014b 00ee
+0145 00f6
+013e 00fe
+0138 0106
+0131 010d
+012b 0115
+0124 011c
+011c 0124
+0115 012b
+010d 0131
+0106 0138
+00fe 013e
+00f6 0145
+00ee 014b
+00e5 0151
+00dd 0156
+00d4 015c
+00cb 0161
+00c3 0166
+00ba 016b
+00b1 016f
+00a7 0173
+009e 0177
+0095 017b
+008b 017f
+0081 0182
+0078 0185
+006e 0188
+0064 018b
+005a 018d
+0050 018f
+0046 0191
+003c 0193
+0032 0194
+0028 0195
+001e 0196
+0014 0197
+000a 0197
+0000 0198
 01a0 0000
-019f 0015
-019d 002a
+019f 000a
+019f 0014
+019e 001f
+019d 0029
+019c 0033
 019b 003e
-0197 0053
-0192 0068
-018c 007c
-0186 0090
-017e 00a4
-0175 00b7
-016b 00c9
-0161 00dc
-0155 00ed
-0148 00fe
-013b 010e
-012d 011e
-011e 012d
-010e 013b
-00fe 0148
-00ed 0155
-00dc 0161
-00c9 016b
-00b7 0175
-00a4 017e
-0090 0186
-007c 018c
-0068 0192
-0053 0197
+0199 0048
+0197 0052
+0195 005c
+0193 0066
+0190 0070
+018d 007a
+018a 0084
+0186 008e
+0183 0097
+017f 00a1
+017b 00ab
+0176 00b4
+0172 00bd
+016d 00c6
+0168 00d0
+0162 00d8
+015d 00e1
+0157 00ea
+0151 00f2
+014b 00fb
+0145 0103
+013e 010b
+0137 0113
+0130 011a
+0129 0122
+0122 0129
+011a 0130
+0113 0137
+010b 013e
+0103 0145
+00fb 014b
+00f2 0151
+00ea 0157
+00e1 015d
+00d8 0162
+00cf 0168
+00c6 016d
+00bd 0172
+00b4 0176
+00ab 017b
+00a1 017f
+0097 0183
+008e 0186
+0084 018a
+007a 018d
+0070 0190
+0066 0193
+005c 0195
+0052 0197
+0048 0199
 003e 019b
-002a 019d
-0015 019f
+0033 019c
+0029 019d
+001f 019e
+0014 019f
+000a 019f
 0000 01a0
+01a8 0000
+01a7 000a
+01a7 0015
+01a6 001f
+01a5 002a
+01a4 0034
+01a3 003f
+01a1 0049
+019f 0054
+019d 005e
+019a 0068
+0198 0072
+0195 007c
+0191 0087
+018e 0091
+018a 009a
+0186 00a4
+0182 00ae
+017e 00b7
+0179 00c1
+0174 00ca
+016f 00d4
+0169 00dd
+0164 00e6
+015e 00ee
+0158 00f7
+0151 0100
+014b 0108
+0144 0110
+013d 0118
+0136 0120
+012f 0128
+0128 012f
+0120 0136
+0118 013d
+0110 0144
+0108 014b
+0100 0151
+00f7 0158
+00ee 015e
+00e6 0164
+00dd 0169
+00d3 016f
+00ca 0174
+00c1 0179
+00b7 017e
+00ae 0182
+00a4 0186
+009a 018a
+0091 018e
+0087 0191
+007c 0195
+0072 0198
+0068 019a
+005e 019d
+0054 019f
+0049 01a1
+003f 01a3
+0034 01a4
+002a 01a5
+001f 01a6
+0015 01a7
+000a 01a7
+0000 01a8
 01b0 0000
+01af 000a
 01af 0015
+01ae 0020
 01ad 002b
-01ab 0041
-01a7 0056
-01a2 006c
-019c 0081
-0195 0096
-018c 00aa
-0183 00be
-0179 00d1
-016e 00e4
-0162 00f6
-0155 0108
-0147 0119
-0139 0129
-0129 0139
-0119 0147
-0108 0155
-00f6 0162
-00e4 016e
-00d1 0179
-00be 0183
-00aa 018c
-0096 0195
-0081 019c
-006c 01a2
-0056 01a7
-0041 01ab
+01ac 0035
+01ab 0040
+01a9 004b
+01a7 0055
+01a5 0060
+01a2 006a
+019f 0075
+019c 007f
+0199 0089
+0195 0093
+0192 009d
+018e 00a7
+0189 00b1
+0185 00bb
+0180 00c5
+017b 00ce
+0176 00d8
+0170 00e1
+016a 00ea
+0164 00f3
+015e 00fc
+0158 0104
+0151 010d
+014a 0115
+0143 011d
+013c 0125
+0135 012d
+012d 0135
+0125 013c
+011d 0143
+0115 014a
+010d 0151
+0104 0158
+00fc 015e
+00f3 0164
+00ea 016a
+00e1 0170
+00d7 0176
+00ce 017b
+00c5 0180
+00bb 0185
+00b1 0189
+00a7 018e
+009d 0192
+0093 0195
+0089 0199
+007f 019c
+0075 019f
+006a 01a2
+0060 01a5
+0055 01a7
+004b 01a9
+0040 01ab
+0035 01ac
 002b 01ad
+0020 01ae
 0015 01af
+000a 01af
 0000 01b0
+01b8 0000
+01b7 000a
+01b7 0015
+01b6 0020
+01b5 002b
+01b4 0036
+01b3 0041
+01b1 004c
+01af 0057
+01ac 0061
+01aa 006c
+01a7 0077
+01a4 0081
+01a1 008c
+019d 0096
+0199 00a0
+0195 00aa
+0191 00b4
+018c 00be
+0187 00c8
+0182 00d2
+017d 00dc
+0177 00e5
+0171 00ee
+016b 00f7
+0165 0100
+015e 0109
+0158 0112
+0151 011a
+0149 0123
+0142 012b
+013a 0133
+0133 013a
+012b 0142
+0123 0149
+011a 0151
+0112 0158
+0109 015e
+0100 0165
+00f7 016b
+00ee 0171
+00e5 0177
+00db 017d
+00d2 0182
+00c8 0187
+00be 018c
+00b4 0191
+00aa 0195
+00a0 0199
+0096 019d
+008c 01a1
+0081 01a4
+0077 01a7
+006c 01aa
+0061 01ac
+0057 01af
+004c 01b1
+0041 01b3
+0036 01b4
+002b 01b5
+0020 01b6
+0015 01b7
+000a 01b7
+0000 01b8
 01c0 0000
+01bf 000b
 01bf 0016
-01bd 002d
-01ba 0043
-01b6 005a
-01b1 0070
-01ab 0086
-01a4 009b
-019b 00b0
-0192 00c5
-0187 00d9
-017c 00ec
-016f 00ff
-0162 0112
-0153 0123
-0144 0134
-0134 0144
-0123 0153
-0112 0162
-00ff 016f
-00ec 017c
-00d9 0187
-00c5 0192
-00b0 019b
-009b 01a4
-0086 01ab
-0070 01b1
-005a 01b6
-0043 01ba
-002d 01bd
+01be 0021
+01bd 002c
+01bc 0037
+01ba 0042
+01b9 004d
+01b7 0058
+01b4 0063
+01b2 006e
+01af 0079
+01ac 0084
+01a8 008e
+01a4 0099
+01a1 00a3
+019c 00ae
+0198 00b8
+0193 00c2
+018e 00cc
+0189 00d6
+0183 00e0
+017e 00e9
+0178 00f3
+0172 00fc
+016b 0105
+0165 010e
+015e 0117
+0157 011f
+014f 0128
+0148 0130
+0140 0138
+0138 0140
+0130 0148
+0128 014f
+011f 0157
+0117 015e
+010e 0165
+0105 016b
+00fc 0172
+00f3 0178
+00e9 017e
+00df 0183
+00d6 0189
+00cc 018e
+00c2 0193
+00b8 0198
+00ae 019c
+00a3 01a1
+0099 01a4
+008e 01a8
+0084 01ac
+0079 01af
+006e 01b2
+0063 01b4
+0058 01b7
+004d 01b9
+0042 01ba
+0037 01bc
+002c 01bd
+0021 01be
 0016 01bf
+000b 01bf
 0000 01c0
+01c8 0000
+01c7 000b
+01c7 0016
+01c6 0022
+01c5 002d
+01c4 0038
+01c2 0043
+01c1 004f
+01be 005a
+01bc 0065
+01b9 0070
+01b6 007b
+01b3 0086
+01b0 0091
+01ac 009b
+01a8 00a6
+01a4 00b1
+019f 00bb
+019a 00c5
+0195 00d0
+0190 00da
+018a 00e4
+0185 00ed
+017f 00f7
+0178 0100
+0172 010a
+016b 0113
+0164 011c
+015d 0125
+0155 012d
+014e 0136
+0146 013e
+013e 0146
+0136 014e
+012d 0155
+0125 015d
+011c 0164
+0113 016b
+010a 0172
+0100 0178
+00f7 017f
+00ed 0185
+00e3 018a
+00da 0190
+00d0 0195
+00c5 019a
+00bb 019f
+00b1 01a4
+00a6 01a8
+009b 01ac
+0091 01b0
+0086 01b3
+007b 01b6
+0070 01b9
+0065 01bc
+005a 01be
+004f 01c1
+0043 01c2
+0038 01c4
+002d 01c5
+0022 01c6
+0016 01c7
+000b 01c7
+0000 01c8
 01d0 0000
+01cf 000b
 01cf 0017
+01ce 0022
 01cd 002e
-01ca 0046
-01c6 005d
-01c1 0074
-01ba 008a
-01b3 00a1
-01aa 00b6
-01a0 00cc
-0195 00e1
-0189 00f5
-017c 0109
-016e 011c
-0160 012e
-0150 013f
-013f 0150
-012e 0160
-011c 016e
-0109 017c
-00f5 0189
-00e1 0195
-00cc 01a0
-00b6 01aa
-00a1 01b3
-008a 01ba
-0074 01c1
-005d 01c6
-0046 01ca
+01cc 0039
+01ca 0045
+01c8 0050
+01c6 005b
+01c4 0067
+01c1 0072
+01be 007d
+01bb 0088
+01b7 0093
+01b4 009e
+01af 00a9
+01ab 00b4
+01a6 00be
+01a2 00c9
+019c 00d3
+0197 00dd
+0191 00e8
+018b 00f1
+0185 00fb
+017f 0105
+0178 010e
+0171 0118
+016a 0121
+0163 012a
+015b 0133
+0154 013b
+014c 0143
+0143 014c
+013b 0154
+0133 015b
+012a 0163
+0121 016a
+0118 0171
+010e 0178
+0105 017f
+00fb 0185
+00f1 018b
+00e7 0191
+00dd 0197
+00d3 019c
+00c9 01a2
+00be 01a6
+00b4 01ab
+00a9 01af
+009e 01b4
+0093 01b7
+0088 01bb
+007d 01be
+0072 01c1
+0067 01c4
+005b 01c6
+0050 01c8
+0045 01ca
+0039 01cc
 002e 01cd
+0022 01ce
 0017 01cf
+000b 01cf
 0000 01d0
+01d8 0000
+01d7 000b
+01d7 0017
+01d6 0023
+01d5 002e
+01d4 003a
+01d2 0046
+01d0 0051
+01ce 005d
+01cc 0069
+01c9 0074
+01c6 007f
+01c3 008b
+01bf 0096
+01bb 00a1
+01b7 00ac
+01b2 00b7
+01ae 00c2
+01a9 00cc
+01a4 00d7
+019e 00e1
+0198 00ec
+0192 00f6
+018c 0100
+0185 0109
+017f 0113
+0178 011c
+0171 0126
+0169 012f
+0161 0138
+015a 0141
+0151 0149
+0149 0151
+0141 015a
+0138 0161
+012f 0169
+0126 0171
+011c 0178
+0113 017f
+0109 0185
+0100 018c
+00f6 0192
+00eb 0198
+00e1 019e
+00d7 01a4
+00cc 01a9
+00c2 01ae
+00b7 01b2
+00ac 01b7
+00a1 01bb
+0096 01bf
+008b 01c3
+007f 01c6
+0074 01c9
+0069 01cc
+005d 01ce
+0051 01d0
+0046 01d2
+003a 01d4
+002e 01d5
+0023 01d6
+0017 01d7
+000b 01d7
+0000 01d8
 01e0 0000
-01df 0018
-01dd 0030
-01da 0048
-01d6 0060
-01d0 0078
-01c9 008f
-01c2 00a6
-01b9 00bd
-01ae 00d3
-01a3 00e8
-0197 00fd
-0189 0112
-017b 0125
-016c 0138
-015b 014a
-014a 015b
-0138 016c
-0125 017b
-0112 0189
-00fd 0197
-00e8 01a3
-00d3 01ae
-00bd 01b9
-00a6 01c2
-008f 01c9
-0078 01d0
-0060 01d6
-0048 01da
-0030 01dd
-0018 01df
+01df 000b
+01df 0017
+01de 0023
+01dd 002f
+01dc 003b
+01da 0047
+01d8 0053
+01d6 005f
+01d3 006a
+01d1 0076
+01ce 0082
+01ca 008d
+01c7 0098
+01c3 00a4
+01be 00af
+01ba 00ba
+01b5 00c5
+01b0 00d0
+01ab 00da
+01a5 00e5
+019f 00f0
+0199 00fa
+0193 0104
+018c 010e
+0185 0118
+017e 0121
+0177 012b
+016f 0134
+0167 013d
+015f 0146
+0157 014f
+014f 0157
+0146 015f
+013d 0167
+0134 016f
+012b 0177
+0121 017e
+0118 0185
+010e 018c
+0104 0193
+00fa 0199
+00ef 019f
+00e5 01a5
+00da 01ab
+00d0 01b0
+00c5 01b5
+00ba 01ba
+00af 01be
+00a4 01c3
+0098 01c7
+008d 01ca
+0082 01ce
+0076 01d1
+006a 01d3
+005f 01d6
+0053 01d8
+0047 01da
+003b 01dc
+002f 01dd
+0023 01de
+0017 01df
+000b 01df
 0000 01e0
+01e8 0000
+01e7 000c
+01e7 0018
+01e6 0024
+01e5 0030
+01e4 003c
+01e2 0048
+01e0 0054
+01de 0060
+01db 006c
+01d8 0078
+01d5 0084
+01d2 008f
+01ce 009b
+01ca 00a6
+01c6 00b2
+01c1 00bd
+01bc 00c8
+01b7 00d3
+01b2 00de
+01ac 00e9
+01a6 00f4
+01a0 00fe
+0199 0108
+0193 0112
+018c 011c
+0185 0126
+017d 0130
+0175 0139
+016d 0142
+0165 014b
+015d 0154
+0154 015d
+014b 0165
+0142 016d
+0139 0175
+0130 017d
+0126 0185
+011c 018c
+0112 0193
+0108 0199
+00fe 01a0
+00f3 01a6
+00e9 01ac
+00de 01b2
+00d3 01b7
+00c8 01bc
+00bd 01c1
+00b2 01c6
+00a6 01ca
+009b 01ce
+008f 01d2
+0084 01d5
+0078 01d8
+006c 01db
+0060 01de
+0054 01e0
+0048 01e2
+003c 01e4
+0030 01e5
+0024 01e6
+0018 01e7
+000c 01e7
+0000 01e8
 01f0 0000
-01ef 0019
-01ed 0032
-01ea 004b
-01e5 0063
-01e0 007c
-01d9 0094
-01d1 00ac
-01c7 00c3
-01bd 00da
-01b1 00f0
-01a4 0106
-0197 011b
-0188 012f
-0178 0143
-0167 0155
-0155 0167
-0143 0178
-012f 0188
-011b 0197
-0106 01a4
-00f0 01b1
-00da 01bd
-00c3 01c7
-00ac 01d1
-0094 01d9
-007c 01e0
-0063 01e5
-004b 01ea
-0032 01ed
-0019 01ef
+01ef 000c
+01ef 0018
+01ee 0025
+01ed 0031
+01ec 003d
+01ea 0049
+01e8 0056
+01e6 0062
+01e3 006e
+01e0 007a
+01dd 0086
+01d9 0092
+01d6 009d
+01d2 00a9
+01cd 00b5
+01c9 00c0
+01c4 00cb
+01be 00d7
+01b9 00e2
+01b3 00ed
+01ad 00f8
+01a7 0102
+01a0 010d
+0199 0117
+0192 0121
+018b 012b
+0183 0135
+017b 013e
+0173 0148
+016b 0151
+0163 015a
+015a 0163
+0151 016b
+0148 0173
+013e 017b
+0135 0183
+012b 018b
+0121 0192
+0117 0199
+010d 01a0
+0102 01a7
+00f7 01ad
+00ed 01b3
+00e2 01b9
+00d7 01be
+00cb 01c4
+00c0 01c9
+00b5 01cd
+00a9 01d2
+009d 01d6
+0092 01d9
+0086 01dd
+007a 01e0
+006e 01e3
+0062 01e6
+0056 01e8
+0049 01ea
+003d 01ec
+0031 01ed
+0025 01ee
+0018 01ef
+000c 01ef
 0000 01f0
+01f8 0000
+01f7 000c
+01f7 0019
+01f6 0025
+01f5 0032
+01f4 003e
+01f2 004b
+01f0 0057
+01ee 0063
+01eb 0070
+01e8 007c
+01e5 0088
+01e1 0094
+01dd 00a0
+01d9 00ac
+01d5 00b8
+01d0 00c3
+01cb 00cf
+01c6 00da
+01c0 00e5
+01ba 00f1
+01b4 00fc
+01ae 0106
+01a7 0111
+01a0 011b
+0199 0126
+0191 0130
+018a 013a
+0182 0143
+0179 014d
+0171 0156
+0168 015f
+015f 0168
+0156 0171
+014d 0179
+0143 0182
+013a 018a
+0130 0191
+0126 0199
+011b 01a0
+0111 01a7
+0106 01ae
+00fb 01b4
+00f1 01ba
+00e5 01c0
+00da 01c6
+00cf 01cb
+00c3 01d0
+00b8 01d5
+00ac 01d9
+00a0 01dd
+0094 01e1
+0088 01e5
+007c 01e8
+0070 01eb
+0063 01ee
+0057 01f0
+004b 01f2
+003e 01f4
+0032 01f5
+0025 01f6
+0019 01f7
+000c 01f7
+0000 01f8
 // disp_table: 
 0000
+0001
 0003
+0004
 0006
+0007
 0009
+0011
 0012
+0014
 0015
-0019
+0017
+0018
+0020
 0022
+0023
 0025
+0026
 0028
+0029
 0031
-0035
-0038
-0041
+0033
+0034
+0036
+0037
+0039
+0040
+0042
 0044
+0045
 0047
+0048
+0050
 0051
-0054
-0057
-0060
-0063
+0053
+0055
+0056
+0058
+0059
+0061
+0062
+0064
+0066
 0067
+0069
 0070
+0072
 0073
-0076
-0079
+0075
+0077
+0078
+0080
+0081
 0083
+0084
 0086
+0088
 0089
+0091
 0092
+0094
 0095
+0097
 0099
 // explosion_table: 
 0000
@@ -2512,4 +5650,645 @@ fffe
 0003
 0001
 0000
-00d0      // 00000d99: nop
+// hill_table: 
+ffc1
+ffc1
+ffc2
+ffc3
+ffc4
+ffc5
+ffc6
+ffc7
+ffc8
+ffc8
+ffc9
+ffca
+ffcb
+ffcc
+ffcd
+ffce
+ffcf
+ffcf
+ffd0
+ffd1
+ffd2
+ffd3
+ffd4
+ffd5
+ffd6
+ffd7
+ffd8
+ffd8
+ffd9
+ffda
+ffdb
+ffdc
+ffdd
+ffde
+ffdf
+ffe0
+ffe1
+ffe2
+ffe3
+ffe3
+ffe4
+ffe5
+ffe6
+ffe7
+ffe8
+ffe9
+ffea
+ffeb
+ffec
+ffed
+ffee
+ffef
+fff0
+fff1
+fff1
+fff2
+fff3
+fff4
+fff5
+fff6
+fff7
+fff8
+fff9
+fffa
+fffb
+fffc
+fffd
+fffe
+ffff
+0000
+0000
+0000
+0001
+0002
+0003
+0004
+0005
+0006
+0007
+0008
+0009
+000a
+000b
+000c
+000d
+000e
+000f
+000f
+0010
+0011
+0012
+0013
+0014
+0015
+0016
+0017
+0018
+0019
+001a
+001b
+001c
+001d
+001d
+001e
+001f
+0020
+0021
+0022
+0023
+0024
+0025
+0026
+0027
+0028
+0028
+0029
+002a
+002b
+002c
+002d
+002e
+002f
+0030
+0031
+0031
+0032
+0033
+0034
+0035
+0036
+0037
+0038
+0038
+0039
+003a
+003b
+003c
+003d
+003e
+003f
+003f
+0040
+0041
+0042
+0043
+0044
+0044
+0045
+0046
+0047
+0048
+0049
+0049
+004a
+004b
+004c
+004d
+004d
+004e
+004f
+0050
+0051
+0051
+0052
+0053
+0054
+0055
+0055
+0056
+0057
+0058
+0058
+0059
+005a
+005b
+005b
+005c
+005d
+005e
+005e
+005f
+0060
+0061
+0061
+0062
+0063
+0063
+0064
+0065
+0065
+0066
+0067
+0068
+0068
+0069
+006a
+006a
+006b
+006c
+006c
+006d
+006d
+006e
+006f
+006f
+0070
+0071
+0071
+0072
+0072
+0073
+0074
+0074
+0075
+0075
+0076
+0077
+0077
+0078
+0078
+0079
+0079
+007a
+007a
+007b
+007c
+007c
+007d
+007d
+007e
+007e
+007f
+007f
+0080
+0080
+0081
+0081
+0082
+0082
+0082
+0083
+0083
+0084
+0084
+0085
+0085
+0086
+0086
+0086
+0087
+0087
+0088
+0088
+0088
+0089
+0089
+008a
+008a
+008a
+008b
+008b
+008b
+008c
+008c
+008c
+008d
+008d
+008d
+008e
+008e
+008e
+008e
+008f
+008f
+008f
+0090
+0090
+0090
+0090
+0091
+0091
+0091
+0091
+0091
+0092
+0092
+0092
+0092
+0092
+0093
+0093
+0093
+0093
+0093
+0094
+0094
+0094
+0094
+0094
+0094
+0094
+0094
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0096
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0095
+0094
+0094
+0094
+0094
+0094
+0094
+0094
+0094
+0093
+0093
+0093
+0093
+0093
+0092
+0092
+0092
+0092
+0092
+0091
+0091
+0091
+0091
+0091
+0090
+0090
+0090
+0090
+008f
+008f
+008f
+008e
+008e
+008e
+008e
+008d
+008d
+008d
+008c
+008c
+008c
+008b
+008b
+008b
+008a
+008a
+008a
+0089
+0089
+0088
+0088
+0088
+0087
+0087
+0086
+0086
+0086
+0085
+0085
+0084
+0084
+0083
+0083
+0082
+0082
+0082
+0081
+0081
+0080
+0080
+007f
+007f
+007e
+007e
+007d
+007d
+007c
+007c
+007b
+007a
+007a
+0079
+0079
+0078
+0078
+0077
+0077
+0076
+0075
+0075
+0074
+0074
+0073
+0072
+0072
+0071
+0071
+0070
+006f
+006f
+006e
+006d
+006d
+006c
+006c
+006b
+006a
+006a
+0069
+0068
+0068
+0067
+0066
+0065
+0065
+0064
+0063
+0063
+0062
+0061
+0061
+0060
+005f
+005e
+005e
+005d
+005c
+005b
+005b
+005a
+0059
+0058
+0058
+0057
+0056
+0055
+0055
+0054
+0053
+0052
+0051
+0051
+0050
+004f
+004e
+004d
+004d
+004c
+004b
+004a
+0049
+0049
+0048
+0047
+0046
+0045
+0044
+0044
+0043
+0042
+0041
+0040
+003f
+003f
+003e
+003d
+003c
+003b
+003a
+0039
+0038
+0038
+0037
+0036
+0035
+0034
+0033
+0032
+0031
+0031
+0030
+002f
+002e
+002d
+002c
+002b
+002a
+0029
+0028
+0028
+0027
+0026
+0025
+0024
+0023
+0022
+0021
+0020
+001f
+001e
+001d
+001d
+001c
+001b
+001a
+0019
+0018
+0017
+0016
+0015
+0014
+0013
+0012
+0011
+0010
+000f
+000f
+000e
+000d
+000c
+000b
+000a
+0009
+0008
+0007
+0006
+0005
+0004
+0003
+0002
+0001
+0000
+0000
+0000
+ffff
+fffe
+fffd
+fffc
+fffb
+fffa
+fff9
+fff8
+fff7
+fff6
+fff5
+fff4
+fff3
+fff2
+fff1
+fff1
+fff0
+ffef
+ffee
+ffed
+ffec
+ffeb
+ffea
+ffe9
+ffe8
+ffe7
+ffe6
+ffe5
+ffe4
+ffe3
+ffe3
+ffe2
+ffe1
+ffe0
+ffdf
+ffde
+ffdd
+ffdc
+ffdb
+ffda
+ffd9
+ffd8
+ffd8
+ffd7
+ffd6
+ffd5
+ffd4
+ffd3
+ffd2
+ffd1
+ffd0
+ffcf
+ffcf
+ffce
+ffcd
+ffcc
+ffcb
+ffca
+ffc9
+ffc8
+ffc8
+ffc7
+ffc6
+ffc5
+ffc4
+ffc3
+ffc2
+ffc1
+00d0      // 0000285b: nop

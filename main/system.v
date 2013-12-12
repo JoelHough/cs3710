@@ -67,7 +67,7 @@ module system(input clk,
    wire [1:0]           timer_strobe;
    wire                 vsync_strobe;
    
-	reg [15:0]				SNES_buttons;
+   wire [15:0]           SNES_buttons;
 	
    wire [7:0]           pixel;
    wire                 pixel_rdy, pixel_rq, new_frame;
@@ -122,7 +122,8 @@ module system(input clk,
 						.serial_data(serial_data),			//signal from SNES controller
 						.data_latch(data_latch),			//required signal to the SNS controller
 						.interrupt(SNES_int),				//interrupt pulse when a btn state changes
-						.data_clock(data_clock)				//required signal to the SNS controller
+						.data_clock(data_clock),				//required signal to the SNS controller
+                                .buttons(SNES_buttons)
 						);
 						
 	//one_shot SNEScontrol (.clk(sys_clk), .signal(SNES_int), .strobe(SNES_strobe));
@@ -160,7 +161,7 @@ module system(input clk,
                        .wr_en    (block_ram_en & mem_wr_en),
                        .data_out (block_ram_rd_data),
                        .clk      (sys_clk),
-                       .addr     (mem_addr[11:0]),
+                       .addr     (mem_addr[13:0]),
                        .data_in  (mem_wr_data));
 
    pixel_buffer_vga_controller PixelBufferVgaController (.pixel(pixel),
@@ -185,15 +186,15 @@ module system(input clk,
                                         .pixel_data(pixel),
                                         .pixel_rdy(pixel_rdy));
 
-   localparam BLOCK_RAM_ADDR = 16'h0zzz; //16'b0000_zzzz_zzzz_zzzz;
-   localparam INTERRUPT_CONTROL_ADDR = 16'h1001;
-   localparam PRNG_ADDR = 16'h1002;
-   localparam TIMER_ADDR = 16'b0001_0000_0000_010z;
-   localparam TGG_ADDR = 16'b0001_0000_0000_1zzz;
-   localparam SWITCHES_ADDR = 16'h1020;
-   localparam LED_ADDR = 16'h1021;
-   localparam SEG_ADDR = 16'h1022;
-   localparam SNES_ADDR = 16'h1023;
+   localparam BLOCK_RAM_ADDR = 16'b00zz_zzzz_zzzz_zzzz;
+   localparam INTERRUPT_CONTROL_ADDR = 16'h4001;
+   localparam PRNG_ADDR = 16'h4002;
+   localparam TIMER_ADDR = 16'b0100_0000_0000_010z;
+   localparam TGG_ADDR = 16'b0100_0000_0000_1zzz;
+   localparam SWITCHES_ADDR = 16'h4020;
+   localparam LED_ADDR = 16'h4021;
+   localparam SEG_ADDR = 16'h4022;
+   localparam SNES_ADDR = 16'h4023;
 	
    /* memory map enables */
    always @(mem_addr) begin
