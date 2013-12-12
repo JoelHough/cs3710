@@ -1,330 +1,388 @@
 ce11      // 00000000: buc :timer0_irqh
-ce1b      // 00000001: buc :timer1_irqh
-ce18      // 00000002: buc :vsync_irqh
-ce1e      // 00000003: buc :input_irqh
-ce22      // 00000004: buc :irq
-ce21      // 00000005: buc :irq
-ce20      // 00000006: buc :irq
-ce1f      // 00000007: buc :irq
-ce1e      // 00000008: buc :irq
-ce1d      // 00000009: buc :irq
-ce1c      // 0000000a: buc :irq
-ce1b      // 0000000b: buc :irq
-ce1a      // 0000000c: buc :irq
-ce19      // 0000000d: buc :irq
-ce18      // 0000000e: buc :irq
-ce17      // 0000000f: buc :irq
-ce18      // 00000010: buc :start
-dfed      // 00000011, timer0_irqh: movi ps, :game_loop_lo
-ff00      // 00000012: lui ps, :game_loop_hi
+ce42      // 00000001: buc :timer1_irqh
+ce3f      // 00000002: buc :vsync_irqh
+ce45      // 00000003: buc :input_irqh
+ce49      // 00000004: buc :irq
+ce48      // 00000005: buc :irq
+ce47      // 00000006: buc :irq
+ce46      // 00000007: buc :irq
+ce45      // 00000008: buc :irq
+ce44      // 00000009: buc :irq
+ce43      // 0000000a: buc :irq
+ce42      // 0000000b: buc :irq
+ce41      // 0000000c: buc :irq
+ce40      // 0000000d: buc :irq
+ce3f      // 0000000e: buc :irq
+ce3e      // 0000000f: buc :irq
+ce3f      // 00000010: buc :start
+df27      // 00000011, timer0_irqh: movi ps, :game_loop_lo
+ff01      // 00000012: lui ps, :game_loop_hi
 4e8f      // 00000013: jal rs, ps
-de04      // 00000014: movi rs, :timer0_lo
-fe10      // 00000015: lui rs, :timer0_hi
-df21      // 00000016: movi ps, 33
-4f4e      // 00000017: stor ps, rs
-40f0      // 00000018: clri
-4ece      // 00000019: juc rs
-40f0      // 0000001a, vsync_irqh: clri
-4ece      // 0000001b: juc rs
-de05      // 0000001c, timer1_irqh: movi rs, :timer1_lo
-fe10      // 0000001d: lui rs, :timer1_hi
-dfb8      // 0000001e: movi ps, 184
-ff0b      // 0000001f: lui ps, 11
-4f4e      // 00000020: stor ps, rs
-dfb3      // 00000021, input_irqh: movi ps, :fire_lo
-ff00      // 00000022: lui ps, :fire_hi
-4e8f      // 00000023: jal rs, ps
-40f0      // 00000024: clri
-4ece      // 00000025: juc rs
-40f0      // 00000026, irq: clri
-4ece      // 00000027: juc rs
-d008      // 00000028, start: movi r0, :ground_index_lo
-f010      // 00000029: lui r0, :ground_index_hi
-d109      // 0000002a: movi r1, :ground_height_lo
-f110      // 0000002b: lui r1, :ground_height_hi
-d200      // 0000002c: movi r2, 0
-d380      // 0000002d: movi r3, 128
-f300      // 0000002e: lui r3, 0
-d480      // 0000002f: movi r4, 128
-f402      // 00000030: lui r4, 2
-4240      // 00000031, set_ground_height: stor r2, r0
-4341      // 00000032: stor r3, r1
-5201      // 00000033: addi r2, 1
-d502      // 00000034: movi r5, :rand_lo
-f510      // 00000035: lui r5, :rand_hi
-4505      // 00000036: load r5, r5
-1503      // 00000037: _andi r5, 3
-b501      // 00000038: cmpi r5, 1
-c002      // 00000039: beq :eq_0
-ce07      // 0000003a: buc :not_eq_0
-5301      // 0000003b, eq_0: addi r3, 1
-d57f      // 0000003c: movi r5, 127
-f502      // 0000003d: lui r5, 2
-03b5      // 0000003e: cmp r3, r5
-cd02      // 0000003f: bge 2
-03d5      // 00000040: mov r3, r5
-b503      // 00000041, not_eq_0: cmpi r5, 3
-c002      // 00000042: beq :eq_1
-ce06      // 00000043: buc :not_eq_1
-9301      // 00000044, eq_1: subi r3, 1
-d500      // 00000045: movi r5, 0
-03b5      // 00000046: cmp r3, r5
-c702      // 00000047: ble 2
-03d5      // 00000048: mov r3, r5
-02b4      // 00000049, not_eq_1: cmp r2, r4
-c1e7      // 0000004a: bne :set_ground_height
-de04      // 0000004b: movi rs, :timer0_lo
-fe10      // 0000004c: lui rs, :timer0_hi
-df21      // 0000004d: movi ps, 33
-4f4e      // 0000004e: stor ps, rs
-de05      // 0000004f: movi rs, :timer1_lo
-fe10      // 00000050: lui rs, :timer1_hi
-dfb8      // 00000051: movi ps, 184
-ff0b      // 00000052: lui ps, 11
-4f4e      // 00000053: stor ps, rs
-ce00      // 00000054: buc 0
-0ed0      // 00000055, update_bullet: mov rs, r0
-0ed1      // 00000056: mov rs, r1
-df00      // 00000057: movi ps, 0
-d047      // 00000058: movi r0, :bullet_fine_x_lo
-f001      // 00000059: lui r0, :bullet_fine_x_hi
-4000      // 0000005a: load r0, r0
-d145      // 0000005b: movi r1, :bullet_dx_lo
-f101      // 0000005c: lui r1, :bullet_dx_hi
-4101      // 0000005d: load r1, r1
-0051      // 0000005e: add r0, r1
+0ed0      // 00000014: mov rs, r0
+0ed1      // 00000015: mov rs, r1
+0ed2      // 00000016: mov rs, r2
+d120      // 00000017: movi r1, :switches_lo
+f110      // 00000018: lui r1, :switches_hi
+4101      // 00000019: load r1, r1
+d001      // 0000001a: movi r0, 1
+0011      // 0000001b: _and r0, r1
+b000      // 0000001c: cmpi r0, 0
+c102      // 0000001d: bne :ne_0
+ce0b      // 0000001e: buc :not_ne_0
+d283      // 0000001f, ne_0: movi r2, :bullet_ddy_lo
+f201      // 00000020: lui r2, :bullet_ddy_hi
+4202      // 00000021: load r2, r2
+5201      // 00000022: addi r2, 1
+df83      // 00000023: movi ps, :bullet_ddy_lo
+ff01      // 00000024: lui ps, :bullet_ddy_hi
+424f      // 00000025: stor r2, ps
+df22      // 00000026: movi ps, :seg_lo
+ff10      // 00000027: lui ps, :seg_hi
+424f      // 00000028: stor r2, ps
+d002      // 00000029, not_ne_0: movi r0, 2
+0011      // 0000002a: _and r0, r1
+b000      // 0000002b: cmpi r0, 0
+c102      // 0000002c: bne :ne_1
+ce0b      // 0000002d: buc :not_ne_1
+d283      // 0000002e, ne_1: movi r2, :bullet_ddy_lo
+f201      // 0000002f: lui r2, :bullet_ddy_hi
+4202      // 00000030: load r2, r2
+9201      // 00000031: subi r2, 1
+df83      // 00000032: movi ps, :bullet_ddy_lo
+ff01      // 00000033: lui ps, :bullet_ddy_hi
+424f      // 00000034: stor r2, ps
+df22      // 00000035: movi ps, :seg_lo
+ff10      // 00000036: lui ps, :seg_hi
+424f      // 00000037: stor r2, ps
+02de      // 00000038, not_ne_1: mov r2, rs
+01de      // 00000039: mov r1, rs
+00de      // 0000003a: mov r0, rs
+de04      // 0000003b: movi rs, :timer0_lo
+fe10      // 0000003c: lui rs, :timer0_hi
+df21      // 0000003d: movi ps, 33
+4f4e      // 0000003e: stor ps, rs
+40f0      // 0000003f: clri
+4ece      // 00000040: juc rs
+40f0      // 00000041, vsync_irqh: clri
+4ece      // 00000042: juc rs
+de05      // 00000043, timer1_irqh: movi rs, :timer1_lo
+fe10      // 00000044: lui rs, :timer1_hi
+dfb8      // 00000045: movi ps, 184
+ff0b      // 00000046: lui ps, 11
+4f4e      // 00000047: stor ps, rs
+dfed      // 00000048, input_irqh: movi ps, :fire_lo
+ff00      // 00000049: lui ps, :fire_hi
+4e8f      // 0000004a: jal rs, ps
+40f0      // 0000004b: clri
+4ece      // 0000004c: juc rs
+40f0      // 0000004d, irq: clri
+4ece      // 0000004e: juc rs
+d008      // 0000004f, start: movi r0, :ground_index_lo
+f010      // 00000050: lui r0, :ground_index_hi
+d109      // 00000051: movi r1, :ground_height_lo
+f110      // 00000052: lui r1, :ground_height_hi
+d200      // 00000053: movi r2, 0
+d380      // 00000054: movi r3, 128
+f300      // 00000055: lui r3, 0
+d480      // 00000056: movi r4, 128
+f402      // 00000057: lui r4, 2
+4240      // 00000058, set_ground_height: stor r2, r0
+4341      // 00000059: stor r3, r1
+5201      // 0000005a: addi r2, 1
+d502      // 0000005b: movi r5, :rand_lo
+f510      // 0000005c: lui r5, :rand_hi
+4505      // 0000005d: load r5, r5
+1503      // 0000005e: _andi r5, 3
+b501      // 0000005f: cmpi r5, 1
+c002      // 00000060: beq :eq_0
+ce07      // 00000061: buc :not_eq_0
+5301      // 00000062, eq_0: addi r3, 1
+d57f      // 00000063: movi r5, 127
+f502      // 00000064: lui r5, 2
+03b5      // 00000065: cmp r3, r5
+cd02      // 00000066: bge 2
+03d5      // 00000067: mov r3, r5
+b503      // 00000068, not_eq_0: cmpi r5, 3
+c002      // 00000069: beq :eq_1
+ce06      // 0000006a: buc :not_eq_1
+9301      // 0000006b, eq_1: subi r3, 1
+d500      // 0000006c: movi r5, 0
+03b5      // 0000006d: cmp r3, r5
+c702      // 0000006e: ble 2
+03d5      // 0000006f: mov r3, r5
+02b4      // 00000070, not_eq_1: cmp r2, r4
+c1e7      // 00000071: bne :set_ground_height
+de04      // 00000072: movi rs, :timer0_lo
+fe10      // 00000073: lui rs, :timer0_hi
+df21      // 00000074: movi ps, 33
+4f4e      // 00000075: stor ps, rs
+de05      // 00000076: movi rs, :timer1_lo
+fe10      // 00000077: lui rs, :timer1_hi
+dfb8      // 00000078: movi ps, 184
+ff0b      // 00000079: lui ps, 11
+4f4e      // 0000007a: stor ps, rs
+ce00      // 0000007b: buc 0
+0ed0      // 0000007c, update_bullet: mov rs, r0
+0ed1      // 0000007d: mov rs, r1
+df00      // 0000007e: movi ps, 0
+d081      // 0000007f: movi r0, :bullet_fine_x_lo
+f001      // 00000080: lui r0, :bullet_fine_x_hi
+4000      // 00000081: load r0, r0
+d17f      // 00000082: movi r1, :bullet_dx_lo
+f101      // 00000083: lui r1, :bullet_dx_hi
+4101      // 00000084: load r1, r1
+0051      // 00000085: add r0, r1
 // x out of bounds check
-b000      // 0000005f: cmpi r0, 0
-c635      // 00000060: bgt :bullet_out_of_bounds
-d100      // 00000061: movi r1, 0
-f150      // 00000062: lui r1, 80
-00b1      // 00000063: cmp r0, r1
-c731      // 00000064: ble :bullet_out_of_bounds
+b000      // 00000086: cmpi r0, 0
+c635      // 00000087: bgt :bullet_out_of_bounds
+d100      // 00000088: movi r1, 0
+f150      // 00000089: lui r1, 80
+00b1      // 0000008a: cmp r0, r1
+c731      // 0000008b: ble :bullet_out_of_bounds
 // save new x position
-df47      // 00000065: movi ps, :bullet_fine_x_lo
-ff01      // 00000066: lui ps, :bullet_fine_x_hi
-404f      // 00000067: stor r0, ps
-801b      // 00000068: lshi r0, -5
-df0a      // 00000069: movi ps, :bullet_x_lo
-ff10      // 0000006a: lui ps, :bullet_x_hi
-404f      // 0000006b: stor r0, ps
-d048      // 0000006c: movi r0, :bullet_fine_y_lo
-f001      // 0000006d: lui r0, :bullet_fine_y_hi
-4000      // 0000006e: load r0, r0
-d146      // 0000006f: movi r1, :bullet_dy_lo
-f101      // 00000070: lui r1, :bullet_dy_hi
-4101      // 00000071: load r1, r1
-0051      // 00000072: add r0, r1
+df81      // 0000008c: movi ps, :bullet_fine_x_lo
+ff01      // 0000008d: lui ps, :bullet_fine_x_hi
+404f      // 0000008e: stor r0, ps
+801b      // 0000008f: lshi r0, -5
+df0a      // 00000090: movi ps, :bullet_x_lo
+ff10      // 00000091: lui ps, :bullet_x_hi
+404f      // 00000092: stor r0, ps
+d082      // 00000093: movi r0, :bullet_fine_y_lo
+f001      // 00000094: lui r0, :bullet_fine_y_hi
+4000      // 00000095: load r0, r0
+d180      // 00000096: movi r1, :bullet_dy_lo
+f101      // 00000097: lui r1, :bullet_dy_hi
+4101      // 00000098: load r1, r1
+0051      // 00000099: add r0, r1
 // floor y and fine_y
-b000      // 00000073: cmpi r0, 0
-cc09      // 00000074: blt :cap_bullet_y
-d000      // 00000075: movi r0, 0
-df48      // 00000076: movi ps, :bullet_fine_y_lo
-ff01      // 00000077: lui ps, :bullet_fine_y_hi
-404f      // 00000078: stor r0, ps
-df0b      // 00000079: movi ps, :bullet_y_lo
-ff10      // 0000007a: lui ps, :bullet_y_hi
-404f      // 0000007b: stor r0, ps
-ce0e      // 0000007c: buc :update_bullet_accel
+b000      // 0000009a: cmpi r0, 0
+cc09      // 0000009b: blt :cap_bullet_y
+d000      // 0000009c: movi r0, 0
+df82      // 0000009d: movi ps, :bullet_fine_y_lo
+ff01      // 0000009e: lui ps, :bullet_fine_y_hi
+404f      // 0000009f: stor r0, ps
+df0b      // 000000a0: movi ps, :bullet_y_lo
+ff10      // 000000a1: lui ps, :bullet_y_hi
+404f      // 000000a2: stor r0, ps
+ce0e      // 000000a3: buc :update_bullet_accel
 // ceil y
-df48      // 0000007d, cap_bullet_y: movi ps, :bullet_fine_y_lo
-ff01      // 0000007e: lui ps, :bullet_fine_y_hi
-404f      // 0000007f: stor r0, ps
-801b      // 00000080: lshi r0, -5
-d1df      // 00000081: movi r1, 223
-f101      // 00000082: lui r1, 1
-00b1      // 00000083: cmp r0, r1
-cd02      // 00000084: bge 2
-00d1      // 00000085: mov r0, r1
-df0b      // 00000086: movi ps, :bullet_y_lo
-ff10      // 00000087: lui ps, :bullet_y_hi
-404f      // 00000088: stor r0, ps
-ce01      // 00000089: buc :update_bullet_accel
-d046      // 0000008a, update_bullet_accel: movi r0, :bullet_dy_lo
-f001      // 0000008b: lui r0, :bullet_dy_hi
-4000      // 0000008c: load r0, r0
-d149      // 0000008d: movi r1, :bullet_ddy_lo
-f101      // 0000008e: lui r1, :bullet_ddy_hi
-4101      // 0000008f: load r1, r1
-0051      // 00000090: add r0, r1
-df46      // 00000091: movi ps, :bullet_dy_lo
-ff01      // 00000092: lui ps, :bullet_dy_hi
-404f      // 00000093: stor r0, ps
-ce16      // 00000094: buc :update_bullet_done
-d000      // 00000095, bullet_out_of_bounds: movi r0, 0
-df45      // 00000096: movi ps, :bullet_dx_lo
-ff01      // 00000097: lui ps, :bullet_dx_hi
-404f      // 00000098: stor r0, ps
-df47      // 00000099: movi ps, :bullet_fine_x_lo
-ff01      // 0000009a: lui ps, :bullet_fine_x_hi
-404f      // 0000009b: stor r0, ps
-df0a      // 0000009c: movi ps, :bullet_x_lo
-ff10      // 0000009d: lui ps, :bullet_x_hi
-404f      // 0000009e: stor r0, ps
-df46      // 0000009f: movi ps, :bullet_dy_lo
-ff01      // 000000a0: lui ps, :bullet_dy_hi
-404f      // 000000a1: stor r0, ps
-df48      // 000000a2: movi ps, :bullet_fine_y_lo
-ff01      // 000000a3: lui ps, :bullet_fine_y_hi
-404f      // 000000a4: stor r0, ps
-df0b      // 000000a5: movi ps, :bullet_y_lo
-ff10      // 000000a6: lui ps, :bullet_y_hi
-404f      // 000000a7: stor r0, ps
-00df      // 000000a8: mov r0, ps
-df01      // 000000a9: movi ps, 1
-01de      // 000000aa, update_bullet_done: mov r1, rs
-00de      // 000000ab: mov r0, rs
-4ece      // 000000ac: juc rs
-df00      // 000000ad, handle_collision: movi ps, 0
-4ece      // 000000ae: juc rs
-4ece      // 000000af, bullet_explode: juc rs
-4ece      // 000000b0, ground_explode: juc rs
-4ece      // 000000b1, tank1_explode: juc rs
-4ece      // 000000b2, tank2_explode: juc rs
-0ed0      // 000000b3, fire: mov rs, r0
-d044      // 000000b4: movi r0, :game_state_lo
-f001      // 000000b5: lui r0, :game_state_hi
-4000      // 000000b6: load r0, r0
-b000      // 000000b7: cmpi r0, 0
-c002      // 000000b8: beq :eq_2
-ce18      // 000000b9: buc :not_eq_2
-de47      // 000000ba, eq_2: movi rs, :bullet_fine_x_lo
-fe01      // 000000bb: lui rs, :bullet_fine_x_hi
-df00      // 000000bc: movi ps, 0
-ff08      // 000000bd: lui ps, 8
-4f4e      // 000000be: stor ps, rs
-de48      // 000000bf: movi rs, :bullet_fine_y_lo
-fe01      // 000000c0: lui rs, :bullet_fine_y_hi
-df40      // 000000c1: movi ps, 64
-ff11      // 000000c2: lui ps, 17
-4f4e      // 000000c3: stor ps, rs
-de45      // 000000c4: movi rs, :bullet_dx_lo
-fe01      // 000000c5: lui rs, :bullet_dx_hi
-df14      // 000000c6: movi ps, 20
-4f4e      // 000000c7: stor ps, rs
-de46      // 000000c8: movi rs, :bullet_dy_lo
-fe01      // 000000c9: lui rs, :bullet_dy_hi
-df64      // 000000ca: movi ps, 100
-4f4e      // 000000cb: stor ps, rs
-de44      // 000000cc: movi rs, :game_state_lo
-fe01      // 000000cd: lui rs, :game_state_hi
-df01      // 000000ce: movi ps, 1
-4f4e      // 000000cf: stor ps, rs
-ce1b      // 000000d0: buc :fire_done
-b002      // 000000d1, not_eq_2: cmpi r0, 2
-c002      // 000000d2: beq :eq_3
-ce18      // 000000d3: buc :not_eq_3
-de47      // 000000d4, eq_3: movi rs, :bullet_fine_x_lo
-fe01      // 000000d5: lui rs, :bullet_fine_x_hi
-df00      // 000000d6: movi ps, 0
-ff48      // 000000d7: lui ps, 72
-4f4e      // 000000d8: stor ps, rs
-de48      // 000000d9: movi rs, :bullet_fine_y_lo
-fe01      // 000000da: lui rs, :bullet_fine_y_hi
-df40      // 000000db: movi ps, 64
-ff11      // 000000dc: lui ps, 17
-4f4e      // 000000dd: stor ps, rs
-de45      // 000000de: movi rs, :bullet_dx_lo
-fe01      // 000000df: lui rs, :bullet_dx_hi
-dfec      // 000000e0: movi ps, 236
-4f4e      // 000000e1: stor ps, rs
-de46      // 000000e2: movi rs, :bullet_dy_lo
-fe01      // 000000e3: lui rs, :bullet_dy_hi
-df64      // 000000e4: movi ps, 100
-4f4e      // 000000e5: stor ps, rs
-de44      // 000000e6: movi rs, :game_state_lo
-fe01      // 000000e7: lui rs, :game_state_hi
-df03      // 000000e8: movi ps, 3
-4f4e      // 000000e9: stor ps, rs
-ce01      // 000000ea: buc :fire_done
-00de      // 000000eb, not_eq_3, fire_done: mov r0, rs
-4ece      // 000000ec: juc rs
-0ed0      // 000000ed, game_loop: mov rs, r0
-0ed1      // 000000ee: mov rs, r1
-d044      // 000000ef: movi r0, :game_state_lo
-f001      // 000000f0: lui r0, :game_state_hi
-4000      // 000000f1: load r0, r0
-d1f6      // 000000f2: movi r1, :game_state_jump_table_lo
-f100      // 000000f3: lui r1, :game_state_jump_table_hi
-0150      // 000000f4: add r1, r0
-4ec1      // 000000f5: juc r1
-ce04      // 000000f6, game_state_jump_table: buc :player1_aiming
-ce04      // 000000f7: buc :player1_firing
-ce02      // 000000f8: buc :player2_aiming
-ce24      // 000000f9: buc :player2_firing
-ce46      // 000000fa, player1_aiming, player2_aiming: buc :game_loop_done
-df55      // 000000fb, player1_firing: movi ps, :update_bullet_lo
-ff00      // 000000fc: lui ps, :update_bullet_hi
-4e8f      // 000000fd: jal rs, ps
-bf00      // 000000fe: cmpi ps, 0
-c102      // 000000ff: bne :ne_0
-ce06      // 00000100: buc :not_ne_0
-de44      // 00000101, ne_0: movi rs, :game_state_lo
-fe01      // 00000102: lui rs, :game_state_hi
-df02      // 00000103: movi ps, 2
-4f4e      // 00000104: stor ps, rs
-ce3b      // 00000105: buc :game_loop_done
-dfad      // 00000106, not_ne_0: movi ps, :handle_collision_lo
-ff00      // 00000107: lui ps, :handle_collision_hi
-4e8f      // 00000108: jal rs, ps
-bf00      // 00000109: cmpi ps, 0
-c102      // 0000010a: bne :ne_1
-ce12      // 0000010b: buc :not_ne_1
-00df      // 0000010c, ne_1: mov r0, ps
-dfaf      // 0000010d: movi ps, :bullet_explode_lo
-ff00      // 0000010e: lui ps, :bullet_explode_hi
-4e8f      // 0000010f: jal rs, ps
-b000      // 00000110: cmpi r0, 0
-c002      // 00000111: beq :eq_4
-ce04      // 00000112: buc :not_eq_4
-dfb0      // 00000113, eq_4: movi ps, :ground_explode_lo
-ff00      // 00000114: lui ps, :ground_explode_hi
-4e8f      // 00000115: jal rs, ps
-b001      // 00000116, not_eq_4: cmpi r0, 1
-c002      // 00000117: beq :eq_5
-ce04      // 00000118: buc :not_eq_5
-dfb1      // 00000119, eq_5: movi ps, :tank1_explode_lo
-ff00      // 0000011a: lui ps, :tank1_explode_hi
-4e8f      // 0000011b: jal rs, ps
-ce24      // 0000011c, not_eq_5: buc :game_loop_done
-df55      // 0000011d, not_ne_1, player2_firing: movi ps, :update_bullet_lo
-ff00      // 0000011e: lui ps, :update_bullet_hi
-4e8f      // 0000011f: jal rs, ps
-bf00      // 00000120: cmpi ps, 0
-c102      // 00000121: bne :ne_2
-ce06      // 00000122: buc :not_ne_2
-de44      // 00000123, ne_2: movi rs, :game_state_lo
-fe01      // 00000124: lui rs, :game_state_hi
-df00      // 00000125: movi ps, 0
-4f4e      // 00000126: stor ps, rs
-ce19      // 00000127: buc :game_loop_done
-dfad      // 00000128, not_ne_2: movi ps, :handle_collision_lo
-ff00      // 00000129: lui ps, :handle_collision_hi
-4e8f      // 0000012a: jal rs, ps
-bf00      // 0000012b: cmpi ps, 0
-c102      // 0000012c: bne :ne_3
-ce12      // 0000012d: buc :not_ne_3
-00df      // 0000012e, ne_3: mov r0, ps
-dfaf      // 0000012f: movi ps, :bullet_explode_lo
-ff00      // 00000130: lui ps, :bullet_explode_hi
-4e8f      // 00000131: jal rs, ps
-b000      // 00000132: cmpi r0, 0
-c002      // 00000133: beq :eq_6
-ce04      // 00000134: buc :not_eq_6
-dfb0      // 00000135, eq_6: movi ps, :ground_explode_lo
-ff00      // 00000136: lui ps, :ground_explode_hi
+df82      // 000000a4, cap_bullet_y: movi ps, :bullet_fine_y_lo
+ff01      // 000000a5: lui ps, :bullet_fine_y_hi
+404f      // 000000a6: stor r0, ps
+801b      // 000000a7: lshi r0, -5
+d1df      // 000000a8: movi r1, 223
+f101      // 000000a9: lui r1, 1
+00b1      // 000000aa: cmp r0, r1
+cd02      // 000000ab: bge 2
+00d1      // 000000ac: mov r0, r1
+df0b      // 000000ad: movi ps, :bullet_y_lo
+ff10      // 000000ae: lui ps, :bullet_y_hi
+404f      // 000000af: stor r0, ps
+ce01      // 000000b0: buc :update_bullet_accel
+d080      // 000000b1, update_bullet_accel: movi r0, :bullet_dy_lo
+f001      // 000000b2: lui r0, :bullet_dy_hi
+4000      // 000000b3: load r0, r0
+d183      // 000000b4: movi r1, :bullet_ddy_lo
+f101      // 000000b5: lui r1, :bullet_ddy_hi
+4101      // 000000b6: load r1, r1
+0051      // 000000b7: add r0, r1
+df80      // 000000b8: movi ps, :bullet_dy_lo
+ff01      // 000000b9: lui ps, :bullet_dy_hi
+404f      // 000000ba: stor r0, ps
+ce16      // 000000bb: buc :update_bullet_done
+d000      // 000000bc, bullet_out_of_bounds: movi r0, 0
+df7f      // 000000bd: movi ps, :bullet_dx_lo
+ff01      // 000000be: lui ps, :bullet_dx_hi
+404f      // 000000bf: stor r0, ps
+df81      // 000000c0: movi ps, :bullet_fine_x_lo
+ff01      // 000000c1: lui ps, :bullet_fine_x_hi
+404f      // 000000c2: stor r0, ps
+df0a      // 000000c3: movi ps, :bullet_x_lo
+ff10      // 000000c4: lui ps, :bullet_x_hi
+404f      // 000000c5: stor r0, ps
+df80      // 000000c6: movi ps, :bullet_dy_lo
+ff01      // 000000c7: lui ps, :bullet_dy_hi
+404f      // 000000c8: stor r0, ps
+df82      // 000000c9: movi ps, :bullet_fine_y_lo
+ff01      // 000000ca: lui ps, :bullet_fine_y_hi
+404f      // 000000cb: stor r0, ps
+df0b      // 000000cc: movi ps, :bullet_y_lo
+ff10      // 000000cd: lui ps, :bullet_y_hi
+404f      // 000000ce: stor r0, ps
+00df      // 000000cf: mov r0, ps
+df01      // 000000d0: movi ps, 1
+01de      // 000000d1, update_bullet_done: mov r1, rs
+00de      // 000000d2: mov r0, rs
+4ece      // 000000d3: juc rs
+0ed0      // 000000d4, handle_collision: mov rs, r0
+0ed1      // 000000d5: mov rs, r1
+d00a      // 000000d6: movi r0, :bullet_x_lo
+f010      // 000000d7: lui r0, :bullet_x_hi
+4000      // 000000d8: load r0, r0
+df08      // 000000d9: movi ps, :ground_index_lo
+ff10      // 000000da: lui ps, :ground_index_hi
+404f      // 000000db: stor r0, ps
+d109      // 000000dc: movi r1, :ground_height_lo
+f110      // 000000dd: lui r1, :ground_height_hi
+4101      // 000000de: load r1, r1
+00b1      // 000000df: cmp r0, r1
+c602      // 000000e0: bgt :gt_0
+ce04      // 000000e1: buc :not_gt_0
+df00      // 000000e2, gt_0: movi ps, 0
+df01      // 000000e3: movi ps, 1
+ce02      // 000000e4: buc :handle_collision_done
+df00      // 000000e5, not_gt_0: movi ps, 0
+01de      // 000000e6, handle_collision_done: mov r1, rs
+00de      // 000000e7: mov r0, rs
+4ece      // 000000e8: juc rs
+4ece      // 000000e9, bullet_explode: juc rs
+4ece      // 000000ea, ground_explode: juc rs
+4ece      // 000000eb, tank1_explode: juc rs
+4ece      // 000000ec, tank2_explode: juc rs
+0ed0      // 000000ed, fire: mov rs, r0
+d07e      // 000000ee: movi r0, :game_state_lo
+f001      // 000000ef: lui r0, :game_state_hi
+4000      // 000000f0: load r0, r0
+b000      // 000000f1: cmpi r0, 0
+c002      // 000000f2: beq :eq_2
+ce18      // 000000f3: buc :not_eq_2
+de81      // 000000f4, eq_2: movi rs, :bullet_fine_x_lo
+fe01      // 000000f5: lui rs, :bullet_fine_x_hi
+df00      // 000000f6: movi ps, 0
+ff08      // 000000f7: lui ps, 8
+4f4e      // 000000f8: stor ps, rs
+de82      // 000000f9: movi rs, :bullet_fine_y_lo
+fe01      // 000000fa: lui rs, :bullet_fine_y_hi
+df40      // 000000fb: movi ps, 64
+ff11      // 000000fc: lui ps, 17
+4f4e      // 000000fd: stor ps, rs
+de7f      // 000000fe: movi rs, :bullet_dx_lo
+fe01      // 000000ff: lui rs, :bullet_dx_hi
+df64      // 00000100: movi ps, 100
+4f4e      // 00000101: stor ps, rs
+de80      // 00000102: movi rs, :bullet_dy_lo
+fe01      // 00000103: lui rs, :bullet_dy_hi
+df64      // 00000104: movi ps, 100
+4f4e      // 00000105: stor ps, rs
+de7e      // 00000106: movi rs, :game_state_lo
+fe01      // 00000107: lui rs, :game_state_hi
+df01      // 00000108: movi ps, 1
+4f4e      // 00000109: stor ps, rs
+ce1b      // 0000010a: buc :fire_done
+b002      // 0000010b, not_eq_2: cmpi r0, 2
+c002      // 0000010c: beq :eq_3
+ce18      // 0000010d: buc :not_eq_3
+de81      // 0000010e, eq_3: movi rs, :bullet_fine_x_lo
+fe01      // 0000010f: lui rs, :bullet_fine_x_hi
+df00      // 00000110: movi ps, 0
+ff48      // 00000111: lui ps, 72
+4f4e      // 00000112: stor ps, rs
+de82      // 00000113: movi rs, :bullet_fine_y_lo
+fe01      // 00000114: lui rs, :bullet_fine_y_hi
+df40      // 00000115: movi ps, 64
+ff11      // 00000116: lui ps, 17
+4f4e      // 00000117: stor ps, rs
+de7f      // 00000118: movi rs, :bullet_dx_lo
+fe01      // 00000119: lui rs, :bullet_dx_hi
+df9c      // 0000011a: movi ps, 156
+4f4e      // 0000011b: stor ps, rs
+de80      // 0000011c: movi rs, :bullet_dy_lo
+fe01      // 0000011d: lui rs, :bullet_dy_hi
+df64      // 0000011e: movi ps, 100
+4f4e      // 0000011f: stor ps, rs
+de7e      // 00000120: movi rs, :game_state_lo
+fe01      // 00000121: lui rs, :game_state_hi
+df03      // 00000122: movi ps, 3
+4f4e      // 00000123: stor ps, rs
+ce01      // 00000124: buc :fire_done
+00de      // 00000125, not_eq_3, fire_done: mov r0, rs
+4ece      // 00000126: juc rs
+0ed0      // 00000127, game_loop: mov rs, r0
+0ed1      // 00000128: mov rs, r1
+d07e      // 00000129: movi r0, :game_state_lo
+f001      // 0000012a: lui r0, :game_state_hi
+4000      // 0000012b: load r0, r0
+d130      // 0000012c: movi r1, :game_state_jump_table_lo
+f101      // 0000012d: lui r1, :game_state_jump_table_hi
+0150      // 0000012e: add r1, r0
+4ec1      // 0000012f: juc r1
+ce04      // 00000130, game_state_jump_table: buc :player1_aiming
+ce04      // 00000131: buc :player1_firing
+ce02      // 00000132: buc :player2_aiming
+ce24      // 00000133: buc :player2_firing
+ce46      // 00000134, player1_aiming, player2_aiming: buc :game_loop_done
+df7c      // 00000135, player1_firing: movi ps, :update_bullet_lo
+ff00      // 00000136: lui ps, :update_bullet_hi
 4e8f      // 00000137: jal rs, ps
-b002      // 00000138, not_eq_6: cmpi r0, 2
-c002      // 00000139: beq :eq_7
-ce04      // 0000013a: buc :not_eq_7
-dfb2      // 0000013b, eq_7: movi ps, :tank2_explode_lo
-ff00      // 0000013c: lui ps, :tank2_explode_hi
-4e8f      // 0000013d: jal rs, ps
-ce02      // 0000013e, not_eq_7: buc :game_loop_done
-ce01      // 0000013f, not_ne_3: buc :game_loop_done
-01de      // 00000140, game_loop_done: mov r1, rs
-00de      // 00000141: mov r0, rs
-4ece      // 00000142: juc rs
+bf00      // 00000138: cmpi ps, 0
+c102      // 00000139: bne :ne_2
+ce06      // 0000013a: buc :not_ne_2
+de7e      // 0000013b, ne_2: movi rs, :game_state_lo
+fe01      // 0000013c: lui rs, :game_state_hi
+df02      // 0000013d: movi ps, 2
+4f4e      // 0000013e: stor ps, rs
+ce3b      // 0000013f: buc :game_loop_done
+dfd4      // 00000140, not_ne_2: movi ps, :handle_collision_lo
+ff00      // 00000141: lui ps, :handle_collision_hi
+4e8f      // 00000142: jal rs, ps
+bf00      // 00000143: cmpi ps, 0
+c102      // 00000144: bne :ne_3
+ce12      // 00000145: buc :not_ne_3
+00df      // 00000146, ne_3: mov r0, ps
+dfe9      // 00000147: movi ps, :bullet_explode_lo
+ff00      // 00000148: lui ps, :bullet_explode_hi
+4e8f      // 00000149: jal rs, ps
+b000      // 0000014a: cmpi r0, 0
+c002      // 0000014b: beq :eq_4
+ce04      // 0000014c: buc :not_eq_4
+dfea      // 0000014d, eq_4: movi ps, :ground_explode_lo
+ff00      // 0000014e: lui ps, :ground_explode_hi
+4e8f      // 0000014f: jal rs, ps
+b001      // 00000150, not_eq_4: cmpi r0, 1
+c002      // 00000151: beq :eq_5
+ce04      // 00000152: buc :not_eq_5
+dfeb      // 00000153, eq_5: movi ps, :tank1_explode_lo
+ff00      // 00000154: lui ps, :tank1_explode_hi
+4e8f      // 00000155: jal rs, ps
+ce24      // 00000156, not_eq_5: buc :game_loop_done
+df7c      // 00000157, not_ne_3, player2_firing: movi ps, :update_bullet_lo
+ff00      // 00000158: lui ps, :update_bullet_hi
+4e8f      // 00000159: jal rs, ps
+bf00      // 0000015a: cmpi ps, 0
+c102      // 0000015b: bne :ne_4
+ce06      // 0000015c: buc :not_ne_4
+de7e      // 0000015d, ne_4: movi rs, :game_state_lo
+fe01      // 0000015e: lui rs, :game_state_hi
+df00      // 0000015f: movi ps, 0
+4f4e      // 00000160: stor ps, rs
+ce19      // 00000161: buc :game_loop_done
+dfd4      // 00000162, not_ne_4: movi ps, :handle_collision_lo
+ff00      // 00000163: lui ps, :handle_collision_hi
+4e8f      // 00000164: jal rs, ps
+bf00      // 00000165: cmpi ps, 0
+c102      // 00000166: bne :ne_5
+ce12      // 00000167: buc :not_ne_5
+00df      // 00000168, ne_5: mov r0, ps
+dfe9      // 00000169: movi ps, :bullet_explode_lo
+ff00      // 0000016a: lui ps, :bullet_explode_hi
+4e8f      // 0000016b: jal rs, ps
+b000      // 0000016c: cmpi r0, 0
+c002      // 0000016d: beq :eq_6
+ce04      // 0000016e: buc :not_eq_6
+dfea      // 0000016f, eq_6: movi ps, :ground_explode_lo
+ff00      // 00000170: lui ps, :ground_explode_hi
+4e8f      // 00000171: jal rs, ps
+b002      // 00000172, not_eq_6: cmpi r0, 2
+c002      // 00000173: beq :eq_7
+ce04      // 00000174: buc :not_eq_7
+dfec      // 00000175, eq_7: movi ps, :tank2_explode_lo
+ff00      // 00000176: lui ps, :tank2_explode_hi
+4e8f      // 00000177: jal rs, ps
+ce02      // 00000178, not_eq_7: buc :game_loop_done
+ce01      // 00000179, not_ne_5: buc :game_loop_done
+01de      // 0000017a, game_loop_done: mov r1, rs
+00de      // 0000017b: mov r0, rs
+4ece      // 0000017c: juc rs
 // data_mem, g: 
 ffff
 // game_state: 
@@ -338,4 +396,4 @@ ffff
 // bullet_fine_y: 
 0000
 // bullet_ddy: 
-ffff
+ffce

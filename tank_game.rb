@@ -12,6 +12,9 @@ assemble 'tank_game.hex' do
   label :ground_height, tank_game_base + 0x1
   label :bullet_x, tank_game_base + 0x2
   label :bullet_y, tank_game_base + 0x3
+  label :switches, 0x1020
+  label :leds, 0x1021
+  label :seg, 0x1022
 
   game_states = %i(player1_aiming player1_firing player2_aiming player2_firing)
 
@@ -26,6 +29,27 @@ assemble 'tank_game.hex' do
 
   label :timer0_irqh
   call :game_loop
+  preserving r0,r1,r2 do
+    lload r1, :switches
+    movi r0, 1
+    _and r0, r1
+    cmpi r0, 0
+    ne? do
+      lload r2, :bullet_ddy
+      addi r2, 1
+      lstor r2, :bullet_ddy
+      lstor r2, :seg
+    end
+    movi r0, 2
+    _and r0, r1
+    cmpi r0, 0
+    ne? do
+      lload r2, :bullet_ddy
+      subi r2, 1
+      lstor r2, :bullet_ddy
+      lstor r2, :seg
+    end
+  end
   lstorwi timer0_interval, :timer0
   retx
 
@@ -131,7 +155,19 @@ assemble 'tank_game.hex' do
   end
 
   label :handle_collision do # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
-    movi ps, 0
+    preserving r0, r1 do
+      lload r0, :bullet_x
+      lstor r0, :ground_index
+      lload r1, :ground_height
+      cmp r0, r1
+      gt? do
+        movi ps, 0
+        movi ps, 1
+        buc :handle_collision_done
+      end
+      movi ps, 0
+      label :handle_collision_done
+    end
     ret
   end
 
@@ -158,7 +194,7 @@ assemble 'tank_game.hex' do
       eq? do
         lstorwi 64 << 5, :bullet_fine_x
         lstorwi 138 << 5, :bullet_fine_y
-        lstorwi 80, :bullet_dx
+        lstorwi 100, :bullet_dx
         lstorwi 100, :bullet_dy
         lstorwi game_states.index(:player1_firing), :game_state
         buc :fire_done
@@ -167,8 +203,8 @@ assemble 'tank_game.hex' do
       eq? do
         lstorwi (640 - 64) << 5, :bullet_fine_x
         lstorwi 138 << 5, :bullet_fine_y
-        lstorwi -80, :bullet_dx
-        lstorwi 1000, :bullet_dy
+        lstorwi -100, :bullet_dx
+        lstorwi 100, :bullet_dy
         lstorwi game_states.index(:player2_firing), :game_state
         buc :fire_done
       end
@@ -255,5 +291,5 @@ assemble 'tank_game.hex' do
   label :bullet_fine_y
   dw 0
   label :bullet_ddy
-  dw -1
+  dw -50
 end

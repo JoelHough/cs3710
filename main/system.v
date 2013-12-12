@@ -19,8 +19,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module system(input clk,
-              output Hsync,
-              output Vsync,
+              input [7:0]  sw,
+              input [4:0]  btn,
+              output reg [7:0] led,
+              output [7:0] seg,
+              output [3:0] an,
+              output       Hsync,
+              output       Vsync,
               output [7:0] vgaColor
               );
 
@@ -61,7 +66,9 @@ module system(input clk,
    wire                 pixel_rdy, pixel_rq, new_frame;
    reg                  tgg_en = 1'b0;
    wire [15:0]          tgg_rd_data;
-   
+   reg                  led_en;
+   reg                  seg_en;
+   reg [15:0]           seg_hex = 16'b0;
    wire                 en;
    assign en = 1'b1;
    
@@ -92,6 +99,15 @@ module system(input clk,
    one_shot TimerOs [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));
    
    lfsr Lfsr (.clk(sys_clk), .rd_data(prng_rd_data));
+
+   seven_segment SevenSegment (.clk(ms_strobe), .data(seg_hex), .seg(seg), .an(an));
+
+   always @(posedge sys_clk) begin
+      if (led_en & mem_wr_en)
+        led = mem_wr_data[7:0];
+      if (seg_en & mem_wr_en)
+        seg_hex = mem_wr_data;
+   end
    
    interrupt_controller InterruptController(.clk                (sys_clk),
                                             /*AUTOINST*/
@@ -148,18 +164,25 @@ module system(input clk,
    localparam PRNG_ADDR = 16'h1002;
    localparam TIMER_ADDR = 16'b0001_0000_0000_010z;
    localparam TGG_ADDR = 16'b0001_0000_0000_1zzz;
-
+   localparam SWITCHES_ADDR = 16'h1020;
+   localparam LED_ADDR = 16'h1021;
+   localparam SEG_ADDR = 16'h1022;
+   
    /* memory map enables */
    always @(mem_addr) begin
       block_ram_en = 1'b0;
       interrupt_control_en = 1'b0;
       timer_en = 2'b0;
       tgg_en = 1'b0;
+      led_en = 1'b0;
+      seg_en = 1'b0;
       casez (mem_addr)
         BLOCK_RAM_ADDR : block_ram_en = 1'b1;
         INTERRUPT_CONTROL_ADDR : interrupt_control_en = 1'b1;
         TIMER_ADDR : timer_en = mem_addr[0] + 2'b1;
         TGG_ADDR : tgg_en = 1'b1;
+        LED_ADDR : led_en = 1'b1;
+        SEG_ADDR : seg_en = 1'b1;
       endcase // casez (mem_addr)
    end
 
@@ -173,6 +196,7 @@ module system(input clk,
        BLOCK_RAM_ADDR : mem_rd_data = block_ram_rd_data;
        PRNG_ADDR : mem_rd_data = prng_rd_data;
        TGG_ADDR : mem_rd_data = tgg_rd_data;
+       SWITCHES_ADDR : mem_rd_data = {sw, 3'b0, btn};
        default : mem_rd_data = 16'hDEAF;
      endcase // casez (last_addr_read)
    

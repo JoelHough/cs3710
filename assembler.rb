@@ -241,8 +241,21 @@ def define_branch(cond, code)
   end)  
 end
 
+def define_cond_block(cond)
+  define_method("#{cond}?", lambda do |&proc|
+                  if_label = gen_label(cond)
+                  done_label = gen_label("not_#{cond}".to_sym)
+                  send("b#{cond}", if_label)
+                  buc done_label
+                  label if_label
+                  proc.call
+                  label done_label
+                end)
+end
+               
 for cond, code in conds
   define_branch(cond, code)
+  define_cond_block(cond)
 end
 
 def jal(a, b)
@@ -364,24 +377,3 @@ def floor(a, b)
   ble 2
   mov a, b
 end
-
-def eq?
-  if_label = gen_label(:eq)
-  done_label = gen_label(:not_eq)
-  beq if_label
-  buc done_label
-  label if_label
-  yield
-  label done_label
-end
-
-def ne?
-  if_label = gen_label(:ne)
-  done_label = gen_label(:not_ne)
-  bne if_label
-  buc done_label
-  label if_label
-  yield
-  label done_label
-end
-
