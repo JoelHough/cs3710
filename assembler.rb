@@ -232,7 +232,7 @@ def define_branch(cond, code)
     pc_op do |pc|
       if disp.is_a?(Symbol)
         d = addr_for(disp) - pc
-        throw "'disp' out of range" if d < -128 || d > 127
+        throw "'#{disp}'(0x#{d.to_hex}) is too far from 0x#{pc.to_hex}" if d < -128 || d > 127
       else
         d = disp
       end
@@ -351,8 +351,8 @@ def lload(reg, label)
 end
 
 def lstor(reg, label)
-  lea ps, label
-  stor reg, ps
+  lea rs, label
+  stor reg, rs
 end
 
 def call(label)
@@ -372,10 +372,22 @@ def ceil(a, b)
   mov a, b
 end
 
+def ceili(a, n)
+  cmpi a, n
+  bge 2
+  movi a, n
+end
+
 def floor(a, b)
   cmp a, b
   ble 2
   mov a, b
+end
+
+def floori(a, n)
+  cmpi a, n
+  ble 2
+  movi a, n
 end
 
 def neg(a)
@@ -404,3 +416,18 @@ def ifunc(name, *regs)
   retx
   rem "endhandler: #{name}"
 end  
+
+def tbit(reg, n)
+  mov ps, reg
+  lshi ps, -n
+  _andi ps, 1
+  cmpi ps, 1
+end
+
+def jmp(label)
+  lea rs, label
+  juc rs
+end
+
+alias :on? :eq?
+alias :off? :ne?

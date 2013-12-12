@@ -148,7 +148,7 @@ module system(input clk,
 
    one_shot VsyncOs (.clk(sys_clk), .signal(Vsync), .strobe(vsync_strobe));
 	// changed to 12'b0 and added SNES at first
-   assign interrupt_lines = {12'b0, SNES_int, vsync_strobe, timer_strobe} | memmap_interrupts;
+   assign interrupt_lines = {12'b0, SNES_int, vsync_strobe, timer_strobe[1:0]} | memmap_interrupts;
    always @(posedge sys_clk)
      if (interrupt_control_en & mem_wr_en)
        memmap_interrupts <= mem_wr_data;
