@@ -21,6 +21,9 @@
 module system(input clk,
               input [7:0]  sw,
               input [4:0]  btn,
+				  input  serial_data,			//signal from SNES controller
+				  output data_latch,				//required signal to the SNES controller
+				  output data_clock,				//required signal to the SNES controller
               output reg [7:0] led,
               output [7:0] seg,
               output [3:0] an,
@@ -58,11 +61,14 @@ module system(input clk,
    reg [16:0]           ms_counter = 17'b0;
    wire                 pixel_clk;
    reg                  ms_strobe = 1'b0;
+
    reg [1:0]            timer_en = 2'b0;
    wire [1:0]           timer_done;
    wire [1:0]           timer_strobe;
    wire                 vsync_strobe;
    
+	reg [15:0]				SNES_buttons;
+	
    wire [7:0]           pixel;
    wire                 pixel_rdy, pixel_rq, new_frame;
    reg                  tgg_en = 1'b0;
@@ -70,7 +76,7 @@ module system(input clk,
    reg                  led_en;
    reg                  seg_en;
    reg [15:0]           seg_hex = 16'b0;
-   wire                 en;
+	 wire                 en;
    assign en = 1'b1;
    
    clock_manager ClockManager (.clk(clk), .sys_clk(sys_clk), .pixel_clk(pixel_clk));
@@ -92,17 +98,34 @@ module system(input clk,
             .en                         (en),
             .mem_rd_data                (mem_rd_data[15:0]));
 
+
    always @(posedge sys_clk) begin // 100Mhz * 100000 = 1ms
      ms_counter <= ms_counter == 17'd99999 ? 17'b0 : ms_counter + 1'b1;
      ms_strobe <= ms_counter == 17'b0;
    end
 
    timer Timer [1:0] (.clk(sys_clk), .cnt_en(ms_strobe), .wr_en(timer_en & {2{mem_wr_en}}), .wr_data(mem_wr_data), .done(timer_done));
+
    one_shot TimerOs [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));
    
    lfsr Lfsr (.clk(sys_clk), .rd_data(prng_rd_data));
-
-   seven_segment SevenSegment (.clk(ms_strobe), .data(seg_hex), .seg(seg), .an(an));
+	
+	
+   
+	seven_segment SevenSegment (.clk(ms_strobe), .data(seg_hex), .seg(seg), .an(an));
+	
+	
+	wire SNES_int; //int_pulse used by CPU
+	
+	SNES_control controller(
+						.clk(sys_clk),							//100MHz clock
+						.serial_data(serial_data),			//signal from SNES controller
+						.data_latch(data_latch),			//required signal to the SNS controller
+						.interrupt(SNES_int),				//interrupt pulse when a btn state changes
+						.data_clock(data_clock)				//required signal to the SNS controller
+						);
+						
+	//one_shot SNEScontrol (.clk(sys_clk), .signal(SNES_int), .strobe(SNES_strobe));
 
    always @(posedge sys_clk) begin
       if (led_en & mem_wr_en)
@@ -124,7 +147,8 @@ module system(input clk,
                                             .interrupt_lines    (interrupt_lines[15:0]));
 
    one_shot VsyncOs (.clk(sys_clk), .signal(Vsync), .strobe(vsync_strobe));
-   assign interrupt_lines = {13'b0,vsync_strobe,timer_strobe} | memmap_interrupts;
+	// changed to 12'b0 and added SNES at first
+   assign interrupt_lines = {12'b0, SNES_int, vsync_strobe, timer_strobe} | memmap_interrupts;
    always @(posedge sys_clk)
      if (interrupt_control_en & mem_wr_en)
        memmap_interrupts <= mem_wr_data;
@@ -169,7 +193,8 @@ module system(input clk,
    localparam SWITCHES_ADDR = 16'h1020;
    localparam LED_ADDR = 16'h1021;
    localparam SEG_ADDR = 16'h1022;
-   
+   localparam SNES_ADDR = 16'h1023;
+	
    /* memory map enables */
    always @(mem_addr) begin
       block_ram_en = 1'b0;
@@ -199,6 +224,8 @@ module system(input clk,
        PRNG_ADDR : mem_rd_data = prng_rd_data;
        TGG_ADDR : mem_rd_data = tgg_rd_data;
        SWITCHES_ADDR : mem_rd_data = {sw, 3'b0, btn};
+		 SNES_ADDR : mem_rd_data = SNES_buttons;
+		 
        default : mem_rd_data = 16'hDEAF;
      endcase // casez (last_addr_read)
    
