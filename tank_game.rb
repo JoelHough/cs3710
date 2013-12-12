@@ -35,7 +35,7 @@ assemble 'tank_game.hex' do
   label :leds, 0x1021
   label :seg, 0x1022
 
-  @game_states = %i(player1_aiming player1_firing player2_aiming player2_firing)
+  @game_states = %i(player1_aiming player1_firing player2_aiming player2_firing player1_wins player2_wins)
 
   buc :timer0_irqh
   buc :timer1_irqh
@@ -123,6 +123,17 @@ assemble 'tank_game.hex' do
     end
     cmp ground_index, left_edge
     bne :set_ground_height
+    lload tmp, :game_state
+    cmpi tmp, @game_states.index(:player1_wins)
+    eq? do
+      lstorwi @game_states.index(:player2_aiming), :game_state
+      call :reset_bullet
+    end
+    cmpi tmp, @game_states.index(:player2_wins)
+    eq? do
+      lstorwi @game_states.index(:player1_aiming), :game_state
+      call :reset_bullet
+    end
   end
 
   func :handle_input, r0, r1, r2, r3 do
@@ -358,7 +369,36 @@ assemble 'tank_game.hex' do
   func :bullet_explode do
   end
 
-  func :ground_explode do
+  func :ground_explode,r0,r1,r2,r3,r4,r5,r6 do
+    x = r0
+    tab_addr = r1
+    bottom = r2
+    y = r3
+    r = r4
+    ground_height = r5
+    cut = r6
+    lea tab_addr, :explosion_table
+    lload x, :bullet_x
+    lload y, :bullet_y
+    subi x, 7
+    
+    16.times do
+      load r, tab_addr
+      mov bottom, y
+      sub bottom, r
+      lstor x, :ground_index
+      lload ground_height, :ground_height
+      mov cut, ground_height
+      sub cut, bottom
+      floori cut, 0
+      add r, r
+      ceil cut, r
+      sub ground_height, cut
+      floori ground_height, 0
+      lstor ground_height, :ground_height
+      addi tab_addr, 1
+      addi x, 1
+    end
     # lower_cut = bx - circle_bottom
     # cut = ground_height - lower_cut
     # floor cut 0
@@ -477,9 +517,17 @@ assemble 'tank_game.hex' do
         cmpi r0, 0
         eq? {call :ground_explode}
         cmpi r0, 1
-        eq? {call :tank1_explode}
+        eq? do
+          call :tank1_explode
+          lstorwi @game_states.index(:player2_wins), :game_state
+          buc "#{tank}_firing_done".to_sym
+        end
         cmpi r0, 2
-        eq? {call :tank2_explode}
+        eq? do
+          call :tank2_explode
+          lstorwi @game_states.index(:player1_wins), :game_state
+          buc "#{tank}_firing_done".to_sym
+        end
         lstorwi @game_states.index(next_state), :game_state
         call :reset_bullet
       end
@@ -555,7 +603,7 @@ assemble 'tank_game.hex' do
   end
   label :explosion_table
   0.upto(15) do |x|
-    dw (Math.cos((Math::PI * x) / 15) * 8).to_i
+    dw (Math.sin((Math::PI * x) / 15) * 8).to_i
   end
   nop
 end
