@@ -108,7 +108,7 @@ module system(input clk,
 
    one_shot TimerOs [1:0] (.clk(sys_clk), .signal(timer_done), .strobe(timer_strobe));
    
-   lfsr Lfsr (.clk(sys_clk), .rd_data(prng_rd_data));
+   lfsr Lfsr (.clk(sys_clk), .en(1'b1), .rst(1'b0), .rd_data(prng_rd_data));
 	
 	
    
@@ -173,8 +173,6 @@ module system(input clk,
                                                          .color(vgaColor),
                                                          .hsync(Hsync),
                                                          .vsync(Vsync));
-   //assign pixel_rdy = pixel_rq;
-   //assign pixel = 8'b11_101_101;
    tank_game_graphics TankGameGraphics (.clk(sys_clk),
                                         .addr(mem_addr[2:0]),
                                         .wr_en(tgg_en & mem_wr_en),
@@ -225,8 +223,7 @@ module system(input clk,
        PRNG_ADDR : mem_rd_data = prng_rd_data;
        TGG_ADDR : mem_rd_data = tgg_rd_data;
        SWITCHES_ADDR : mem_rd_data = {sw, 3'b0, btn};
-		 SNES_ADDR : mem_rd_data = SNES_buttons;
-		 
+       SNES_ADDR : mem_rd_data = ~SNES_buttons;
        default : mem_rd_data = 16'hDEAF;
      endcase // casez (last_addr_read)
    

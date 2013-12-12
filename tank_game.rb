@@ -12,6 +12,18 @@ assemble 'tank_game.hex' do
   left_button = 2
   down_button = 3
   right_button = 4
+  right_bumper = 4
+  left_bumper = 5
+  x_button = 6
+  a_button = 7
+  dpad_right = 8
+  dpad_left = 9
+  dpad_down = 10
+  dpad_up = 11
+  start_button = 12
+  select_button = 13
+  y_button = 14
+  b_button = 15
   def switch(n)
     lload ps, :switches
     tbit ps, n
@@ -22,7 +34,7 @@ assemble 'tank_game.hex' do
   end
 
   timer0_interval = 1000 / fps
-  timer1_interval = 120
+  timer1_interval = 100
 
   label :rand, 0x4002
   label :timer0, 0x4004
@@ -69,10 +81,17 @@ assemble 'tank_game.hex' do
     lstorwi timer1_interval, :timer1
   end
 
-  ifunc :input_irqh, r0 do
-    lload r0, :snes
-    lstor r0, :seg
-    #call :fire
+  ifunc :input_irqh do
+#    lload r0, :snes
+#    [a_button, b_button, y_button, x_button].each do |button|
+#      tbit r0, button
+#      on? do
+#        buc :fire_button
+#      end
+#    end
+#    buc :input_irqh_done
+#    label :fire_button
+#    call :fire
   end
 
   ifunc :irq do
@@ -152,11 +171,14 @@ assemble 'tank_game.hex' do
     end
   end
 
-  func :handle_input, r0, r1, r2, r3 do
+  func :handle_input, r0, r1, r2, r3, r4, r5 do
     switches = r0
     state = r1
     angle = r2
     power = r3
+    snes = r4
+    tmp = r5
+    lload snes, :snes
     lload switches, :switches
     lload state, :game_state
     tbit switches, 9
@@ -164,83 +186,195 @@ assemble 'tank_game.hex' do
       call :restart
     end
 
+    tbit snes, start_button
+    on? do
+      call :restart
+    end
+
+    lea tmp, :next_aim1
     cmpi state, @game_states.index(:player1_aiming)
-    eq? do
-      lload angle, :tank1_angle
+    jne tmp
+    lload angle, :tank1_angle
       lload power, :tank1_power
       tbit switches, up_button
-      on? do
-        addi angle, 1
-        ceili angle, 63
-        lstor angle, :tank1_angle
+      off? do
+        tbit snes, dpad_up
+        off? {buc :tank1_down_angle}
       end
+      addi angle, 1
+      ceili angle, 63
+      lstor angle, :tank1_angle
+
+      label :tank1_down_angle
       tbit switches, down_button
-      on? do
-        subi angle, 1
-        floori angle, 0
-        lstor angle, :tank1_angle
+      off? do
+        tbit snes, dpad_down
+        off? {buc :tank1_down_power}
       end
+      subi angle, 1
+      floori angle, 0
+      lstor angle, :tank1_angle
+
+      label :tank1_down_power
       tbit switches, left_button
-      on? do
-        subi power, 1
-        floori power, 0
-        lstor power, :tank1_power
+      off? do
+        tbit snes, dpad_left
+        off? {buc :tank1_up_power}
       end
+      subi power, 1
+      floori power, 0
+      lstor power, :tank1_power
+
+      label :tank1_up_power
       tbit switches, right_button
-      on? do
-        addi power, 1
-        ceili power, 63
-        lstor power, :tank1_power
+      off? do
+        tbit snes, dpad_right
+        off? {buc :tank1_fire}
       end
+      addi power, 1
+      ceili power, 63
+      lstor power, :tank1_power
+
+      label :tank1_fire
       tbit switches, middle_button
-      on? do
-        call :fire
+      off? do
+        tbit snes, a_button
+        off? do
+          tbit snes, b_button
+          off?  {buc :tank1_disp_shot}
+        end
       end
+      call :fire
+      
+      label :tank1_disp_shot
       mov ps, angle
       mov ps, power
       call :disp_shot
-      buc :handle_input_done
-    end
-
+      
+      tbit snes, right_bumper
+      on? {call :move_tank1_right}
+      tbit snes, left_bumper
+      on? {call :move_tank1_left}
+    lea tmp, :next_aim2  
+    juc tmp
+    
+    label :next_aim1
+    lea tmp, :next_aim2
     cmpi state, @game_states.index(:player2_aiming)
-    eq? do
+    jne tmp
       lload angle, :tank2_angle
       lload power, :tank2_power
       tbit switches, up_button
-      on? do
-        addi angle, 1
-        ceili angle, 63
-        lstor angle, :tank2_angle
+      off? do
+        tbit snes, dpad_up
+        off? {buc :tank2_down_angle}
       end
+      addi angle, 1
+      ceili angle, 63
+      lstor angle, :tank2_angle
+
+      label :tank2_down_angle
       tbit switches, down_button
-      on? do
-        subi angle, 1
-        floori angle, 0
-        lstor angle, :tank2_angle
+      off? do
+        tbit snes, dpad_down
+        off? {buc :tank2_down_power}
       end
-      tbit switches, left_button
-      on? do
-        addi power, 1
-        ceili power, 63
-        lstor power, :tank2_power
-      end
+      subi angle, 1
+      floori angle, 0
+      lstor angle, :tank2_angle
+
+      label :tank2_down_power
       tbit switches, right_button
-      on? do
-        subi power, 1
-        floori power, 0
-        lstor power, :tank2_power
+      off? do
+        tbit snes, dpad_right
+        off? {buc :tank2_up_power}
       end
+      subi power, 1
+      floori power, 0
+      lstor power, :tank2_power
+
+      label :tank2_up_power
+      tbit switches, left_button
+      off? do
+        tbit snes, dpad_left
+        off? {buc :tank2_fire}
+      end
+      addi power, 1
+      ceili power, 63
+      lstor power, :tank2_power
+
+      label :tank2_fire
       tbit switches, middle_button
-      on? do
-        call :fire
+      off? do
+        tbit snes, a_button
+        off? {buc :tank2_disp_shot}
       end
+      call :fire
+      
+      label :tank2_disp_shot
       mov ps, angle
       mov ps, power
       call :disp_shot
+      tbit snes, right_bumper
+      on? {call :move_tank2_right}
+      tbit snes, left_bumper
+      on? {call :move_tank2_left}
       buc :handle_input_done
-    end
+    label :next_aim2
   end
 
+  func :move_tank1_left, r0, r1 do
+    tank_x = r0
+    height = r1
+    lload tank_x, :tank1_x
+    subi tank_x, 1
+    lstor tank_x, :tank1_x
+    subi tank_x, 8
+    lstor tank_x, :ground_index
+    lload height, :ground_height
+    addi height, 15
+    lstor height, :tank1_y
+  end
+  
+  func :move_tank1_right, r0, r1 do
+    tank_x = r0
+    height = r1
+    lload tank_x, :tank1_x
+    addi tank_x, 1
+    lstor tank_x, :tank1_x
+    subi tank_x, 8
+    lstor tank_x, :ground_index
+    lload height, :ground_height
+    addi height, 15
+    lstor height, :tank1_y
+  end
+  
+  func :move_tank2_left, r0, r1 do
+    tank_x = r0
+    height = r1
+    lload tank_x, :tank2_x
+    subi tank_x, 1
+    lstor tank_x, :tank2_x
+    subi tank_x, 8
+    lstor tank_x, :ground_index
+    lload height, :ground_height
+    addi height, 15
+    lstor height, :tank2_y
+  end
+  
+  func :move_tank2_right, r0, r1 do
+    tank_x = r0
+    height = r1
+    lload tank_x, :tank2_x
+    addi tank_x, 1
+    lstor tank_x, :tank2_x
+    subi tank_x, 8
+    lstor tank_x, :ground_index
+    lload height, :ground_height
+    addi height, 15
+    lstor height, :tank2_y
+  end
+  
   func :update_bullet, r0,r1,r2,r3 do
     frac = r0
     d = r1

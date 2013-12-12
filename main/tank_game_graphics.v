@@ -46,9 +46,16 @@ module tank_game_graphics(
    reg [8:0]  tank2_y=170;//test value of 170
 	reg 		  tank1_y_flip, tank2_y_flip;
    reg [8:0]  ground_y [639:0];
-
+   reg        counter_en = 1'b0;
+   reg        counter_rst = 1'b1;
+   wire       row_clk;   
+   wire [15:0] rnd;
+   lfsr Lfsr (.clk(clk), .en(counter_en), .rst(x == 0 && inv_y == 0), .rd_data(rnd));
+   
    reg [9:0]  ground_index;
-   /*reg [7:0]*/localparam  ground_color = 8'b00_011_100;
+   reg [7:0] ground_color;
+   always @(posedge clk)
+      ground_color <= {2'b0,2'b01,rnd[0],3'b100 + rnd[1]};//8'b00_011_100;
    
    reg [7:0] bullet_pixel = transparent_pixel;
    reg [7:0] tank1_pixel = transparent_pixel;
@@ -60,11 +67,7 @@ module tank_game_graphics(
    localparam bullet_color = 8'b0;
 	localparam tank1_color = 8'b11_000_000;
 	localparam tank2_color = 8'b00_000_111;
-
-
-   reg        counter_en = 1'b0;
-   reg        counter_rst = 1'b1;
-   wire       row_clk;   
+  
    mod_counter #(.MAX(639)) pixel_col_counter (.clk(clk), .en(counter_en), .reset(counter_rst), .count(x), .rollover(row_clk));
    mod_counter #(.MAX(479)) pixel_row_counter (.clk(row_clk), .en(1'b1), .reset(counter_rst), .count(inv_y), .rollover());
    assign y = 9'd479 - inv_y;

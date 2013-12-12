@@ -20,6 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 module lfsr(
     input clk,
+    input en,
+    input rst,
     output [15:0] rd_data
     );
 
@@ -27,5 +29,8 @@ module lfsr(
   assign rd_data = data[15:0];
   
   always @(posedge clk)
-    data <= {data[15:0], data[16] ^ data[13]};
+    if (rst)
+      data <= 17'hBEEF;
+    else if (en)
+      data <= {data[15:0], data[16] ^ data[13]};
 endmodule
