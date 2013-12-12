@@ -377,3 +377,8 @@ def floor(a, b)
   ble 2
   mov a, b
 end
+
+def neg(a)
+  xori a, 0xff
+  addi a, 1
+end

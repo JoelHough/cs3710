@@ -1,7 +1,11 @@
 load 'assembler.rb'
 
 assemble 'tank_game.hex' do
-  timer0_interval = 33
+  fps = 30
+  def pps(p)
+    p * 128 / 30
+  end
+  timer0_interval = 1000 / fps
   timer1_interval = 3000
 
   label :rand, 0x1002
@@ -96,57 +100,94 @@ assemble 'tank_game.hex' do
   wait
 
   label :update_bullet do
-    preserving r0,r1 do
+    preserving r0,r1,r2,r3 do
+      frac = r0
+      d = r1
+      tmp = r2
+      full = r3
       movi ps, 0
-      lload r0, :bullet_fine_x
-      lload r1, :bullet_dx
-      add r0, r1
-      rem "x out of bounds check"
-      cmpi r0, 0
+      lload full, :bullet_x
+      lload frac, :bullet_frac_x
+      lload d, :bullet_dx
+      add frac, d
+      mov tmp, frac
+      cmpi frac, 127
+      lt? do
+        _andi frac, 127
+        lshi tmp, -7
+        add full, tmp
+        buc :bullet_out_of_bounds_check
+      end
+      cmpi frac, -127
+      gt? do
+        neg frac
+        _andi frac, 127
+        neg frac
+        neg tmp
+        lshi tmp, -7
+        sub full, tmp
+      end
+      label :bullet_out_of_bounds_check
+      lstor frac, :bullet_frac_x
+      cmpi full, 0
       bgt :bullet_out_of_bounds
-      movwi r1, 640 << 5
-      cmp r0, r1
+      movwi tmp, 640
+      cmp full, tmp
       ble :bullet_out_of_bounds
-      rem "save new x position"
-      lstor r0, :bullet_fine_x
-      lshi r0, -5
-      lstor r0, :bullet_x
+      lstor full, :bullet_x
 
-      lload r0, :bullet_fine_y
-      lload r1, :bullet_dy
-      add r0, r1
-      rem "floor y and fine_y"
-      cmpi r0, 0
+      lload full, :bullet_y
+      lload frac, :bullet_frac_y
+      lload d, :bullet_dy
+      add frac, d
+      mov tmp, frac
+      cmpi frac, 127
+      lt? do
+        _andi frac, 127
+        lshi tmp, -7
+        add full, tmp
+        buc :floor_bullet_y
+      end
+      cmpi frac, -127
+      gt? do
+        neg frac
+        _andi frac, 127
+        neg frac
+        neg tmp
+        lshi tmp, -7
+        sub full, tmp
+      end
+
+      label :floor_bullet_y
+      lstor frac, :bullet_frac_y
+      cmpi full, 0
       blt :cap_bullet_y
-      movi r0, 0
-      lstor r0, :bullet_fine_y
-      lstor r0, :bullet_y
+      movi full, 0
+      lstor full, :bullet_frac_y
+      lstor full, :bullet_y
       buc :update_bullet_accel
       label :cap_bullet_y
       rem "ceil y"
-      lstor r0, :bullet_fine_y
-      lshi r0, -5
-      movwi r1, 479
-      ceil r0, r1
-      lstor r0, :bullet_y
+      movwi tmp, 479
+      ceil full, tmp
+      lstor full, :bullet_y
       buc :update_bullet_accel
 
       label :update_bullet_accel
-      lload r0, :bullet_dy
-      lload r1, :bullet_ddy
-      add r0, r1
-      lstor r0, :bullet_dy
+      lload tmp, :bullet_ddy
+      add d, tmp
+      lstor d, :bullet_dy
       buc :update_bullet_done
 
       label :bullet_out_of_bounds
-      movwi r0, 0
-      lstor r0, :bullet_dx
-      lstor r0, :bullet_fine_x
-      lstor r0, :bullet_x
-      lstor r0, :bullet_dy
-      lstor r0, :bullet_fine_y
-      lstor r0, :bullet_y
-      mov r0, ps
+      movwi tmp, 0
+      lstor tmp, :bullet_dx
+      lstor tmp, :bullet_frac_x
+      lstor tmp, :bullet_x
+      lstor tmp, :bullet_dy
+      lstor tmp, :bullet_frac_y
+      lstor tmp, :bullet_y
+      mov tmp, ps
       movi ps, 1
 
       label :update_bullet_done
@@ -155,6 +196,8 @@ assemble 'tank_game.hex' do
   end
 
   label :handle_collision do # -- 0 | 1, collided_with (0: ground, 1: tank1, 2: tank2)
+    movi ps, 0
+    ret
     preserving r0, r1 do
       lload r0, :bullet_x
       lstor r0, :ground_index
@@ -192,19 +235,19 @@ assemble 'tank_game.hex' do
       lload r0, :game_state
       cmpi r0, game_states.index(:player1_aiming)
       eq? do
-        lstorwi 64 << 5, :bullet_fine_x
-        lstorwi 138 << 5, :bullet_fine_y
-        lstorwi 100, :bullet_dx
-        lstorwi 100, :bullet_dy
+        lstorwi 64, :bullet_x
+        lstorwi 180, :bullet_y
+        lstorwi pps(640 / 3), :bullet_dx
+        lstorwi pps(480 / 3), :bullet_dy
         lstorwi game_states.index(:player1_firing), :game_state
         buc :fire_done
       end
       cmpi r0, game_states.index(:player2_aiming)
       eq? do
-        lstorwi (640 - 64) << 5, :bullet_fine_x
-        lstorwi 138 << 5, :bullet_fine_y
-        lstorwi -100, :bullet_dx
-        lstorwi 100, :bullet_dy
+        lstorwi (640 - 64), :bullet_x
+        lstorwi 180, :bullet_y
+        lstorwi pps(-640 / 3), :bullet_dx
+        lstorwi pps(480 / 3), :bullet_dy
         lstorwi game_states.index(:player2_firing), :game_state
         buc :fire_done
       end
@@ -286,10 +329,10 @@ assemble 'tank_game.hex' do
   dw 0
   label :bullet_dy
   dw 0
-  label :bullet_fine_x
+  label :bullet_frac_x
   dw 0
-  label :bullet_fine_y
+  label :bullet_frac_y
   dw 0
   label :bullet_ddy
-  dw -50
+  dw -2
 end
