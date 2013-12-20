@@ -1,0 +1,11 @@
+verilog source is in verilog/
+test benches are in tests/
+ruby (including assembler) and hex files are in ruby/
+final report is report.pdf
+
+the verilog files were originally distributed in a project hierarchy
+you can get the project in its original form at https://github.com/JoelHough/cs3710/
+or using git, clone with `git clone https://github.com/JoelHough/cs3710.git`
+
+the assembler requires ruby version 2 or greater
+
